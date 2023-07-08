@@ -6,22 +6,33 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbfuncs"
 )
 
-func stringify(m any, f any) string {
+// asSquirrel converts the given value to a squirrel expression.
+//
+// The given value can be a DB function, model field, or a literal value.
+func asSquirrel(m any, f any) squirrel.Sqlizer {
+	// function
 	switch fn := f.(type) {
 	case dbfuncs.Func[int]:
-		return fmtFunc(m, fn.Name, fn.Args)
+		args := make([]any, 0, len(fn.Args))
+		for _, arg := range fn.Args {
+			args = append(args, asSquirrel(m, arg))
+		}
+		return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), args...)
 	default:
 	}
 
+	// model field
 	fname, err := getFieldName(m, f)
 	if err == nil {
-		return fname
+		return squirrel.Expr(fname)
 	}
-	fname, _ = fmtLiteral(f)
-	return fname
+
+	// literal value
+	return squirrel.Expr("?", f)
 }
 
 func getModelName(model any) string {
@@ -45,21 +56,9 @@ func getFieldName(model any, field any) (string, error) {
 	return "", errors.New("field not found")
 }
 
-func fmtLiteral(val any) (string, error) {
-	switch val.(type) {
-	case int, *int:
-		return fmt.Sprintf("%d", val), nil
-	default:
-		return "?", nil
-	}
-}
-
-func fmtFunc(m any, name string, args []any) string {
-	formatted := make([]string, 0, len(args))
-	for _, arg := range args {
-		farg := stringify(m, arg)
-		formatted = append(formatted, farg)
-	}
-	joined := strings.Join(formatted, ", ")
-	return fmt.Sprintf("%s(%s)", name, joined)
+// Ref converts the given value to a pointer.
+//
+// Convenient for making a pointer to a literal value.
+func Ref[T any](val T) *T {
+	return &val
 }

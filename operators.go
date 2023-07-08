@@ -1,31 +1,30 @@
 package sequel
 
 import (
-	"fmt"
-
+	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbfuncs"
 )
 
-type condition interface {
-	toSQL(model any) string
+type Predicate interface {
+	Squirrel(model any) squirrel.Sqlizer
 }
 
-type operator struct {
+type tBinOp struct {
 	left  any
 	op    string
 	right any
 }
 
-func (op operator) toSQL(m any) string {
-	lname := stringify(m, op.left)
-	rname := stringify(m, op.right)
-	return fmt.Sprintf("%s %s %s", lname, op.op, rname)
+func (op tBinOp) Squirrel(m any) squirrel.Sqlizer {
+	lhs := asSquirrel(m, op.left)
+	rhs := asSquirrel(m, op.right)
+	return squirrel.ConcatExpr(lhs, op.op, rhs)
 }
 
-func Gt[T any](field *T, value T) operator {
-	return operator{left: field, op: ">", right: value}
+func Gt[T any](field *T, value T) Predicate {
+	return tBinOp{left: field, op: " > ", right: value}
 }
 
-func GtF[T any](field *T, value dbfuncs.Func[T]) operator {
-	return operator{left: field, op: ">", right: value}
+func GtF[T any](field *T, value dbfuncs.Func[T]) Predicate {
+	return tBinOp{left: field, op: " > ", right: value}
 }
