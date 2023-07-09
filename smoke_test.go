@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/sequel"
+	sq "github.com/orsinium-labs/sequel"
 	"github.com/orsinium-labs/sequel/pgext"
 )
 
@@ -16,8 +16,8 @@ func Test(t *testing.T) {
 		age  int
 	}
 	u := User{}
-	q := sequel.Select(&u, &u.name, &u.age)
-	q = q.Where(sequel.Gt(&u.age, 18))
-	q = q.Where(sequel.GtF(&u.age, pgext.Abs(-18)))
+	q := sq.Select(&u, &u.name, &u.age)
+	q = q.Where(sq.Gt(sq.C(&u.age), sq.V(18)))
+	q = q.Where(sq.Gt(sq.C(&u.age), pgext.Abs(-18)))
 	is.Equal(q.String(), "SELECT name, age FROM user WHERE (age > ? AND age > abs(?))")
 }

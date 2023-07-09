@@ -15,7 +15,7 @@ import (
 func asSquirrel(m any, f any) squirrel.Sqlizer {
 	// function
 	switch fn := f.(type) {
-	case Func[int]:
+	case tFunc[int]:
 		args := make([]any, 0, len(fn.Args))
 		for _, arg := range fn.Args {
 			args = append(args, asSquirrel(m, arg))
