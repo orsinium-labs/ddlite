@@ -1,9 +1,10 @@
 package pgext
 
-import "github.com/orsinium-labs/sequel"
+import (
+	"github.com/orsinium-labs/sequel"
+	"github.com/orsinium-labs/sequel/constraints"
+)
 
-type Args []any
-
-func Abs(val int) sequel.Expr[int] {
-	return sequel.F[int]("abs", val)
+func Abs[T constraints.Number](val T) sequel.Expr[T] {
+	return sequel.F[T]("abs", val)
 }
