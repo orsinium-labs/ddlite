@@ -19,6 +19,11 @@ func (s selectQ[T]) Where(conds ...Expr[bool]) selectQ[T] {
 	return s
 }
 
+// And is an alias for Where.
+func (s selectQ[T]) And(conds ...Expr[bool]) selectQ[T] {
+	return s.Where(conds...)
+}
+
 func (s selectQ[T]) Squirrel() squirrel.SelectBuilder {
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
