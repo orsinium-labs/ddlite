@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbfuncs"
 )
 
 // asSquirrel converts the given value to a squirrel expression.
@@ -16,7 +15,7 @@ import (
 func asSquirrel(m any, f any) squirrel.Sqlizer {
 	// function
 	switch fn := f.(type) {
-	case dbfuncs.Func[int]:
+	case Func[int]:
 		args := make([]any, 0, len(fn.Args))
 		for _, arg := range fn.Args {
 			args = append(args, asSquirrel(m, arg))

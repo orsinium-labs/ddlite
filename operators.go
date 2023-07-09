@@ -2,7 +2,6 @@ package sequel
 
 import (
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbfuncs"
 )
 
 type Predicate interface {
@@ -25,6 +24,6 @@ func Gt[T any](field *T, value T) Predicate {
 	return tBinOp{left: field, op: " > ", right: value}
 }
 
-func GtF[T any](field *T, value dbfuncs.Func[T]) Predicate {
+func GtF[T any](field *T, value Func[T]) Predicate {
 	return tBinOp{left: field, op: " > ", right: value}
 }
