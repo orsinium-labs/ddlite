@@ -16,22 +16,26 @@ type Expr[T any] interface {
 
 // tFunc is a private type to represent stored function expression.
 // `T` is the type of the function return value.
-type tFunc[T any] struct {
+type tFunc[A any, R any] struct {
 	Name string
-	Args []any
+	Args []Expr[A]
 }
 
 // F is a stored function.
-func F[T any](name string, args ...any) Expr[T] {
-	return tFunc[T]{Name: name, Args: args}
+func F[A, T any](name string, args ...Expr[A]) Expr[T] {
+	return tFunc[A, T]{Name: name, Args: args}
 }
 
-func (tFunc[T]) Default() T {
-	return *new(T)
+func (tFunc[A, R]) Default() R {
+	return *new(R)
 }
 
-func (fn tFunc[T]) Squirrel(ms Models) squirrel.Sqlizer {
-	return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), fn.Args...)
+func (fn tFunc[A, R]) Squirrel(ms Models) squirrel.Sqlizer {
+	args := make([]any, 0, len(fn.Args))
+	for _, arg := range fn.Args {
+		args = append(args, arg.Squirrel(ms))
+	}
+	return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), args...)
 }
 
 // tCol is aprivate type to represent a column name expression.
