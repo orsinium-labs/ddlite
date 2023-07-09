@@ -7,7 +7,7 @@ import (
 type selectQ[T any] struct {
 	fields []any
 	conds  []Expr[bool]
-	model  any
+	model  T
 }
 
 func Select[T any](model T, fields ...any) selectQ[T] {
