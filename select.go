@@ -34,6 +34,7 @@ func (s selectQ[T]) Squirrel() squirrel.SelectBuilder {
 		fnames = append(fnames, fname)
 	}
 	q := squirrel.Select(fnames...)
+	q = q.PlaceholderFormat(squirrel.Dollar)
 	q = q.From(getModelName(s.model))
 
 	models := []any{s.model}
