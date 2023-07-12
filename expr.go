@@ -15,8 +15,8 @@ type Expr[T any] interface {
 }
 
 // tFunc is a private type to represent stored function expression.
-// `T` is the type of the function return value.
-type tFunc[A any, R any] struct {
+// `R` is the type of the function return value.
+type tFunc[A, R any] struct {
 	Name string
 	Args []Expr[A]
 }
@@ -36,6 +36,32 @@ func (fn tFunc[A, R]) Squirrel(ms Models) squirrel.Sqlizer {
 		args = append(args, arg.Squirrel(ms))
 	}
 	return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), args...)
+}
+
+// tFunc is a private type to represent 2-argument stored function expression.
+// `R` is the type of the function return value.
+type tFunc2[A1, A2, R any] struct {
+	Name string
+	Arg1 Expr[A1]
+	Arg2 Expr[A2]
+}
+
+// F is a stored function with 2 arguments of different type.
+//
+// For functions with any number of arguments of the same type
+// prefer using `F` instead.
+func F2[A1, A2, T any](name string, arg1 Expr[A1], arg2 Expr[A2]) Expr[T] {
+	return tFunc2[A1, A2, T]{Name: name, Arg1: arg1, Arg2: arg2}
+}
+
+func (tFunc2[A1, A2, R]) Default() R {
+	return *new(R)
+}
+
+func (fn tFunc2[A1, A2, R]) Squirrel(ms Models) squirrel.Sqlizer {
+	arg1 := fn.Arg1.Squirrel(ms)
+	arg2 := fn.Arg2.Squirrel(ms)
+	return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), arg1, arg2)
 }
 
 // tCol is aprivate type to represent a column name expression.
