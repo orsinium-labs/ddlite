@@ -10,7 +10,7 @@ import (
 )
 
 type Squirrler interface {
-	Squirrel(sq.Models) squirrel.Sqlizer
+	Squirrel(...sq.Model) squirrel.Sqlizer
 }
 
 func TestNumericFuncsSQL(t *testing.T) {

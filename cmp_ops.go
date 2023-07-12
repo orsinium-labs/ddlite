@@ -15,9 +15,9 @@ func (tCmpOp[T]) Default() bool {
 	return false
 }
 
-func (op tCmpOp[T]) Squirrel(ms Models) squirrel.Sqlizer {
-	lhs := op.left.Squirrel(ms)
-	rhs := op.right.Squirrel(ms)
+func (op tCmpOp[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
+	lhs := op.left.Squirrel(ms...)
+	rhs := op.right.Squirrel(ms...)
 	return squirrel.ConcatExpr(lhs, " ", op.op, " ", rhs)
 }
 

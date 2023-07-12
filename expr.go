@@ -7,12 +7,12 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-type Models []any
+type Model any
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
 type Expr[T any] interface {
 	Default() T
-	Squirrel(Models) squirrel.Sqlizer
+	Squirrel(...Model) squirrel.Sqlizer
 }
 
 // tFunc is a private type to represent stored function expression.
@@ -31,10 +31,10 @@ func (tFunc[A, R]) Default() R {
 	return *new(R)
 }
 
-func (fn tFunc[A, R]) Squirrel(ms Models) squirrel.Sqlizer {
+func (fn tFunc[A, R]) Squirrel(ms ...Model) squirrel.Sqlizer {
 	args := make([]any, 0, len(fn.Args))
 	for _, arg := range fn.Args {
-		args = append(args, arg.Squirrel(ms))
+		args = append(args, arg.Squirrel(ms...))
 	}
 	phs := strings.Repeat("?, ", len(args))
 	phs = phs[:len(phs)-2]
@@ -61,9 +61,9 @@ func (tFunc2[A1, A2, R]) Default() R {
 	return *new(R)
 }
 
-func (fn tFunc2[A1, A2, R]) Squirrel(ms Models) squirrel.Sqlizer {
-	arg1 := fn.Arg1.Squirrel(ms)
-	arg2 := fn.Arg2.Squirrel(ms)
+func (fn tFunc2[A1, A2, R]) Squirrel(ms ...Model) squirrel.Sqlizer {
+	arg1 := fn.Arg1.Squirrel(ms...)
+	arg2 := fn.Arg2.Squirrel(ms...)
 	return squirrel.Expr(fmt.Sprintf("%s(?, ?)", fn.Name), arg1, arg2)
 }
 
@@ -81,7 +81,7 @@ func (tCol[T]) Default() T {
 	return *new(T)
 }
 
-func (col tCol[T]) Squirrel(ms Models) squirrel.Sqlizer {
+func (col tCol[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
 	for _, model := range ms {
 		fname, err := getFieldName(model, col.val)
 		if err == nil {
@@ -105,6 +105,6 @@ func (tVal[T]) Default() T {
 	return *new(T)
 }
 
-func (val tVal[T]) Squirrel(ms Models) squirrel.Sqlizer {
+func (val tVal[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
 	return squirrel.Expr("?", val.val)
 }

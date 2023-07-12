@@ -24,7 +24,7 @@ func (s selectQ[T]) And(conds ...Expr[bool]) selectQ[T] {
 	return s.Where(conds...)
 }
 
-func (s selectQ[T]) Squirrel() squirrel.SelectBuilder {
+func (s selectQ[T]) Squirrel(...Model) squirrel.SelectBuilder {
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
 		fname, err := getFieldName(s.model, f)
@@ -37,11 +37,10 @@ func (s selectQ[T]) Squirrel() squirrel.SelectBuilder {
 	q = q.PlaceholderFormat(squirrel.Dollar)
 	q = q.From(getModelName(s.model))
 
-	models := []any{s.model}
 	if len(s.conds) != 0 {
 		preds := make([]squirrel.Sqlizer, 0, len(s.conds))
 		for _, c := range s.conds {
-			preds = append(preds, c.Squirrel(models))
+			preds = append(preds, c.Squirrel(s.model))
 		}
 		q = q.Where(squirrel.And(preds))
 	}
