@@ -38,7 +38,7 @@ func TestNumericFuncsSQL(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
-			sqlizer := tc.given.Squirrel(nil)
+			sqlizer := tc.given.Squirrel()
 			sql, args, err := sqlizer.ToSql()
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)

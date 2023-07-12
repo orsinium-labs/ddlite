@@ -4,13 +4,13 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-type selectQ[T any] struct {
+type selectQ[T Model] struct {
 	fields []any
 	conds  []Expr[bool]
 	model  T
 }
 
-func Select[T any](model T, fields ...any) selectQ[T] {
+func Select[T Model](model T, fields ...any) selectQ[T] {
 	return selectQ[T]{model: model, fields: fields}
 }
 
