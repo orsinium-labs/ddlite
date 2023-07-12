@@ -15,11 +15,6 @@ func Ceil[F c.Float, I c.Integer](val sq.Expr[F]) sq.Expr[I] {
 	return sq.F[F, I]("ceil", val)
 }
 
-// Ceiling function returns the smallest integer value that is greater than or equal to a number.
-func Ceiling[F c.Float](val sq.Expr[F]) sq.Expr[F] {
-	return sq.F[F, F]("ceiling", val)
-}
-
 // Div function is used for integer division where m is divided by n and an integer value is returned.
 func Div[N c.Number, I c.Integer](m, n sq.Expr[N]) sq.Expr[I] {
 	return sq.F[N, I]("div", m, n)

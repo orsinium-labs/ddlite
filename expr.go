@@ -2,6 +2,7 @@ package sequel
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/Masterminds/squirrel"
 )
@@ -35,7 +36,9 @@ func (fn tFunc[A, R]) Squirrel(ms Models) squirrel.Sqlizer {
 	for _, arg := range fn.Args {
 		args = append(args, arg.Squirrel(ms))
 	}
-	return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), args...)
+	phs := strings.Repeat("?, ", len(args))
+	phs = phs[:len(phs)-2]
+	return squirrel.Expr(fmt.Sprintf("%s(%s)", fn.Name, phs), args...)
 }
 
 // tFunc is a private type to represent 2-argument stored function expression.
@@ -61,7 +64,7 @@ func (tFunc2[A1, A2, R]) Default() R {
 func (fn tFunc2[A1, A2, R]) Squirrel(ms Models) squirrel.Sqlizer {
 	arg1 := fn.Arg1.Squirrel(ms)
 	arg2 := fn.Arg2.Squirrel(ms)
-	return squirrel.Expr(fmt.Sprintf("%s(?)", fn.Name), arg1, arg2)
+	return squirrel.Expr(fmt.Sprintf("%s(?, ?)", fn.Name), arg1, arg2)
 }
 
 // tCol is aprivate type to represent a column name expression.
