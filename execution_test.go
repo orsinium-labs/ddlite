@@ -39,7 +39,7 @@ func TestFetchOne(t *testing.T) {
 		TelCode int
 	}
 	p := Place{}
-	q := sq.Select(&p, &p.City, &p.Country).Where(sq.Eq(sq.C(&p.TelCode), sq.V(1)))
+	q := sq.Select(&p, &p.City, &p.Country).Where(sq.E(&p.TelCode, 1))
 	r, err := sq.FetchOne[Place](tx, q)
 	is.NoErr(err)
 	is.Equal(r.City, "New York")

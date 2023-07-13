@@ -21,6 +21,16 @@ func (op tCmpOp[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
 	return squirrel.ConcatExpr(lhs, " ", op.op, " ", rhs)
 }
 
+// E checks if the given column value is equal to the given fixed value.
+//
+// This is an alias for:
+//
+// 		sq.Eq(sq.C(&column), sq.V(value))
+//
+func E[T any](column *T, value T) Expr[bool] {
+	return Eq(C(column), V(value))
+}
+
 // Greater than (`>`)
 func Gt[T any](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: ">", right: right}

@@ -11,8 +11,8 @@ type query interface {
 	Squirrel(...Model) (squirrel.SelectBuilder, error)
 }
 
-type Scanner[T any] func(rows *sql.Rows) (T, error)
-type scannableQuery[T any] interface {
+type Scanner[T Model] func(rows *sql.Rows) (T, error)
+type scannableQuery[T Model] interface {
 	query
 	Scanner() (Scanner[T], error)
 }
@@ -32,7 +32,7 @@ func SQL(q query) (string, []any, error) {
 	return sql, arg, nil
 }
 
-func FetchOne[T any](db dbOrTx, q scannableQuery[T]) (T, error) {
+func FetchOne[T Model](db dbOrTx, q scannableQuery[T]) (T, error) {
 	var r T
 	builder, err := q.Squirrel()
 	if err != nil {
