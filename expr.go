@@ -7,8 +7,6 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-type Model any
-
 // Expr is an SQL expression. I can be used as part of SQL queries.
 type Expr[T any] interface {
 	Default() T

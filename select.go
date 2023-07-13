@@ -1,16 +1,19 @@
 package sequel
 
 import (
+	"database/sql"
+	"fmt"
+
 	"github.com/Masterminds/squirrel"
 )
 
 type selectQ[T Model] struct {
 	fields []any
 	conds  []Expr[bool]
-	model  T
+	model  *T
 }
 
-func Select[T Model](model T, fields ...any) selectQ[T] {
+func Select[T Model](model *T, fields ...any) selectQ[T] {
 	return selectQ[T]{model: model, fields: fields}
 }
 
@@ -24,12 +27,12 @@ func (s selectQ[T]) And(conds ...Expr[bool]) selectQ[T] {
 	return s.Where(conds...)
 }
 
-func (s selectQ[T]) Squirrel(...Model) squirrel.SelectBuilder {
+func (s selectQ[T]) Squirrel(...Model) (squirrel.SelectBuilder, error) {
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
 		fname, err := getFieldName(s.model, f)
 		if err != nil {
-			panic(err)
+			return squirrel.SelectBuilder{}, fmt.Errorf("get column name: %v", err)
 		}
 		fnames = append(fnames, fname)
 	}
@@ -45,11 +48,36 @@ func (s selectQ[T]) Squirrel(...Model) squirrel.SelectBuilder {
 		q = q.Where(squirrel.And(preds))
 	}
 
-	return q
+	return q, nil
+}
+
+func (s selectQ[T]) Scanner() (Scanner[T], error) {
+	var r T
+	cols := make([]any, 0, len(s.fields))
+	for _, field := range s.fields {
+		fieldName, err := getFieldName(s.model, field)
+		if err != nil {
+			return nil, fmt.Errorf("get field name: %v", err)
+		}
+		col, err := getField(&r, fieldName)
+		if err != nil {
+			return nil, fmt.Errorf("get struct field by name: %v", err)
+		}
+		cols = append(cols, col)
+	}
+
+	scan := func(rows *sql.Rows) (T, error) {
+		err := rows.Scan(cols...)
+		if err != nil {
+			return r, fmt.Errorf("rows scan: %w", err)
+		}
+		return r, nil
+	}
+	return scan, nil
 }
 
 func (s selectQ[T]) String() string {
-	sq := s.Squirrel()
+	sq, _ := s.Squirrel()
 	sql, _ := sq.MustSql()
 	return sql
 }

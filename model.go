@@ -6,9 +6,21 @@ import (
 	"strings"
 )
 
+type Model any
+
 func getModelName(model any) string {
 	t := reflect.ValueOf(model).Elem().Type()
 	return strings.ToLower(t.Name())
+}
+
+func getField(model any, field string) (any, error) {
+	vmodel := reflect.ValueOf(model)
+	if vmodel.Kind() != reflect.Pointer {
+		return "", errors.New("the model is not a pointer")
+	}
+	rmodel := vmodel.Elem()
+	f := rmodel.FieldByName(field)
+	return f.Addr().Interface(), nil
 }
 
 func getFieldName(model any, field any) (string, error) {
@@ -17,7 +29,11 @@ func getFieldName(model any, field any) (string, error) {
 		return "", errors.New("the field is not a pointer")
 	}
 	tpointer := target.Pointer()
-	rmodel := reflect.ValueOf(model).Elem()
+	vmodel := reflect.ValueOf(model)
+	if vmodel.Kind() != reflect.Pointer {
+		return "", errors.New("the model is not a pointer")
+	}
+	rmodel := vmodel.Elem()
 	rtype := rmodel.Type()
 	for i := 0; i < rtype.NumField(); i++ {
 		if rmodel.Field(i).Addr().Pointer() == tpointer {
