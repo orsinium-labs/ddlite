@@ -85,6 +85,7 @@ func (def tColumnDef[T]) SQL(model Model) (string, error) {
 	}
 	constraints := strings.Join(def.constraints, " ")
 	sql := fmt.Sprintf("%s %s %s", fieldName, def.colType, constraints)
+	sql = strings.TrimRight(sql, " ")
 	return sql, nil
 }
 
@@ -97,7 +98,7 @@ func Unique(fields ...any) iColumnDef {
 }
 
 func (def tUniqueDef) SQL(model Model) (string, error) {
-	columnNames := make([]string, len(def.fields))
+	columnNames := make([]string, 0, len(def.fields))
 	for _, field := range def.fields {
 		fieldName, err := getFieldName(model, field)
 		if err != nil {
@@ -106,6 +107,6 @@ func (def tUniqueDef) SQL(model Model) (string, error) {
 		columnNames = append(columnNames, fieldName)
 	}
 	joined := strings.Join(columnNames, ", ")
-	sql := fmt.Sprintf("UNIQUE %s", joined)
+	sql := fmt.Sprintf("UNIQUE (%s)", joined)
 	return sql, nil
 }
