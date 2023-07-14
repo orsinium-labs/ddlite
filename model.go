@@ -8,7 +8,7 @@ import (
 
 type Model any
 
-func getModelName(model any) string {
+func getModelName(model Model) string {
 	t := reflect.ValueOf(model).Elem().Type()
 	return strings.ToLower(t.Name())
 }
