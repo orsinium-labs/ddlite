@@ -7,27 +7,27 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-type selectQ[T Model] struct {
+type tSelectModel[T Model] struct {
 	fields []any
 	conds  []Expr[bool]
 	model  *T
 }
 
-func Select[T Model](model *T, fields ...any) selectQ[T] {
-	return selectQ[T]{model: model, fields: fields}
+func Select[T Model](model *T, fields ...any) tSelectModel[T] {
+	return tSelectModel[T]{model: model, fields: fields}
 }
 
-func (s selectQ[T]) Where(conds ...Expr[bool]) selectQ[T] {
+func (s tSelectModel[T]) Where(conds ...Expr[bool]) tSelectModel[T] {
 	s.conds = append(s.conds, conds...)
 	return s
 }
 
 // And is an alias for Where.
-func (s selectQ[T]) And(conds ...Expr[bool]) selectQ[T] {
+func (s tSelectModel[T]) And(conds ...Expr[bool]) tSelectModel[T] {
 	return s.Where(conds...)
 }
 
-func (s selectQ[T]) Squirrel(...Model) (squirrel.SelectBuilder, error) {
+func (s tSelectModel[T]) Squirrel(...Model) (squirrel.SelectBuilder, error) {
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
 		fname, err := getFieldName(s.model, f)
@@ -51,7 +51,7 @@ func (s selectQ[T]) Squirrel(...Model) (squirrel.SelectBuilder, error) {
 	return q, nil
 }
 
-func (s selectQ[T]) Scanner() (Scanner[T], error) {
+func (s tSelectModel[T]) Scanner() (Scanner[T], error) {
 	var r T
 	cols := make([]any, 0, len(s.fields))
 	for _, field := range s.fields {
@@ -76,8 +76,8 @@ func (s selectQ[T]) Scanner() (Scanner[T], error) {
 	return scan, nil
 }
 
-func (s selectQ[T]) String() string {
-	sq, _ := s.Squirrel()
-	sql, _ := sq.MustSql()
+func (s tSelectModel[T]) String() string {
+	builder, _ := s.Squirrel()
+	sql, _ := builder.MustSql()
 	return sql
 }

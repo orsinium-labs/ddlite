@@ -23,9 +23,9 @@ func TestFetchOne(t *testing.T) {
 
 	schema := qb.CreateTable(
 		&p,
-		qb.ColumnDef(&p.Country, qb.Text(), qb.NotNull),
-		qb.ColumnDef(&p.City, qb.Text(), qb.Null),
-		qb.ColumnDef(&p.TelCode, qb.Integer(), qb.NotNull),
+		qb.ColumnDef(&p.Country, qb.Text()),
+		qb.ColumnDef(&p.City, qb.Text()).Null(),
+		qb.ColumnDef(&p.TelCode, qb.Integer()),
 	)
 	schemaSQL, err := schema.SQL()
 	is.NoErr(err)

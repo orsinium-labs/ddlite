@@ -25,7 +25,7 @@ func (op tCmpOp[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
 //
 // This is an alias for:
 //
-// 		sq.Eq(sq.C(&column), sq.V(value))
+// 		qb.Eq(qb.C(&column), qb.V(value))
 //
 func E[T any](column *T, value T) Expr[bool] {
 	return Eq(C(column), V(value))
