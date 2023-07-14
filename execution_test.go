@@ -1,4 +1,4 @@
-package sequel_test
+package qb_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/matryer/is"
 	_ "github.com/mattn/go-sqlite3"
-	sq "github.com/orsinium-labs/sequel"
+	"github.com/orsinium-labs/qb"
 )
 
 func TestFetchOne(t *testing.T) {
@@ -39,8 +39,8 @@ func TestFetchOne(t *testing.T) {
 		TelCode int
 	}
 	p := Place{}
-	q := sq.Select(&p, &p.City, &p.Country).Where(sq.E(&p.TelCode, 1))
-	r, err := sq.FetchOne[Place](tx, q)
+	q := qb.Select(&p, &p.City, &p.Country).Where(qb.E(&p.TelCode, 1))
+	r, err := qb.FetchOne[Place](tx, q)
 	is.NoErr(err)
 	is.Equal(r.City, "New York")
 }

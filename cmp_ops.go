@@ -1,4 +1,4 @@
-package sequel
+package qb
 
 import (
 	"github.com/Masterminds/squirrel"

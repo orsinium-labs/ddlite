@@ -5,12 +5,12 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/matryer/is"
-	sq "github.com/orsinium-labs/sequel"
-	"github.com/orsinium-labs/sequel/pgext"
+	"github.com/orsinium-labs/qb"
+	"github.com/orsinium-labs/qb/pgext"
 )
 
 type Squirrler interface {
-	Squirrel(...sq.Model) squirrel.Sqlizer
+	Squirrel(...qb.Model) squirrel.Sqlizer
 }
 
 func TestNumericFuncsSQL(t *testing.T) {
@@ -20,17 +20,17 @@ func TestNumericFuncsSQL(t *testing.T) {
 		args  []any
 	}{
 		{
-			given: pgext.Abs(sq.V(12)),
+			given: pgext.Abs(qb.V(12)),
 			sql:   "abs(?)",
 			args:  []any{12},
 		},
 		{
-			given: pgext.Ceil[float64, int](sq.V(12.0)),
+			given: pgext.Ceil[float64, int](qb.V(12.0)),
 			sql:   "ceil(?)",
 			args:  []any{12.0},
 		},
 		{
-			given: pgext.Div[int, int](sq.V(12), sq.V(5)),
+			given: pgext.Div[int, int](qb.V(12), qb.V(5)),
 			sql:   "div(?, ?)",
 			args:  []any{12, 5},
 		},

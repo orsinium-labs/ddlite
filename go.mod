@@ -1,12 +1,12 @@
-module github.com/orsinium-labs/sequel
+module github.com/orsinium-labs/qb
 
 go 1.18
 
 require github.com/matryer/is v1.4.1
 
 require (
-	github.com/jmoiron/sqlx v1.3.5 // indirect
-	github.com/mattn/go-sqlite3 v1.14.17 // indirect
+	github.com/jmoiron/sqlx v1.3.5
+	github.com/mattn/go-sqlite3 v1.14.17
 )
 
 require (
