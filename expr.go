@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/qb/constraints"
 )
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
@@ -67,11 +68,16 @@ func (fn tFunc2[A1, A2, R]) Squirrel(ms ...Model) squirrel.Sqlizer {
 
 // tCol is aprivate type to represent a column name expression.
 type tCol[T any] struct {
-	val *T
+	val any
 }
 
 // C is a column.
 func C[T any](val *T) Expr[T] {
+	return tCol[T]{val: val}
+}
+
+// M is a column wrapped into Option/Optional/Maybe monad.
+func M[T any](val *constraints.Option[T]) Expr[T] {
 	return tCol[T]{val: val}
 }
 

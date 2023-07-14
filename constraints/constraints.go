@@ -6,6 +6,16 @@
 // with type parameters.
 package constraints
 
+// Option is a Maybe monad used to represent a NULLable field.
+//
+// Compatible with Option defined in the `mo` package.
+//
+// https://github.com/samber/mo
+//
+type Option[T any] interface {
+	Get() (T, bool)
+}
+
 // Signed is a constraint that permits any signed integer type.
 // If future releases of Go add new predeclared signed integer types,
 // this constraint will be modified to include them.
