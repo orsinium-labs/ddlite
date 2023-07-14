@@ -1,4 +1,4 @@
-package qb_test
+package tests
 
 import (
 	"testing"
