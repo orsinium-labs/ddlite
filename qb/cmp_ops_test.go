@@ -58,6 +58,16 @@ func TestCmpOps(t *testing.T) {
 			sql:   "age <= ?",
 			args:  []any{18},
 		},
+		{
+			given: qb.And(qb.E(&u.age, 18), qb.E(&u.age, 19)),
+			sql:   "age = ? AND age = ?",
+			args:  []any{18, 19},
+		},
+		{
+			given: qb.Or(qb.E(&u.age, 18), qb.E(&u.age, 19)),
+			sql:   "age = ? OR age = ?",
+			args:  []any{18, 19},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {

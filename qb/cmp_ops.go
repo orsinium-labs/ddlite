@@ -4,7 +4,7 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-// tCmpOp is a private type to represent binary comparison operations.
+// tCmpOp is a private type representing binary comparison operations.
 type tCmpOp[T any] struct {
 	left  Expr[T]
 	op    string
@@ -21,42 +21,70 @@ func (op tCmpOp[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
 	return squirrel.ConcatExpr(lhs, " ", op.op, " ", rhs)
 }
 
-// E checks if the given column value is equal to the given fixed value.
+// E (=) checks if the given column value is equal to the given fixed value.
 //
 // This is an alias for:
 //
 //	qb.Eq(qb.C(&column), qb.V(value))
-func E[T any](column *T, value T) Expr[bool] {
+//
+// Example:
+//
+//	qb.E(&u.age, 18) // SQL: age = 18
+func E[T comparable](column *T, value T) Expr[bool] {
 	return Eq(C(column), V(value))
 }
 
-// Greater than (`>`)
-func Gt[T any](left, right Expr[T]) Expr[bool] {
+// Gt (>) checks that the left expression is greater than the right one.
+//
+// Example:
+//
+//	qb.Gt(qb.C(&u.age), qb.V(18)) // SQL: age > 18
+func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: ">", right: right}
 }
 
-// Greater than or equal (`>=`)
-func Gte[T any](left, right Expr[T]) Expr[bool] {
+// Gte (>=) checks that the left expression is greater than or equal to the right one.
+//
+// Example:
+//
+//	qb.Gte(qb.C(&u.age), qb.V(18)) // SQL: age >= 18
+func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: ">=", right: right}
 }
 
-// Less than (`<`)
-func Lt[T any](left, right Expr[T]) Expr[bool] {
+// Lt (<) checks that the left expression is less than the right one.
+//
+// Example:
+//
+//	qb.Lt(qb.C(&u.age), qb.V(18)) // SQL: age < 18
+func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<", right: right}
 }
 
-// Less than or equal (`<=`)
-func Lte[T any](left, right Expr[T]) Expr[bool] {
+// Lte (<=) checks that the left expression is less than or equal to the right one.
+//
+// Example:
+//
+//	qb.Lte(qb.C(&u.age), qb.V(18)) // SQL: age <= 18
+func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<=", right: right}
 }
 
-// Equal to (`=`)
-func Eq[T any](left, right Expr[T]) Expr[bool] {
+// Eq (=) checks that the left expression is equal to the right one.
+//
+// Example:
+//
+//	qb.Eq(&u.created_at, &u.updated_at) // SQL: created_at = updated_at
+func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "=", right: right}
 }
 
-// Not equal to (`<>`)
-func Neq[T any](left, right Expr[T]) Expr[bool] {
+// Neq (<>) checks that the left expression is not equal to the right one.
+//
+// Example:
+//
+//	qb.Neq(qb.C(&u.age), qb.V(18)) // SQL: age != 18
+func Neq[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<>", right: right}
 }
 
@@ -66,11 +94,21 @@ func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 }
 
 // And checks that both left and right expressions are true.
+//
+// Example:
+//
+//	qb.And(qb.C(&u.is_admin), qb.E(&u.name, "admin"))
+//	// SQL: is_admin AND name = "admin"
 func And(left, right Expr[bool]) Expr[bool] {
 	return tCmpOp[bool]{left: left, op: "AND", right: right}
 }
 
 // Or checks that left, right, or both expressions are true.
+//
+// Example:
+//
+//	qb.Or(qb.C(&u.is_admin), qb.E(&u.name, "admin"))
+//	// SQL: is_admin OR name = "admin"
 func Or(left, right Expr[bool]) Expr[bool] {
 	return tCmpOp[bool]{left: left, op: "OR", right: right}
 }
