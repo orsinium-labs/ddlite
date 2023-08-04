@@ -13,6 +13,10 @@ func getModelName(model Model) string {
 	return strings.ToLower(t.Name())
 }
 
+// getField extracts the value from the given struct in the given struct field.
+//
+// `model` is the struct and `field` is the struct field name
+// from which extract the vlaue.
 func getField(model any, field string) (any, error) {
 	vmodel := reflect.ValueOf(model)
 	if vmodel.Kind() != reflect.Pointer {

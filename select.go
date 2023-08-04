@@ -27,7 +27,7 @@ func (s tSelectModel[T]) And(conds ...Expr[bool]) tSelectModel[T] {
 	return s.Where(conds...)
 }
 
-func (s tSelectModel[T]) Squirrel(...Model) (squirrel.SelectBuilder, error) {
+func (s tSelectModel[T]) Squirrel(...Model) (squirrel.Sqlizer, error) {
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
 		fname, err := getFieldName(s.model, f)
@@ -78,6 +78,6 @@ func (s tSelectModel[T]) Scanner() (Scanner[T], error) {
 
 func (s tSelectModel[T]) String() string {
 	builder, _ := s.Squirrel()
-	sql, _ := builder.MustSql()
+	sql, _, _ := builder.ToSql()
 	return sql
 }

@@ -8,7 +8,7 @@ import (
 )
 
 type query interface {
-	Squirrel(...Model) (squirrel.SelectBuilder, error)
+	Squirrel(...Model) (squirrel.Sqlizer, error)
 }
 
 type Scanner[T Model] func(rows *sql.Rows) (T, error)
