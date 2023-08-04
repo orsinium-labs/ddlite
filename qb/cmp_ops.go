@@ -4,7 +4,7 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
-// tCmpOp is aprivate type to represent binary comparison operations.
+// tCmpOp is a private type to represent binary comparison operations.
 type tCmpOp[T any] struct {
 	left  Expr[T]
 	op    string
@@ -63,4 +63,14 @@ func Ne[T any](left, right Expr[T]) Expr[bool] {
 // Is equal to value or both are nulls (missing data) (`IS NOT DISTINCT FROM`)
 func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "IS NOT DISTINCT FROM", right: right}
+}
+
+// And checks that both left and right expressions are true.
+func And(left, right Expr[bool]) Expr[bool] {
+	return tCmpOp[bool]{left: left, op: "AND", right: right}
+}
+
+// Or checks that left, right, or both expressions are true.
+func Or(left, right Expr[bool]) Expr[bool] {
+	return tCmpOp[bool]{left: left, op: "OR", right: right}
 }

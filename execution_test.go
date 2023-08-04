@@ -28,10 +28,8 @@ func TestFetchOne(t *testing.T) {
 		qb.ColumnDef(&p.City, qb.Text()).Null(),
 		qb.ColumnDef(&p.TelCode, qb.Integer()),
 	)
-	// _, err = qb.Exec(db, schema)
-	schemaSQL, err := schema.SQL()
+	_, err = sequel.Exec(db, schema)
 	is.NoErr(err)
-	db.MustExec(schemaSQL)
 	tx := db.MustBegin()
 	defer func() {
 		is.NoErr(tx.Rollback())

@@ -3,6 +3,8 @@ package qb
 import (
 	"fmt"
 	"strings"
+
+	"github.com/Masterminds/squirrel"
 )
 
 type tCreateTable struct {
@@ -22,6 +24,14 @@ func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
 		model: model,
 		cols:  cols,
 	}
+}
+
+func (q tCreateTable) Squirrel(...Model) (squirrel.Sqlizer, error) {
+	sql, err := q.SQL()
+	if err != nil {
+		return nil, err
+	}
+	return squirrel.Expr(sql), nil
 }
 
 func (q tCreateTable) SQL() (string, error) {
