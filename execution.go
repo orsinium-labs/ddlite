@@ -18,6 +18,7 @@ type scannableQuery[T Model] interface {
 }
 type dbOrTx interface {
 	Query(query string, args ...any) (*sql.Rows, error)
+	Exec(query string, args ...any) (sql.Result, error)
 }
 
 func SQL(q query) (string, []any, error) {
@@ -30,6 +31,22 @@ func SQL(q query) (string, []any, error) {
 		return "", nil, fmt.Errorf("convert query to SQL: %v", err)
 	}
 	return sql, arg, nil
+}
+
+func Exec(db dbOrTx, q query) (sql.Result, error) {
+	builder, err := q.Squirrel()
+	if err != nil {
+		return nil, fmt.Errorf("build query: %w", err)
+	}
+	sqlQ, args, err := builder.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("generate SQL query: %w", err)
+	}
+	r, err := db.Exec(sqlQ, args...)
+	if err != nil {
+		return nil, fmt.Errorf("execute SQL query: %w", err)
+	}
+	return r, nil
 }
 
 func FetchOne[T Model](db dbOrTx, q scannableQuery[T]) (T, error) {

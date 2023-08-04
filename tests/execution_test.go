@@ -27,6 +27,7 @@ func TestFetchOne(t *testing.T) {
 		qb.ColumnDef(&p.City, qb.Text()).Null(),
 		qb.ColumnDef(&p.TelCode, qb.Integer()),
 	)
+	// _, err = qb.Exec(db, schema)
 	schemaSQL, err := schema.SQL()
 	is.NoErr(err)
 	db.MustExec(schemaSQL)
@@ -35,12 +36,19 @@ func TestFetchOne(t *testing.T) {
 		is.NoErr(tx.Rollback())
 	}()
 
-	tx.MustExec(
-		"INSERT INTO place (country, city, telcode) VALUES ($1, $2, $3)",
-		"United States", "New York", "1")
-	tx.MustExec(
-		"INSERT INTO place (country, telcode) VALUES ($1, $2)",
-		"Hong Kong", "852")
+	_, err = qb.Exec(tx,
+		qb.Insert(&p, &p.Country, &p.City, &p.TelCode).Values(
+			Place{"United States", "New York", 1},
+		),
+	)
+	is.NoErr(err)
+
+	_, err = qb.Exec(tx,
+		qb.Insert(&p, &p.Country, &p.TelCode).Values(
+			Place{Country: "Hong Kong", TelCode: 852},
+		),
+	)
+	is.NoErr(err)
 
 	q := qb.Select(&p, &p.City, &p.Country).Where(qb.E(&p.TelCode, 1))
 	r, err := qb.FetchOne[Place](tx, q)
