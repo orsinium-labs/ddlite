@@ -7,6 +7,8 @@ import (
 	"github.com/Masterminds/squirrel"
 )
 
+type Scanner[T Model] func(rows *sql.Rows) (T, error)
+
 type tSelectModel[T Model] struct {
 	fields []any
 	conds  []Expr[bool]

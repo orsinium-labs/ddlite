@@ -1,11 +1,11 @@
-package tests
+package sequel_test
 
 import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/qb"
-	"github.com/orsinium-labs/qb/pgext"
+	"github.com/orsinium-labs/sequel/pgext"
+	"github.com/orsinium-labs/sequel/qb"
 )
 
 func Test(t *testing.T) {

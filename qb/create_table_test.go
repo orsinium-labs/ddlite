@@ -1,10 +1,10 @@
-package tests
+package qb_test
 
 import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/qb"
+	"github.com/orsinium-labs/sequel/qb"
 )
 
 type sqlized interface {

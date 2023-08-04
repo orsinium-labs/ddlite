@@ -5,8 +5,8 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/qb"
-	"github.com/orsinium-labs/qb/pgext"
+	"github.com/orsinium-labs/sequel/pgext"
+	"github.com/orsinium-labs/sequel/qb"
 )
 
 type Squirrler interface {

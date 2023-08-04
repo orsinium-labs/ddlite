@@ -1,8 +1,8 @@
 package pgext
 
 import (
-	"github.com/orsinium-labs/qb"
-	c "github.com/orsinium-labs/qb/constraints"
+	c "github.com/orsinium-labs/sequel/constraints"
+	"github.com/orsinium-labs/sequel/qb"
 )
 
 // Abs function returns the absolute value of a number.

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/qb/constraints"
+	"github.com/orsinium-labs/sequel/constraints"
 )
 
 // Expr is an SQL expression. I can be used as part of SQL queries.

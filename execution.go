@@ -1,20 +1,20 @@
-package qb
+package sequel
 
 import (
 	"database/sql"
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/sequel/qb"
 )
 
 type query interface {
-	Squirrel(...Model) (squirrel.Sqlizer, error)
+	Squirrel(...qb.Model) (squirrel.Sqlizer, error)
 }
 
-type Scanner[T Model] func(rows *sql.Rows) (T, error)
-type scannableQuery[T Model] interface {
+type scannableQuery[T qb.Model] interface {
 	query
-	Scanner() (Scanner[T], error)
+	Scanner() (qb.Scanner[T], error)
 }
 type dbOrTx interface {
 	Query(query string, args ...any) (*sql.Rows, error)
@@ -49,7 +49,7 @@ func Exec(db dbOrTx, q query) (sql.Result, error) {
 	return r, nil
 }
 
-func FetchOne[T Model](db dbOrTx, q scannableQuery[T]) (T, error) {
+func FetchOne[T qb.Model](db dbOrTx, q scannableQuery[T]) (T, error) {
 	var r T
 	builder, err := q.Squirrel()
 	if err != nil {
