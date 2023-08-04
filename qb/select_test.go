@@ -1,4 +1,4 @@
-package sequel_test
+package qb_test
 
 import (
 	"testing"
@@ -8,7 +8,7 @@ import (
 	"github.com/orsinium-labs/sequel/qb"
 )
 
-func Test(t *testing.T) {
+func TestSelectSmoke(t *testing.T) {
 	is := is.New(t)
 
 	type User struct {
