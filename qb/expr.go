@@ -10,7 +10,12 @@ import (
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
 type Expr[T any] interface {
+	// Default method is used for type checking
+	// to ensure that the given expression has the correct type.
+	// Without it, Expr[int] and Expr[bool] would be the same interface.
 	Default() T
+
+	// Squirrel converts the expression into a squirrel AST.
 	Squirrel(...Model) squirrel.Sqlizer
 }
 

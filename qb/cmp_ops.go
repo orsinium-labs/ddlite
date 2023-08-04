@@ -56,7 +56,7 @@ func Eq[T any](left, right Expr[T]) Expr[bool] {
 }
 
 // Not equal to (`<>`)
-func Ne[T any](left, right Expr[T]) Expr[bool] {
+func Neq[T any](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<>", right: right}
 }
 
