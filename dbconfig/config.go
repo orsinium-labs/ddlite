@@ -140,7 +140,7 @@ func SnakeToCamel(s string) string {
 // placeholderForDriver infers the correct placeholder for the given driver name.
 func placeholderForDriver(driver string) Placeholder {
 	switch strings.ToLower(driver) {
-	case "postgres", "pgx", "pq-timeouts", "cloudsqlpostgres", "ql", "nrpostgres", "cockroach":
+	case "postgres", "pgx", "pq", "pq-timeouts", "cloudsqlpostgres", "ql", "nrpostgres", "cockroach":
 		return Dollar
 	case "mysql", "sqlite", "sqlite3", "nrmysql", "nrsqlite3":
 		return Question

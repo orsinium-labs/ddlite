@@ -12,6 +12,23 @@ type sqlized interface {
 	SQL(dbconfig.Config) (string, error)
 }
 
+func TestCreateTable(t *testing.T) {
+	is := is.New(t)
+	type User struct {
+		name string
+		age  int
+	}
+	u := User{}
+	conf := dbconfig.New("postgres")
+	q := qb.CreateTable(&u,
+		qb.ColumnDef(&u.name, qb.Text()),
+		qb.ColumnDef(&u.age, qb.SmallInt()),
+	)
+	sql, err := q.SQL(conf)
+	is.NoErr(err)
+	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT)")
+}
+
 func TestColumnDef(t *testing.T) {
 	type User struct {
 		name string
@@ -34,6 +51,22 @@ func TestColumnDef(t *testing.T) {
 		{
 			def: qb.ColumnDef(&u.age, qb.Integer()).Unique(),
 			sql: "age INTEGER UNIQUE",
+		},
+		{
+			def: qb.ColumnDef(&u.age, qb.Integer()).Null(),
+			sql: "age INTEGER NULL",
+		},
+		{
+			def: qb.ColumnDef(&u.age, qb.Integer()).NotNull(),
+			sql: "age INTEGER NOT NULL",
+		},
+		{
+			def: qb.ColumnDef(&u.age, qb.Integer()).PrimaryKey(),
+			sql: "age INTEGER PRIMARY KEY",
+		},
+		{
+			def: qb.ColumnDef(&u.name, qb.VarChar(20)).Collate("NOCASE"),
+			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{
 			def: qb.Unique(&u.age),
