@@ -8,7 +8,7 @@ import (
 	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
-type Scanner[T Model] func(rows *sql.Rows) (T, error)
+type Scanner[T Model] func(*sql.Rows) error
 
 type tSelectModel[T Model] struct {
 	fields []any
@@ -55,27 +55,26 @@ func (s tSelectModel[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error
 	return q, nil
 }
 
-func (s tSelectModel[T]) Scanner() (Scanner[T], error) {
-	var r T
+func (s tSelectModel[T]) Scanner(target *T) (Scanner[T], error) {
 	cols := make([]any, 0, len(s.fields))
 	for _, field := range s.fields {
 		fieldName, err := getFieldName(s.model, field)
 		if err != nil {
 			return nil, fmt.Errorf("get field name: %v", err)
 		}
-		col, err := getField(&r, fieldName)
+		col, err := getField(target, fieldName)
 		if err != nil {
 			return nil, fmt.Errorf("get struct field by name: %v", err)
 		}
 		cols = append(cols, col)
 	}
 
-	scan := func(rows *sql.Rows) (T, error) {
+	scan := func(rows *sql.Rows) error {
 		err := rows.Scan(cols...)
 		if err != nil {
-			return r, fmt.Errorf("rows scan: %w", err)
+			return fmt.Errorf("rows scan: %w", err)
 		}
-		return r, nil
+		return nil
 	}
 	return scan, nil
 }

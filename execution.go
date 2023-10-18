@@ -15,15 +15,25 @@ type query interface {
 
 type scannableQuery[T qb.Model] interface {
 	query
-	Scanner() (qb.Scanner[T], error)
+	Scanner(*T) (qb.Scanner[T], error)
 }
+
 type dbOrTx interface {
 	Query(query string, args ...any) (*sql.Rows, error)
 	Exec(query string, args ...any) (sql.Result, error)
 }
 
-func SQL(c dbconfig.Config, q query) (string, []any, error) {
-	builder, err := q.Squirrel(c)
+// Must wraps a function call returning a value and an error and panics if the error is not nil.
+func Must[T any](val T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+// SQL converts the given expression to SQL.
+func SQL(conf dbconfig.Config, q query) (string, []any, error) {
+	builder, err := q.Squirrel(conf)
 	if err != nil {
 		return "", nil, fmt.Errorf("build query: %v", err)
 	}
@@ -34,8 +44,8 @@ func SQL(c dbconfig.Config, q query) (string, []any, error) {
 	return sql, arg, nil
 }
 
-func Exec(c dbconfig.Config, db dbOrTx, q query) (sql.Result, error) {
-	builder, err := q.Squirrel(c)
+func Exec(conf dbconfig.Config, db dbOrTx, q query) (sql.Result, error) {
+	builder, err := q.Squirrel(conf)
 	if err != nil {
 		return nil, fmt.Errorf("build query: %w", err)
 	}
@@ -51,34 +61,45 @@ func Exec(c dbconfig.Config, db dbOrTx, q query) (sql.Result, error) {
 	return r, nil
 }
 
-func FetchOne[T qb.Model](c dbconfig.Config, db dbOrTx, q scannableQuery[T]) (T, error) {
-	var r T
-	builder, err := q.Squirrel(c)
+// FetchOne runs the query and the result as a struct.
+//
+// The query is expected to return exactly one record.
+func FetchOne[T qb.Model](conf dbconfig.Config, db dbOrTx, q scannableQuery[T]) (T, error) {
+	var result T
+	err := FetchOneInto(conf, db, q, &result)
+	return result, err
+}
+
+// FetchOneInto runs the query and places the result into the given struct.
+//
+// The query is expected to return exactly one record.
+func FetchOneInto[T qb.Model](conf dbconfig.Config, db dbOrTx, q scannableQuery[T], target *T) error {
+	builder, err := q.Squirrel(conf)
 	if err != nil {
-		return r, fmt.Errorf("build query: %w", err)
+		return fmt.Errorf("build query: %w", err)
 	}
 	sqlQ, args, err := builder.ToSql()
 	if err != nil {
-		return r, fmt.Errorf("generate SQL query: %w", err)
+		return fmt.Errorf("generate SQL query: %w", err)
 	}
-	scanner, err := q.Scanner()
+	scanner, err := q.Scanner(target)
 	if err != nil {
-		return r, fmt.Errorf("make scanner for the query: %w", err)
+		return fmt.Errorf("make scanner for the query: %w", err)
 	}
 
 	rows, err := db.Query(sqlQ, args...)
 	if err != nil {
-		return r, fmt.Errorf("run query: %w", err)
+		return fmt.Errorf("run query: %w", err)
 	}
 	defer rows.Close()
 
 	ok := rows.Next()
 	if !ok {
-		return r, fmt.Errorf("query returned no results")
+		return fmt.Errorf("query returned no results")
 	}
-	r, err = scanner(rows)
+	err = scanner(rows)
 	if err != nil {
-		return r, fmt.Errorf("run scanner: %w", err)
+		return fmt.Errorf("run scanner: %w", err)
 	}
-	return r, nil
+	return nil
 }

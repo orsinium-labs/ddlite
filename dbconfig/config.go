@@ -24,8 +24,6 @@ const (
 type NameMapper func(string) string
 
 type Config struct {
-	Models []any
-
 	// Plaholder style for variable binding.
 	Placeholder Placeholder
 
@@ -40,6 +38,12 @@ type Config struct {
 
 	// ToField converts DB column name into Go struct field name.
 	ToField NameMapper
+
+	// Models is a list of struct instances used to specify columns in the query.
+	//
+	// Usually, you don't need to specify it explicitly, the query builders
+	// automatically add all needed models.
+	Models []any
 }
 
 func New(driver string) Config {
