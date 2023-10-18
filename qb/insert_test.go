@@ -5,6 +5,7 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -18,7 +19,8 @@ func TestInsertSQL(t *testing.T) {
 	u := User{}
 	q := qb.Insert(&u, &u.Name, &u.Age)
 	q = q.Values(User{"Aragorn", 88})
-	sql, _, err := sequel.SQL(q)
+	conf := dbconfig.New("postgres")
+	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)
 	// is.Equal(args, []any{"Aragorn", 88})
 	is.Equal(sql, "INSERT INTO user (Name,Age) VALUES ($1,$2)")

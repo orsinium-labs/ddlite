@@ -5,11 +5,12 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
 type query interface {
-	Squirrel(...qb.Model) (squirrel.Sqlizer, error)
+	Squirrel(dbconfig.Config) (squirrel.Sqlizer, error)
 }
 
 type scannableQuery[T qb.Model] interface {
@@ -21,8 +22,8 @@ type dbOrTx interface {
 	Exec(query string, args ...any) (sql.Result, error)
 }
 
-func SQL(q query) (string, []any, error) {
-	builder, err := q.Squirrel()
+func SQL(c dbconfig.Config, q query) (string, []any, error) {
+	builder, err := q.Squirrel(c)
 	if err != nil {
 		return "", nil, fmt.Errorf("build query: %v", err)
 	}
@@ -33,11 +34,12 @@ func SQL(q query) (string, []any, error) {
 	return sql, arg, nil
 }
 
-func Exec(db dbOrTx, q query) (sql.Result, error) {
-	builder, err := q.Squirrel()
+func Exec(c dbconfig.Config, db dbOrTx, q query) (sql.Result, error) {
+	builder, err := q.Squirrel(c)
 	if err != nil {
 		return nil, fmt.Errorf("build query: %w", err)
 	}
+	// driver.DriverName()
 	sqlQ, args, err := builder.ToSql()
 	if err != nil {
 		return nil, fmt.Errorf("generate SQL query: %w", err)
@@ -49,9 +51,9 @@ func Exec(db dbOrTx, q query) (sql.Result, error) {
 	return r, nil
 }
 
-func FetchOne[T qb.Model](db dbOrTx, q scannableQuery[T]) (T, error) {
+func FetchOne[T qb.Model](c dbconfig.Config, db dbOrTx, q scannableQuery[T]) (T, error) {
 	var r T
-	builder, err := q.Squirrel()
+	builder, err := q.Squirrel(c)
 	if err != nil {
 		return r, fmt.Errorf("build query: %w", err)
 	}

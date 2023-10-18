@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
+	"github.com/orsinium-labs/sequel/dbconfig"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -72,7 +73,8 @@ func TestCmpOps(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
-			sqlizer := tc.given.Squirrel(&u)
+			conf := dbconfig.New("postgres").WithModel(&u)
+			sqlizer := tc.given.Squirrel(conf)
 			sql, args, err := sqlizer.ToSql()
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)

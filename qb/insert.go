@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
 type tInsert[T Model] struct {
@@ -25,7 +26,7 @@ func (i tInsert[T]) Values(items ...T) tInsert[T] {
 	return i
 }
 
-func (i tInsert[T]) Squirrel(...Model) (squirrel.Sqlizer, error) {
+func (i tInsert[T]) Squirrel(dbconfig.Config) (squirrel.Sqlizer, error) {
 	// get column names
 	fnames := make([]string, 0, len(i.fields))
 	for _, f := range i.fields {

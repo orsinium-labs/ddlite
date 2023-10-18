@@ -5,12 +5,13 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/matryer/is"
+	"github.com/orsinium-labs/sequel/dbconfig"
 	"github.com/orsinium-labs/sequel/dbfuncs"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
 type Squirrler interface {
-	Squirrel(...qb.Model) squirrel.Sqlizer
+	Squirrel(dbconfig.Config) squirrel.Sqlizer
 }
 
 func TestNumericFuncsSQL(t *testing.T) {
@@ -38,7 +39,8 @@ func TestNumericFuncsSQL(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
-			sqlizer := tc.given.Squirrel()
+			conf := dbconfig.New("sqlite3")
+			sqlizer := tc.given.Squirrel(conf)
 			sql, args, err := sqlizer.ToSql()
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)

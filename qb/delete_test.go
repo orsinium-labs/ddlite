@@ -5,6 +5,7 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -16,7 +17,8 @@ func TestDeleteSmoke(t *testing.T) {
 	}
 	u := User{}
 	q := qb.Delete(&u).Where(qb.E(&u.name, "Aragorn"))
-	sql, _, err := sequel.SQL(q)
+	conf := dbconfig.New("postgres")
+	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)
 	is.Equal(sql, "DELETE FROM user WHERE (name = $1)")
 }

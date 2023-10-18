@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
 type tDropTable struct {
@@ -22,7 +23,7 @@ func (q tDropTable) IfExists() tDropTable {
 	return q
 }
 
-func (q tDropTable) Squirrel(...Model) (squirrel.Sqlizer, error) {
+func (q tDropTable) Squirrel(dbconfig.Config) (squirrel.Sqlizer, error) {
 	tableName := getModelName(q.model)
 	ifExists := ""
 	if q.ifExists {

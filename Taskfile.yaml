@@ -4,5 +4,4 @@ version: "3"
 tasks:
   test:
     cmds:
-      - go test -count=1 ./...
-      - go test -count=1 ./tests
+      - go test -count=1 -timeout 2s ./...

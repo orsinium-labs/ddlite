@@ -6,6 +6,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/constraints"
+	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
@@ -16,7 +17,7 @@ type Expr[T any] interface {
 	Default() T
 
 	// Squirrel converts the expression into a squirrel AST.
-	Squirrel(...Model) squirrel.Sqlizer
+	Squirrel(dbconfig.Config) squirrel.Sqlizer
 }
 
 // tFunc is a private type to represent stored function expression.
@@ -35,10 +36,10 @@ func (tFunc[A, R]) Default() R {
 	return *new(R)
 }
 
-func (fn tFunc[A, R]) Squirrel(ms ...Model) squirrel.Sqlizer {
+func (fn tFunc[A, R]) Squirrel(c dbconfig.Config) squirrel.Sqlizer {
 	args := make([]any, 0, len(fn.Args))
 	for _, arg := range fn.Args {
-		args = append(args, arg.Squirrel(ms...))
+		args = append(args, arg.Squirrel(c))
 	}
 	phs := strings.Repeat("?, ", len(args))
 	phs = phs[:len(phs)-2]
@@ -65,9 +66,9 @@ func (tFunc2[A1, A2, R]) Default() R {
 	return *new(R)
 }
 
-func (fn tFunc2[A1, A2, R]) Squirrel(ms ...Model) squirrel.Sqlizer {
-	arg1 := fn.Arg1.Squirrel(ms...)
-	arg2 := fn.Arg2.Squirrel(ms...)
+func (fn tFunc2[A1, A2, R]) Squirrel(c dbconfig.Config) squirrel.Sqlizer {
+	arg1 := fn.Arg1.Squirrel(c)
+	arg2 := fn.Arg2.Squirrel(c)
 	return squirrel.Expr(fmt.Sprintf("%s(?, ?)", fn.Name), arg1, arg2)
 }
 
@@ -90,8 +91,8 @@ func (tCol[T]) Default() T {
 	return *new(T)
 }
 
-func (col tCol[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
-	for _, model := range ms {
+func (col tCol[T]) Squirrel(c dbconfig.Config) squirrel.Sqlizer {
+	for _, model := range c.Models {
 		fname, err := getFieldName(model, col.val)
 		if err == nil {
 			return squirrel.Expr(fname)
@@ -114,6 +115,6 @@ func (tVal[T]) Default() T {
 	return *new(T)
 }
 
-func (val tVal[T]) Squirrel(ms ...Model) squirrel.Sqlizer {
+func (val tVal[T]) Squirrel(c dbconfig.Config) squirrel.Sqlizer {
 	return squirrel.Expr("?", val.val)
 }

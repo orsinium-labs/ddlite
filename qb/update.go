@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
 type tChange struct {
@@ -33,7 +34,8 @@ func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
 	return u
 }
 
-func (u tUpdate[T]) Squirrel(...Model) (squirrel.Sqlizer, error) {
+func (u tUpdate[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
+	conf = conf.WithModel(u.model)
 	// make builder, set column names and table name
 	q := squirrel.Update(getModelName(u.model))
 	q = q.PlaceholderFormat(squirrel.Dollar)
@@ -50,8 +52,8 @@ func (u tUpdate[T]) Squirrel(...Model) (squirrel.Sqlizer, error) {
 	// generate WHERE clause
 	if len(u.conds) != 0 {
 		preds := make([]squirrel.Sqlizer, 0, len(u.conds))
-		for _, c := range u.conds {
-			preds = append(preds, c.Squirrel(u.model))
+		for _, cond := range u.conds {
+			preds = append(preds, cond.Squirrel(conf))
 		}
 		q = q.Where(squirrel.And(preds))
 	}

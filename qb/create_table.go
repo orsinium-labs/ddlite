@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/squirrel"
+	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
 type tCreateTable struct {
@@ -26,7 +27,7 @@ func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
 	}
 }
 
-func (q tCreateTable) Squirrel(...Model) (squirrel.Sqlizer, error) {
+func (q tCreateTable) Squirrel(dbconfig.Config) (squirrel.Sqlizer, error) {
 	sql, err := q.SQL()
 	if err != nil {
 		return nil, err
