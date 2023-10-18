@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/sequel/pgext"
+	"github.com/orsinium-labs/sequel/dbfuncs"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -18,6 +18,6 @@ func TestSelectSmoke(t *testing.T) {
 	u := User{}
 	q := qb.Select(&u, &u.name, &u.age)
 	q = q.Where(qb.Gt(qb.C(&u.age), qb.V(18)))
-	q = q.And(qb.Gt(qb.C(&u.age), pgext.Abs(qb.V(-18))))
+	q = q.And(qb.Gt(qb.C(&u.age), dbfuncs.Abs(qb.V(-18))))
 	is.Equal(q.String(), "SELECT name, age FROM user WHERE (age > $1 AND age > abs($2))")
 }

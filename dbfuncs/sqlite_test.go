@@ -5,7 +5,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/sequel/pgext"
+	"github.com/orsinium-labs/sequel/dbfuncs"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -20,17 +20,17 @@ func TestNumericFuncsSQL(t *testing.T) {
 		args  []any
 	}{
 		{
-			given: pgext.Abs(qb.V(12)),
+			given: dbfuncs.Abs(qb.V(12)),
 			sql:   "abs(?)",
 			args:  []any{12},
 		},
 		{
-			given: pgext.Ceil[float64, int](qb.V(12.0)),
+			given: dbfuncs.Ceil[float64, int](qb.V(12.0)),
 			sql:   "ceil(?)",
 			args:  []any{12.0},
 		},
 		{
-			given: pgext.Div[int, int](qb.V(12), qb.V(5)),
+			given: dbfuncs.Div[int, int](qb.V(12), qb.V(5)),
 			sql:   "div(?, ?)",
 			args:  []any{12, 5},
 		},
