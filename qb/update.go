@@ -42,7 +42,7 @@ func (u tUpdate[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
 
 	// generate SET clause
 	for _, change := range u.changes {
-		fname, err := getFieldName(u.model, change.field)
+		fname, err := getColumnName(conf, change.field)
 		if err != nil {
 			return nil, fmt.Errorf("get field name: %v", err)
 		}

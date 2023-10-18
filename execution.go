@@ -15,7 +15,7 @@ type query interface {
 
 type scannableQuery[T qb.Model] interface {
 	query
-	Scanner(*T) (qb.Scanner[T], error)
+	Scanner(dbconfig.Config, *T) (qb.Scanner[T], error)
 }
 
 type dbOrTx interface {
@@ -95,7 +95,7 @@ func FetchOneInto[T qb.Model](
 	if err != nil {
 		return fmt.Errorf("generate SQL query: %w", err)
 	}
-	scanner, err := q.Scanner(target)
+	scanner, err := q.Scanner(conf, target)
 	if err != nil {
 		return fmt.Errorf("make scanner for the query: %w", err)
 	}

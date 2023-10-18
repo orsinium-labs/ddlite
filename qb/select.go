@@ -34,7 +34,7 @@ func (s tSelectModel[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error
 	conf = conf.WithModel(s.model)
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
-		fname, err := getFieldName(s.model, f)
+		fname, err := getColumnName(conf, f)
 		if err != nil {
 			return squirrel.SelectBuilder{}, fmt.Errorf("get column name: %v", err)
 		}
@@ -55,10 +55,11 @@ func (s tSelectModel[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error
 	return q, nil
 }
 
-func (s tSelectModel[T]) Scanner(target *T) (Scanner[T], error) {
+func (s tSelectModel[T]) Scanner(conf dbconfig.Config, target *T) (Scanner[T], error) {
+	conf = conf.WithModel(s.model)
 	cols := make([]any, 0, len(s.fields))
 	for _, field := range s.fields {
-		fieldName, err := getFieldName(s.model, field)
+		fieldName, err := getFieldName(conf, field)
 		if err != nil {
 			return nil, fmt.Errorf("get field name: %v", err)
 		}

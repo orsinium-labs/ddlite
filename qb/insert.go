@@ -27,20 +27,23 @@ func (i tInsert[T]) Values(items ...T) tInsert[T] {
 }
 
 func (i tInsert[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
+	conf = conf.WithModel(i.model)
 	// get column names
 	fnames := make([]string, 0, len(i.fields))
+	cnames := make([]string, 0, len(i.fields))
 	for _, f := range i.fields {
-		fname, err := getFieldName(i.model, f)
+		fname, err := getFieldName(conf, f)
 		if err != nil {
 			return squirrel.InsertBuilder{}, fmt.Errorf("get column name: %v", err)
 		}
 		fnames = append(fnames, fname)
+		cnames = append(cnames, conf.ToColumn(fname))
 	}
 
 	// make builder, set column names and table name
 	q := squirrel.Insert(getModelName(i.model))
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
-	q = q.Columns(fnames...)
+	q = q.Columns(cnames...)
 
 	// set values to insert
 	for _, item := range i.items {

@@ -23,5 +23,5 @@ func TestInsertSQL(t *testing.T) {
 	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)
 	// is.Equal(args, []any{"Aragorn", 88})
-	is.Equal(sql, "INSERT INTO user (Name,Age) VALUES ($1,$2)")
+	is.Equal(sql, "INSERT INTO user (name,age) VALUES ($1,$2)")
 }

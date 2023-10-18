@@ -17,7 +17,7 @@ type tCreateTable struct {
 //
 // Can be constructed with `qb.ColumnDef` and `qb.Unique` functions.
 type iColumnDef interface {
-	SQL(m Model) (string, error)
+	SQL(dbconfig.Config) (string, error)
 }
 
 func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
@@ -27,20 +27,21 @@ func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
 	}
 }
 
-func (q tCreateTable) Squirrel(dbconfig.Config) (squirrel.Sqlizer, error) {
-	sql, err := q.SQL()
+func (q tCreateTable) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
+	sql, err := q.SQL(conf)
 	if err != nil {
 		return nil, err
 	}
 	return squirrel.Expr(sql), nil
 }
 
-func (q tCreateTable) SQL() (string, error) {
+func (q tCreateTable) SQL(conf dbconfig.Config) (string, error) {
+	conf = conf.WithModel(q.model)
 	colNames := make([]string, 0, len(q.cols))
 	for _, col := range q.cols {
-		csql, err := col.SQL(q.model)
+		csql, err := col.SQL(conf)
 		if err != nil {
-			return "", fmt.Errorf("generate SQL for ColumnDef: %v", csql)
+			return "", fmt.Errorf("generate SQL for ColumnDef: %v", err)
 		}
 		colNames = append(colNames, csql)
 	}
@@ -89,8 +90,8 @@ func (def tColumnDef[T]) Collate(collationName string) tColumnDef[T] {
 	return def
 }
 
-func (def tColumnDef[T]) SQL(model Model) (string, error) {
-	fieldName, err := getFieldName(model, def.field)
+func (def tColumnDef[T]) SQL(conf dbconfig.Config) (string, error) {
+	fieldName, err := getColumnName(conf, def.field)
 	if err != nil {
 		return "", fmt.Errorf("get field name: %v", err)
 	}
@@ -108,10 +109,10 @@ func Unique(fields ...any) iColumnDef {
 	return tUniqueDef{fields: fields}
 }
 
-func (def tUniqueDef) SQL(model Model) (string, error) {
+func (def tUniqueDef) SQL(conf dbconfig.Config) (string, error) {
 	columnNames := make([]string, 0, len(def.fields))
 	for _, field := range def.fields {
-		fieldName, err := getFieldName(model, field)
+		fieldName, err := getColumnName(conf, field)
 		if err != nil {
 			return "", fmt.Errorf("get field name: %v", err)
 		}

@@ -91,14 +91,12 @@ func (tCol[T]) Default() T {
 	return *new(T)
 }
 
-func (col tCol[T]) Squirrel(c dbconfig.Config) squirrel.Sqlizer {
-	for _, model := range c.Models {
-		fname, err := getFieldName(model, col.val)
-		if err == nil {
-			return squirrel.Expr(fname)
-		}
+func (col tCol[T]) Squirrel(conf dbconfig.Config) squirrel.Sqlizer {
+	fname, err := getColumnName(conf, col.val)
+	if err != nil {
+		panic("uknown column")
 	}
-	panic("uknown column")
+	return squirrel.Expr(fname)
 }
 
 // tVal is a private type to represent a literal value expression.
