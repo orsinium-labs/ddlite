@@ -26,12 +26,12 @@ func TestNumericFuncsSQL(t *testing.T) {
 			args:  []any{12},
 		},
 		{
-			given: dbfuncs.Ceil[float64, int](qb.V(12.0)),
+			given: dbfuncs.Ceil[int](qb.V(12.0)),
 			sql:   "ceil(?)",
 			args:  []any{12.0},
 		},
 		{
-			given: dbfuncs.Div[int, int](qb.V(12), qb.V(5)),
+			given: dbfuncs.Div[int](qb.V(12), qb.V(5)),
 			sql:   "div(?, ?)",
 			args:  []any{12, 5},
 		},
