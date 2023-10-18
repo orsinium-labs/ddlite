@@ -1,4 +1,4 @@
-package pgext_test
+package dbfuncs_test
 
 import (
 	"testing"

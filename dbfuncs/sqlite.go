@@ -1,4 +1,4 @@
-package pgext
+package dbfuncs
 
 import (
 	c "github.com/orsinium-labs/sequel/constraints"
