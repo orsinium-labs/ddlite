@@ -6,6 +6,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbtypes"
 )
 
 type tCreateTable struct {
@@ -57,7 +58,7 @@ type tColumnDef[T any] struct {
 	constraints []string
 }
 
-func ColumnDef[T any](field *T, ctype ColumnType[T]) tColumnDef[T] {
+func ColumnDef[T any](field *T, ctype dbtypes.ColumnType[T]) tColumnDef[T] {
 	return tColumnDef[T]{
 		field:       field,
 		colType:     ctype.SQL(),

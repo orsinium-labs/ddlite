@@ -1,4 +1,4 @@
-package qb
+package dbtypes
 
 import (
 	"fmt"

@@ -5,6 +5,7 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -21,8 +22,8 @@ func TestCreateTable(t *testing.T) {
 	u := User{}
 	conf := dbconfig.New("postgres")
 	q := qb.CreateTable(&u,
-		qb.ColumnDef(&u.name, qb.Text()),
-		qb.ColumnDef(&u.age, qb.SmallInt()),
+		qb.ColumnDef(&u.name, dbtypes.Text()),
+		qb.ColumnDef(&u.age, dbtypes.SmallInt()),
 	)
 	sql, err := q.SQL(conf)
 	is.NoErr(err)
@@ -41,31 +42,31 @@ func TestColumnDef(t *testing.T) {
 		sql string
 	}{
 		{
-			def: qb.ColumnDef(&u.name, qb.Text()),
+			def: qb.ColumnDef(&u.name, dbtypes.Text()),
 			sql: "name TEXT",
 		},
 		{
-			def: qb.ColumnDef(&u.age, qb.Integer()),
+			def: qb.ColumnDef(&u.age, dbtypes.Integer()),
 			sql: "age INTEGER",
 		},
 		{
-			def: qb.ColumnDef(&u.age, qb.Integer()).Unique(),
+			def: qb.ColumnDef(&u.age, dbtypes.Integer()).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: qb.ColumnDef(&u.age, qb.Integer()).Null(),
+			def: qb.ColumnDef(&u.age, dbtypes.Integer()).Null(),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: qb.ColumnDef(&u.age, qb.Integer()).NotNull(),
+			def: qb.ColumnDef(&u.age, dbtypes.Integer()).NotNull(),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: qb.ColumnDef(&u.age, qb.Integer()).PrimaryKey(),
+			def: qb.ColumnDef(&u.age, dbtypes.Integer()).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
-			def: qb.ColumnDef(&u.name, qb.VarChar(20)).Collate("NOCASE"),
+			def: qb.ColumnDef(&u.name, dbtypes.VarChar(20)).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{
