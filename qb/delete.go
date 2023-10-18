@@ -27,7 +27,7 @@ func (d tDelete[T]) And(conds ...Expr[bool]) tDelete[T] {
 func (s tDelete[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(s.model)
 	q := squirrel.Delete(getModelName(s.model))
-	q = q.PlaceholderFormat(squirrel.Dollar)
+	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 
 	if len(s.conds) != 0 {
 		preds := make([]squirrel.Sqlizer, 0, len(s.conds))

@@ -38,7 +38,7 @@ func (u tUpdate[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(u.model)
 	// make builder, set column names and table name
 	q := squirrel.Update(getModelName(u.model))
-	q = q.PlaceholderFormat(squirrel.Dollar)
+	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 
 	// generate SET clause
 	for _, change := range u.changes {

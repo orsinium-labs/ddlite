@@ -41,7 +41,7 @@ func (s tSelectModel[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error
 		fnames = append(fnames, fname)
 	}
 	q := squirrel.Select(fnames...)
-	q = q.PlaceholderFormat(squirrel.Dollar)
+	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 	q = q.From(getModelName(s.model))
 
 	if len(s.conds) != 0 {

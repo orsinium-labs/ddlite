@@ -44,7 +44,11 @@ func SQL(conf dbconfig.Config, q query) (string, []any, error) {
 	return sql, arg, nil
 }
 
-func Exec(conf dbconfig.Config, db dbOrTx, q query) (sql.Result, error) {
+func Exec(
+	conf dbconfig.Config,
+	db dbOrTx,
+	q query,
+) (sql.Result, error) {
 	builder, err := q.Squirrel(conf)
 	if err != nil {
 		return nil, fmt.Errorf("build query: %w", err)
@@ -64,7 +68,11 @@ func Exec(conf dbconfig.Config, db dbOrTx, q query) (sql.Result, error) {
 // FetchOne runs the query and the result as a struct.
 //
 // The query is expected to return exactly one record.
-func FetchOne[T qb.Model](conf dbconfig.Config, db dbOrTx, q scannableQuery[T]) (T, error) {
+func FetchOne[T qb.Model](
+	conf dbconfig.Config,
+	db dbOrTx,
+	q scannableQuery[T],
+) (T, error) {
 	var result T
 	err := FetchOneInto(conf, db, q, &result)
 	return result, err
@@ -73,7 +81,12 @@ func FetchOne[T qb.Model](conf dbconfig.Config, db dbOrTx, q scannableQuery[T]) 
 // FetchOneInto runs the query and places the result into the given struct.
 //
 // The query is expected to return exactly one record.
-func FetchOneInto[T qb.Model](conf dbconfig.Config, db dbOrTx, q scannableQuery[T], target *T) error {
+func FetchOneInto[T qb.Model](
+	conf dbconfig.Config,
+	db dbOrTx,
+	q scannableQuery[T],
+	target *T,
+) error {
 	builder, err := q.Squirrel(conf)
 	if err != nil {
 		return fmt.Errorf("build query: %w", err)

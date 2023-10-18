@@ -26,7 +26,7 @@ func (i tInsert[T]) Values(items ...T) tInsert[T] {
 	return i
 }
 
-func (i tInsert[T]) Squirrel(dbconfig.Config) (squirrel.Sqlizer, error) {
+func (i tInsert[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
 	// get column names
 	fnames := make([]string, 0, len(i.fields))
 	for _, f := range i.fields {
@@ -39,7 +39,7 @@ func (i tInsert[T]) Squirrel(dbconfig.Config) (squirrel.Sqlizer, error) {
 
 	// make builder, set column names and table name
 	q := squirrel.Insert(getModelName(i.model))
-	q = q.PlaceholderFormat(squirrel.Dollar)
+	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 	q = q.Columns(fnames...)
 
 	// set values to insert

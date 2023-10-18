@@ -3,6 +3,8 @@ package dbconfig
 import (
 	"regexp"
 	"strings"
+
+	"github.com/Masterminds/squirrel"
 )
 
 type Placeholder uint8
@@ -59,6 +61,21 @@ func New(driver string) Config {
 func (c Config) WithModel(m any) Config {
 	c.Models = append([]any{m}, c.Models...)
 	return c
+}
+
+func (c Config) SquirrelPlaceholder() squirrel.PlaceholderFormat {
+	switch c.Placeholder {
+	case Question:
+		return squirrel.Question
+	case Dollar:
+		return squirrel.Dollar
+	case Colon:
+		return squirrel.Colon
+	case AtP:
+		return squirrel.AtP
+	default:
+		return squirrel.Question
+	}
 }
 
 var (
