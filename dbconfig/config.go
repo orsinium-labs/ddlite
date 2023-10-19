@@ -8,20 +8,31 @@ import (
 )
 
 // Placeholder is the style of placeholder for variable binding.
-type Placeholder uint8
+type Placeholder rune
 
 const (
 	// Question is the default question placeholder (e.g. ?)
-	Question Placeholder = 1
+	Question Placeholder = '?'
 
 	// Dollar is a dollar-prefixed positional placeholder (e.g. $1, $2, $3).
-	Dollar Placeholder = 2
+	Dollar Placeholder = '$'
 
 	// Colon is a colon-prefixed positional placeholder (e.g. :1, :2, :3).
-	Colon Placeholder = 3
+	Colon Placeholder = ':'
 
 	// AtP is a "@p"-prefixed positional placeholder (e.g. @p1, @p2, @p3).
-	AtP Placeholder = 4
+	AtP Placeholder = '@'
+)
+
+type Dialect rune
+
+const (
+	CockroachDB Dialect = '🪳'
+	MySQL       Dialect = '🐬'
+	OracleDB    Dialect = '👁'
+	PostgreSQL  Dialect = '🐘'
+	SQLite      Dialect = '🪶'
+	SQLServer   Dialect = '🪟'
 )
 
 type NameMapper func(string) string
@@ -29,9 +40,14 @@ type NameMapper func(string) string
 type Config struct {
 	// Placeholder style for variable binding.
 	//
-	// It varies for different databases. When config is constructed using [New],
-	// the default placeholder style is detected based on the passed driver name.
+	// It varies for different databases. The default placeholder style
+	// is detected based on the passed driver name.
 	Placeholder Placeholder
+
+	// Dialect indicates which syntax should be used for the database.
+	//
+	// The default dialect is detected based on the passed driver name.
+	Dialect Dialect
 
 	// DriverName is the name of the package used as the DB driver.
 	DriverName string
@@ -62,6 +78,7 @@ type Config struct {
 func New(driver string) Config {
 	return Config{
 		Placeholder: placeholderForDriver(driver),
+		Dialect:     dialectForDriver(driver),
 		DriverName:  driver,
 		ToTable:     CamelToSnake,
 		ToColumn:    CamelToSnake,
@@ -150,5 +167,25 @@ func placeholderForDriver(driver string) Placeholder {
 		return AtP
 	default:
 		return Question
+	}
+}
+
+// dialectForDriver infers the correct dialect for the given driver name.
+func dialectForDriver(driver string) Dialect {
+	switch strings.ToLower(driver) {
+	case "cockroach":
+		return CockroachDB
+	case "mysql", "nrmysql":
+		return MySQL
+	case "oci8", "ora", "goracle", "oracle", "godror":
+		return OracleDB
+	case "postgres", "pgx", "pq", "pq-timeouts", "cloudsqlpostgres", "ql", "nrpostgres":
+		return PostgreSQL
+	case "sqlite", "sqlite3", "nrsqlite3":
+		return SQLite
+	case "sqlserver":
+		return SQLServer
+	default:
+		return SQLite
 	}
 }
