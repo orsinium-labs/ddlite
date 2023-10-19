@@ -3,13 +3,16 @@ package dbtypes
 import (
 	"fmt"
 	"time"
+
+	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
 type ColumnType[T any] interface {
 	Default() T
-	SQL() string
+	SQL(dbconfig.Config) string
 }
 
+// colType0 is a column type without parametrization.
 type colType0[T any] struct {
 	name string
 }
@@ -18,10 +21,11 @@ func (c colType0[T]) Default() T {
 	return *new(T)
 }
 
-func (c colType0[T]) SQL() string {
+func (c colType0[T]) SQL(conf dbconfig.Config) string {
 	return c.name
 }
 
+// colType1 is a parametrized column type with one argument.
 type colType1[T any] struct {
 	name string
 	arg  int
@@ -31,7 +35,7 @@ func (c colType1[T]) Default() T {
 	return *new(T)
 }
 
-func (c colType1[T]) SQL() string {
+func (c colType1[T]) SQL(conf dbconfig.Config) string {
 	return fmt.Sprintf("%s(%d)", c.name, c.arg)
 }
 

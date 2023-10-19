@@ -54,14 +54,14 @@ func (q tCreateTable) SQL(conf dbconfig.Config) (string, error) {
 
 type tColumnDef[T any] struct {
 	field       *T
-	colType     string
+	colType     dbtypes.ColumnType[T]
 	constraints []string
 }
 
 func ColumnDef[T any](field *T, ctype dbtypes.ColumnType[T]) tColumnDef[T] {
 	return tColumnDef[T]{
 		field:       field,
-		colType:     ctype.SQL(),
+		colType:     ctype,
 		constraints: make([]string, 0),
 	}
 }
@@ -97,7 +97,8 @@ func (def tColumnDef[T]) SQL(conf dbconfig.Config) (string, error) {
 		return "", fmt.Errorf("get field name: %v", err)
 	}
 	constraints := strings.Join(def.constraints, " ")
-	sql := fmt.Sprintf("%s %s %s", fieldName, def.colType, constraints)
+	colSQL := def.colType.SQL(conf)
+	sql := fmt.Sprintf("%s %s %s", fieldName, colSQL, constraints)
 	sql = strings.TrimRight(sql, " ")
 	return sql, nil
 }
