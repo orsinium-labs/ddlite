@@ -8,6 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/orsinium-labs/sequel"
 	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -26,9 +27,9 @@ func TestFetchOne(t *testing.T) {
 	// CREATE TABLE
 	schema := qb.CreateTable(
 		&p,
-		qb.ColumnDef(&p.Country, qb.Text()),
-		qb.ColumnDef(&p.City, qb.Text()).Null(),
-		qb.ColumnDef(&p.TelCode, qb.Integer()),
+		qb.ColumnDef(&p.Country, dbtypes.Text()),
+		qb.ColumnDef(&p.City, dbtypes.Text()).Null(),
+		qb.ColumnDef(&p.TelCode, dbtypes.Integer()),
 	)
 	conf := dbconfig.New("sqlite3")
 	_, err = sequel.Exec(conf, db, schema)
