@@ -3,7 +3,6 @@ package ddl
 import (
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 )
@@ -24,12 +23,12 @@ func (q tDropTable) IfExists() tDropTable {
 	return q
 }
 
-func (q tDropTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+func (q tDropTable) SQL(conf dbconf.Config) (string, error) {
 	tableName := internal.GetTableName(conf, q.model)
 	ifExists := ""
 	if q.ifExists {
 		ifExists = "IF EXISTS "
 	}
 	sql := fmt.Sprintf("DROP TABLE %s%s", ifExists, tableName)
-	return squirrel.Expr(sql), nil
+	return sql, nil
 }

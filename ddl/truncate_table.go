@@ -3,7 +3,6 @@ package ddl
 import (
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 )
@@ -19,7 +18,7 @@ func TruncateTable[T internal.Model](model *T) tTruncateTable {
 	}
 }
 
-func (q tTruncateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+func (q tTruncateTable) SQL(conf dbconf.Config) (string, error) {
 	// https://en.wikipedia.org/wiki/Data_definition_language#TRUNCATE_statement
 	// https://www.sqlite.org/lang_delete.html
 	tableName := internal.GetTableName(conf, q.model)
@@ -28,5 +27,5 @@ func (q tTruncateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 		prefix = "DELETE FROM"
 	}
 	sql := fmt.Sprintf("%s %s", prefix, tableName)
-	return squirrel.Expr(sql), nil
+	return sql, nil
 }

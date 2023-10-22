@@ -3,7 +3,6 @@ package ddl
 import (
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 )
@@ -18,12 +17,12 @@ func AddColumn[M, C any](model *M, col tColumnDef[C]) tAddColumn[C] {
 	return tAddColumn[C]{model: model, col: col}
 }
 
-func (q tAddColumn[C]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+func (q tAddColumn[C]) SQL(conf dbconf.Config) (string, error) {
 	tableName := internal.GetTableName(conf, q.model)
 	columnSQL, err := q.col.SQL(conf)
 	if err != nil {
-		return nil, fmt.Errorf("generate SQL for ColumnDef: %v", err)
+		return "", fmt.Errorf("generate SQL for ColumnDef: %v", err)
 	}
 	sql := fmt.Sprintf("ALTER TABLE %s ADD COLUMN %s", tableName, columnSQL)
-	return squirrel.Expr(sql), nil
+	return sql, nil
 }
