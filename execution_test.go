@@ -9,6 +9,7 @@ import (
 	"github.com/orsinium-labs/sequel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
+	"github.com/orsinium-labs/sequel/ddl"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -25,11 +26,11 @@ func TestFetchOne(t *testing.T) {
 	p := Place{}
 
 	// CREATE TABLE
-	schema := qb.CreateTable(
+	schema := ddl.CreateTable(
 		&p,
-		qb.ColumnDef(&p.Country, dbtypes.Text[string]()),
-		qb.ColumnDef(&p.City, dbtypes.Text[string]()).Null(),
-		qb.ColumnDef(&p.TelCode, dbtypes.Int32[int]()),
+		ddl.ColumnDef(&p.Country, dbtypes.Text[string]()),
+		ddl.ColumnDef(&p.City, dbtypes.Text[string]()).Null(),
+		ddl.ColumnDef(&p.TelCode, dbtypes.Int32[int]()),
 	)
 	conf := dbconf.New("sqlite3")
 	_, err = sequel.Exec(conf, db, schema)

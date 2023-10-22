@@ -1,4 +1,4 @@
-package qb_test
+package ddl_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/ddl"
 )
 
 type sqlized interface {
@@ -21,9 +21,9 @@ func TestCreateTable(t *testing.T) {
 	}
 	u := User{}
 	conf := dbconf.New("postgres")
-	q := qb.CreateTable(&u,
-		qb.ColumnDef(&u.name, dbtypes.Text[string]()),
-		qb.ColumnDef(&u.age, dbtypes.Int8[int8]()),
+	q := ddl.CreateTable(&u,
+		ddl.ColumnDef(&u.name, dbtypes.Text[string]()),
+		ddl.ColumnDef(&u.age, dbtypes.Int8[int8]()),
 	)
 	sql, err := q.SQL(conf)
 	is.NoErr(err)
@@ -42,39 +42,39 @@ func TestColumnDef(t *testing.T) {
 		sql string
 	}{
 		{
-			def: qb.ColumnDef(&u.name, dbtypes.Text[string]()),
+			def: ddl.ColumnDef(&u.name, dbtypes.Text[string]()),
 			sql: "name TEXT",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()),
+			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()),
 			sql: "age INTEGER",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).Unique(),
+			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).Null(),
+			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).Null(),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).NotNull(),
+			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).NotNull(),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).PrimaryKey(),
+			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
-			def: qb.ColumnDef(&u.name, dbtypes.VarChar[string](20)).Collate("NOCASE"),
+			def: ddl.ColumnDef(&u.name, dbtypes.VarChar[string](20)).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{
-			def: qb.Unique(&u.age),
+			def: ddl.Unique(&u.age),
 			sql: "UNIQUE (age)",
 		},
 		{
-			def: qb.Unique(&u.age, &u.name),
+			def: ddl.Unique(&u.age, &u.name),
 			sql: "UNIQUE (age, name)",
 		},
 	}
