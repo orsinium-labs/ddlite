@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 type Scanner[T Model] func(*sql.Rows) error
@@ -30,7 +30,7 @@ func (s tSelectModel[T]) And(conds ...Expr[bool]) tSelectModel[T] {
 	return s.Where(conds...)
 }
 
-func (s tSelectModel[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
+func (s tSelectModel[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(s.model)
 	fnames := make([]string, 0, len(s.fields))
 	for _, f := range s.fields {
@@ -55,7 +55,7 @@ func (s tSelectModel[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error
 	return q, nil
 }
 
-func (s tSelectModel[T]) Scanner(conf dbconfig.Config, target *T) (Scanner[T], error) {
+func (s tSelectModel[T]) Scanner(conf dbconf.Config, target *T) (Scanner[T], error) {
 	conf = conf.WithModel(s.model)
 	cols := make([]any, 0, len(s.fields))
 	for _, field := range s.fields {
@@ -81,8 +81,8 @@ func (s tSelectModel[T]) Scanner(conf dbconfig.Config, target *T) (Scanner[T], e
 }
 
 func (s tSelectModel[T]) String() string {
-	conf := dbconfig.New("sqlite3").WithModel(s)
-	builder, _ := s.Squirrel(dbconfig.New("sqlite3").WithModel(conf))
+	conf := dbconf.New("sqlite3").WithModel(s)
+	builder, _ := s.Squirrel(dbconf.New("sqlite3").WithModel(conf))
 	sql, _, _ := builder.ToSql()
 	return sql
 }

@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	c "github.com/orsinium-labs/sequel/constraints"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 type ColumnType[T any] interface {
 	Default() T
-	SQL(dbconfig.Config) string
+	SQL(dbconf.Config) string
 }
 
 // colType0 is a column type without parametrization.
@@ -26,19 +26,19 @@ func (c colType0[T]) Default() T {
 	return *new(T)
 }
 
-func (c colType0[T]) SQL(conf dbconfig.Config) string {
+func (c colType0[T]) SQL(conf dbconf.Config) string {
 	switch conf.Dialect {
-	case dbconfig.CockroachDB:
+	case dbconf.CockroachDB:
 		return c.cocroach
-	case dbconfig.MySQL:
+	case dbconf.MySQL:
 		return c.mysql
-	case dbconfig.OracleDB:
+	case dbconf.OracleDB:
 		return c.oracle
-	case dbconfig.PostgreSQL:
+	case dbconf.PostgreSQL:
 		return c.postgres
-	case dbconfig.SQLite:
+	case dbconf.SQLite:
 		return c.sqlite
-	case dbconfig.SQLServer:
+	case dbconf.SQLServer:
 		return c.sqlserver
 	default:
 		return c.sqlite

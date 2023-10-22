@@ -4,13 +4,13 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
 type sqlized interface {
-	SQL(dbconfig.Config) (string, error)
+	SQL(dbconf.Config) (string, error)
 }
 
 func TestCreateTable(t *testing.T) {
@@ -20,7 +20,7 @@ func TestCreateTable(t *testing.T) {
 		age  int8
 	}
 	u := User{}
-	conf := dbconfig.New("postgres")
+	conf := dbconf.New("postgres")
 	q := qb.CreateTable(&u,
 		qb.ColumnDef(&u.name, dbtypes.Text[string]()),
 		qb.ColumnDef(&u.age, dbtypes.Int8[int8]()),
@@ -36,7 +36,7 @@ func TestColumnDef(t *testing.T) {
 		age  int
 	}
 	u := User{}
-	conf := dbconfig.New("postgres").WithModel(&u)
+	conf := dbconf.New("postgres").WithModel(&u)
 	testCases := []struct {
 		def sqlized
 		sql string

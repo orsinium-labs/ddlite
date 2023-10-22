@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 type Model any
@@ -34,13 +34,13 @@ func getField(model any, field string) (any, error) {
 	return f.Addr().Interface(), nil
 }
 
-func getColumnName(conf dbconfig.Config, field any) (string, error) {
+func getColumnName(conf dbconf.Config, field any) (string, error) {
 	name, err := getFieldName(conf, field)
 	name = conf.ToColumn(name)
 	return name, err
 }
 
-func getFieldName(conf dbconfig.Config, field any) (string, error) {
+func getFieldName(conf dbconf.Config, field any) (string, error) {
 	target := reflect.ValueOf(field)
 	if target.Kind() != reflect.Pointer {
 		return "", errors.New("the field is not a pointer")

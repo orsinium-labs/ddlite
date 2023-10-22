@@ -1,4 +1,4 @@
-package dbconfig
+package dbconf
 
 import (
 	"regexp"

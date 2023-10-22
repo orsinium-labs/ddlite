@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 )
 
@@ -18,7 +18,7 @@ type tCreateTable struct {
 //
 // Can be constructed with `qb.ColumnDef` and `qb.Unique` functions.
 type iColumnDef interface {
-	SQL(dbconfig.Config) (string, error)
+	SQL(dbconf.Config) (string, error)
 }
 
 func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
@@ -28,7 +28,7 @@ func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
 	}
 }
 
-func (q tCreateTable) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
+func (q tCreateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	sql, err := q.SQL(conf)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (q tCreateTable) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
 	return squirrel.Expr(sql), nil
 }
 
-func (q tCreateTable) SQL(conf dbconfig.Config) (string, error) {
+func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
 	conf = conf.WithModel(q.model)
 	colNames := make([]string, 0, len(q.cols))
 	for _, col := range q.cols {
@@ -91,7 +91,7 @@ func (def tColumnDef[T]) Collate(collationName string) tColumnDef[T] {
 	return def
 }
 
-func (def tColumnDef[T]) SQL(conf dbconfig.Config) (string, error) {
+func (def tColumnDef[T]) SQL(conf dbconf.Config) (string, error) {
 	fieldName, err := getColumnName(conf, def.field)
 	if err != nil {
 		return "", fmt.Errorf("get field name: %v", err)
@@ -111,7 +111,7 @@ func Unique(fields ...any) iColumnDef {
 	return tUniqueDef{fields: fields}
 }
 
-func (def tUniqueDef) SQL(conf dbconfig.Config) (string, error) {
+func (def tUniqueDef) SQL(conf dbconf.Config) (string, error) {
 	columnNames := make([]string, 0, len(def.fields))
 	for _, field := range def.fields {
 		fieldName, err := getColumnName(conf, field)

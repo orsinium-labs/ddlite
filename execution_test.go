@@ -7,7 +7,7 @@ import (
 	"github.com/matryer/is"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/orsinium-labs/sequel"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/qb"
 )
@@ -31,7 +31,7 @@ func TestFetchOne(t *testing.T) {
 		qb.ColumnDef(&p.City, dbtypes.Text[string]()).Null(),
 		qb.ColumnDef(&p.TelCode, dbtypes.Int32[int]()),
 	)
-	conf := dbconfig.New("sqlite3")
+	conf := dbconf.New("sqlite3")
 	_, err = sequel.Exec(conf, db, schema)
 	is.NoErr(err)
 	tx := db.MustBegin()

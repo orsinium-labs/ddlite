@@ -2,7 +2,7 @@ package qb
 
 import (
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 // tCmpOp is a private type representing binary comparison operations.
@@ -16,7 +16,7 @@ func (tCmpOp[T]) Default() bool {
 	return false
 }
 
-func (op tCmpOp[T]) Squirrel(c dbconfig.Config) squirrel.Sqlizer {
+func (op tCmpOp[T]) Squirrel(c dbconf.Config) squirrel.Sqlizer {
 	lhs := op.left.Squirrel(c)
 	rhs := op.right.Squirrel(c)
 	return squirrel.ConcatExpr(lhs, " ", op.op, " ", rhs)

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 type tChange struct {
@@ -34,7 +34,7 @@ func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
 	return u
 }
 
-func (u tUpdate[T]) Squirrel(conf dbconfig.Config) (squirrel.Sqlizer, error) {
+func (u tUpdate[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(u.model)
 	// make builder, set column names and table name
 	q := squirrel.Update(getModelName(u.model))

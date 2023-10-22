@@ -5,17 +5,17 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/orsinium-labs/sequel/dbconfig"
+	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
 type query interface {
-	Squirrel(dbconfig.Config) (squirrel.Sqlizer, error)
+	Squirrel(dbconf.Config) (squirrel.Sqlizer, error)
 }
 
 type scannableQuery[T qb.Model] interface {
 	query
-	Scanner(dbconfig.Config, *T) (qb.Scanner[T], error)
+	Scanner(dbconf.Config, *T) (qb.Scanner[T], error)
 }
 
 type dbOrTx interface {
@@ -32,7 +32,7 @@ func Must[T any](val T, err error) T {
 }
 
 // SQL converts the given expression to SQL.
-func SQL(conf dbconfig.Config, q query) (string, []any, error) {
+func SQL(conf dbconf.Config, q query) (string, []any, error) {
 	builder, err := q.Squirrel(conf)
 	if err != nil {
 		return "", nil, fmt.Errorf("build query: %v", err)
@@ -45,7 +45,7 @@ func SQL(conf dbconfig.Config, q query) (string, []any, error) {
 }
 
 func Exec(
-	conf dbconfig.Config,
+	conf dbconf.Config,
 	db dbOrTx,
 	q query,
 ) (sql.Result, error) {
@@ -69,7 +69,7 @@ func Exec(
 //
 // The query is expected to return exactly one record.
 func FetchOne[T qb.Model](
-	conf dbconfig.Config,
+	conf dbconf.Config,
 	db dbOrTx,
 	q scannableQuery[T],
 ) (T, error) {
@@ -82,7 +82,7 @@ func FetchOne[T qb.Model](
 //
 // The query is expected to return exactly one record.
 func FetchOneInto[T qb.Model](
-	conf dbconfig.Config,
+	conf dbconf.Config,
 	db dbOrTx,
 	q scannableQuery[T],
 	target *T,
