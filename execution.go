@@ -6,6 +6,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal"
 	"github.com/orsinium-labs/sequel/qb"
 )
 
@@ -13,7 +14,7 @@ type query interface {
 	Squirrel(dbconf.Config) (squirrel.Sqlizer, error)
 }
 
-type scannableQuery[T qb.Model] interface {
+type scannableQuery[T internal.Model] interface {
 	query
 	Scanner(dbconf.Config, *T) (qb.Scanner[T], error)
 }
@@ -68,7 +69,7 @@ func Exec(
 // FetchOne runs the query and the result as a struct.
 //
 // The query is expected to return exactly one record.
-func FetchOne[T qb.Model](
+func FetchOne[T internal.Model](
 	conf dbconf.Config,
 	db dbOrTx,
 	q scannableQuery[T],
@@ -81,7 +82,7 @@ func FetchOne[T qb.Model](
 // FetchOneInto runs the query and places the result into the given struct.
 //
 // The query is expected to return exactly one record.
-func FetchOneInto[T qb.Model](
+func FetchOneInto[T internal.Model](
 	conf dbconf.Config,
 	db dbOrTx,
 	q scannableQuery[T],

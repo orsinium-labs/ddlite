@@ -5,6 +5,7 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal"
 )
 
 type tChange struct {
@@ -16,13 +17,13 @@ func Set[T any](field *T, value Expr[T]) tChange {
 	return tChange{field: field, value: value}
 }
 
-type tUpdate[T Model] struct {
+type tUpdate[T internal.Model] struct {
 	model   *T
 	changes []tChange
 	conds   []Expr[bool]
 }
 
-func Update[T Model](model *T, changes ...tChange) tUpdate[T] {
+func Update[T internal.Model](model *T, changes ...tChange) tUpdate[T] {
 	return tUpdate[T]{
 		model:   model,
 		changes: changes,
@@ -37,12 +38,12 @@ func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
 func (u tUpdate[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(u.model)
 	// make builder, set column names and table name
-	q := squirrel.Update(getModelName(u.model))
+	q := squirrel.Update(internal.GetModelName(u.model))
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 
 	// generate SET clause
 	for _, change := range u.changes {
-		fname, err := getColumnName(conf, change.field)
+		fname, err := internal.GetColumnName(conf, change.field)
 		if err != nil {
 			return nil, fmt.Errorf("get field name: %v", err)
 		}

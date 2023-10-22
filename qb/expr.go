@@ -7,6 +7,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal"
 )
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
@@ -92,7 +93,7 @@ func (tCol[T]) Default() T {
 }
 
 func (col tCol[T]) Squirrel(conf dbconf.Config) squirrel.Sqlizer {
-	fname, err := getColumnName(conf, col.val)
+	fname, err := internal.GetColumnName(conf, col.val)
 	if err != nil {
 		panic("uknown column")
 	}

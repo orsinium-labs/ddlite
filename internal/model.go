@@ -1,4 +1,4 @@
-package qb
+package internal
 
 import (
 	"errors"
@@ -11,16 +11,16 @@ import (
 
 type Model any
 
-func getModelName(model Model) string {
+func GetModelName(model Model) string {
 	t := reflect.ValueOf(model).Elem().Type()
 	return strings.ToLower(t.Name())
 }
 
-// getField extracts the value from the given struct in the given struct field.
+// GetField extracts the value from the given struct in the given struct field.
 //
 // `model` is the struct and `field` is the struct field name
 // from which extract the vlaue.
-func getField(model any, field string) (any, error) {
+func GetField(model any, field string) (any, error) {
 	vmodel := reflect.ValueOf(model)
 	if vmodel.Kind() != reflect.Pointer {
 		return "", errors.New("the model is not a pointer")
@@ -34,13 +34,13 @@ func getField(model any, field string) (any, error) {
 	return f.Addr().Interface(), nil
 }
 
-func getColumnName(conf dbconf.Config, field any) (string, error) {
-	name, err := getFieldName(conf, field)
+func GetColumnName(conf dbconf.Config, field any) (string, error) {
+	name, err := GetFieldName(conf, field)
 	name = conf.ToColumn(name)
 	return name, err
 }
 
-func getFieldName(conf dbconf.Config, field any) (string, error) {
+func GetFieldName(conf dbconf.Config, field any) (string, error) {
 	target := reflect.ValueOf(field)
 	if target.Kind() != reflect.Pointer {
 		return "", errors.New("the field is not a pointer")

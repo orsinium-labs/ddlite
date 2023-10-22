@@ -7,10 +7,11 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
+	"github.com/orsinium-labs/sequel/internal"
 )
 
 type tCreateTable struct {
-	model Model
+	model internal.Model
 	cols  []iColumnDef
 }
 
@@ -21,7 +22,7 @@ type iColumnDef interface {
 	SQL(dbconf.Config) (string, error)
 }
 
-func CreateTable[T Model](model *T, cols ...iColumnDef) tCreateTable {
+func CreateTable[T internal.Model](model *T, cols ...iColumnDef) tCreateTable {
 	return tCreateTable{
 		model: model,
 		cols:  cols,
@@ -46,7 +47,7 @@ func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
 		}
 		colNames = append(colNames, csql)
 	}
-	tableName := getModelName(q.model)
+	tableName := internal.GetModelName(q.model)
 	cdefs := strings.Join(colNames, ", ")
 	sql := fmt.Sprintf("CREATE TABLE %s (%s)", tableName, cdefs)
 	return sql, nil
@@ -92,7 +93,7 @@ func (def tColumnDef[T]) Collate(collationName string) tColumnDef[T] {
 }
 
 func (def tColumnDef[T]) SQL(conf dbconf.Config) (string, error) {
-	fieldName, err := getColumnName(conf, def.field)
+	fieldName, err := internal.GetColumnName(conf, def.field)
 	if err != nil {
 		return "", fmt.Errorf("get field name: %v", err)
 	}
@@ -114,7 +115,7 @@ func Unique(fields ...any) iColumnDef {
 func (def tUniqueDef) SQL(conf dbconf.Config) (string, error) {
 	columnNames := make([]string, 0, len(def.fields))
 	for _, field := range def.fields {
-		fieldName, err := getColumnName(conf, field)
+		fieldName, err := internal.GetColumnName(conf, field)
 		if err != nil {
 			return "", fmt.Errorf("get field name: %v", err)
 		}

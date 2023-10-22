@@ -5,14 +5,15 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal"
 )
 
 type tDropTable struct {
-	model    Model
+	model    internal.Model
 	ifExists bool
 }
 
-func DropTable[T Model](model *T) tDropTable {
+func DropTable[T internal.Model](model *T) tDropTable {
 	return tDropTable{
 		model: model,
 	}
@@ -24,7 +25,7 @@ func (q tDropTable) IfExists() tDropTable {
 }
 
 func (q tDropTable) Squirrel(dbconf.Config) (squirrel.Sqlizer, error) {
-	tableName := getModelName(q.model)
+	tableName := internal.GetModelName(q.model)
 	ifExists := ""
 	if q.ifExists {
 		ifExists = "IF EXISTS "

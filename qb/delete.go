@@ -3,14 +3,15 @@ package qb
 import (
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal"
 )
 
-type tDelete[T Model] struct {
+type tDelete[T internal.Model] struct {
 	model *T
 	conds []Expr[bool]
 }
 
-func Delete[T Model](model *T) tDelete[T] {
+func Delete[T internal.Model](model *T) tDelete[T] {
 	return tDelete[T]{model: model}
 }
 
@@ -26,7 +27,7 @@ func (d tDelete[T]) And(conds ...Expr[bool]) tDelete[T] {
 
 func (s tDelete[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(s.model)
-	q := squirrel.Delete(getModelName(s.model))
+	q := squirrel.Delete(internal.GetModelName(s.model))
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 
 	if len(s.conds) != 0 {
