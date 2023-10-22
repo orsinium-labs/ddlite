@@ -17,13 +17,13 @@ func TestCreateTable(t *testing.T) {
 	is := is.New(t)
 	type User struct {
 		name string
-		age  int
+		age  int8
 	}
 	u := User{}
 	conf := dbconfig.New("postgres")
 	q := qb.CreateTable(&u,
-		qb.ColumnDef(&u.name, dbtypes.Text()),
-		qb.ColumnDef(&u.age, dbtypes.SmallInt()),
+		qb.ColumnDef(&u.name, dbtypes.Text[string]()),
+		qb.ColumnDef(&u.age, dbtypes.Int8[int8]()),
 	)
 	sql, err := q.SQL(conf)
 	is.NoErr(err)
@@ -42,31 +42,31 @@ func TestColumnDef(t *testing.T) {
 		sql string
 	}{
 		{
-			def: qb.ColumnDef(&u.name, dbtypes.Text()),
+			def: qb.ColumnDef(&u.name, dbtypes.Text[string]()),
 			sql: "name TEXT",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Integer()),
+			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()),
 			sql: "age INTEGER",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Integer()).Unique(),
+			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Integer()).Null(),
+			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).Null(),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Integer()).NotNull(),
+			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).NotNull(),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: qb.ColumnDef(&u.age, dbtypes.Integer()).PrimaryKey(),
+			def: qb.ColumnDef(&u.age, dbtypes.Int32[int]()).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
-			def: qb.ColumnDef(&u.name, dbtypes.VarChar(20)).Collate("NOCASE"),
+			def: qb.ColumnDef(&u.name, dbtypes.VarChar[string](20)).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{
