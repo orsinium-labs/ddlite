@@ -3,14 +3,18 @@ package dbtypes
 import (
 	"fmt"
 
-	"github.com/orsinium-labs/sequel/constraints"
+	c "github.com/orsinium-labs/sequel/constraints"
 )
 
-func call[I constraints.Integer](prefix string, size I) string {
+func call[I c.Integer](prefix string, size I) string {
 	return fmt.Sprintf("%s(%d)", prefix, size)
 }
 
-func Char[T ~string, I constraints.Integer](size I) ColumnType[T] {
+func call2[I1, I2 c.Integer](prefix string, a I1, b I2) string {
+	return fmt.Sprintf("%s(%d, %d)", prefix, a, b)
+}
+
+func Char[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
 		mysql:     call("CHAR", size),
@@ -21,7 +25,7 @@ func Char[T ~string, I constraints.Integer](size I) ColumnType[T] {
 	}
 }
 
-func Enum[T ~string, I constraints.Integer](size I) ColumnType[T] {
+func Enum[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "ENUM",
 		mysql:     "ENUM",
@@ -32,7 +36,7 @@ func Enum[T ~string, I constraints.Integer](size I) ColumnType[T] {
 	}
 }
 
-func NChar[T ~string, I constraints.Integer](size I) ColumnType[T] {
+func NChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
 		mysql:     call("NCHAR", size),
@@ -43,7 +47,7 @@ func NChar[T ~string, I constraints.Integer](size I) ColumnType[T] {
 	}
 }
 
-func NVarChar[T ~string, I constraints.Integer](size I) ColumnType[T] {
+func NVarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
 		mysql:     call("NVARCHAR", size),
@@ -54,7 +58,7 @@ func NVarChar[T ~string, I constraints.Integer](size I) ColumnType[T] {
 	}
 }
 
-func VarChar[T ~string, I constraints.Integer](size I) ColumnType[T] {
+func VarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
 		mysql:     call("VARCHAR", size),

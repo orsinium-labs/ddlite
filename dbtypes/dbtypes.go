@@ -66,6 +66,6 @@ func Blob[T ~[]byte]() ColumnType[T] {
 		oracle:    "BLOB",
 		postgres:  "BYTEA",
 		sqlite:    "BLOB",
-		sqlserver: "",
+		sqlserver: "VARBINARY",
 	}
 }

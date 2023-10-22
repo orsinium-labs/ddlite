@@ -1,12 +1,27 @@
 package dbtypes
 
-// TODO: Decimal, Numeric, Serial
+import (
+	c "github.com/orsinium-labs/sequel/constraints"
+)
+
+// TODO: Serial
+
+func Decimal[T c.Decimal, I1, I2 c.Integer](precision I1, scale I2) ColumnType[T] {
+	return colType0[T]{
+		cocroach:  call2("DECIMAL", precision, scale),
+		mysql:     call2("DECIMAL", precision, scale),
+		oracle:    call2("NUMBER", precision, scale),
+		postgres:  call2("NUMERIC", precision, scale),
+		sqlite:    "NUMERIC",
+		sqlserver: "",
+	}
+}
 
 func Float32[T ~float32]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "FLOAT",
 		mysql:     "FLOAT",
-		oracle:    "FLOAT",
+		oracle:    "FLOAT(63)",
 		postgres:  "REAL",
 		sqlite:    "REAL",
 		sqlserver: "",
@@ -16,8 +31,8 @@ func Float32[T ~float32]() ColumnType[T] {
 func Float64[T ~float32 | ~float64]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "FLOAT",
-		mysql:     "REAL",
-		oracle:    "FLOAT(63)",
+		mysql:     "DOUBLE",
+		oracle:    "FLOAT",
 		postgres:  "DOUBLE PRECISION",
 		sqlite:    "REAL",
 		sqlserver: "",

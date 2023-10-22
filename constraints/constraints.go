@@ -6,12 +6,16 @@
 // with type parameters.
 package constraints
 
+import (
+	"database/sql"
+	"database/sql/driver"
+)
+
 // Option is a Maybe monad used to represent a NULLable field.
 //
 // Compatible with Option defined in the `mo` package.
 //
 // https://github.com/samber/mo
-//
 type Option[T any] interface {
 	Get() (T, bool)
 }
@@ -54,4 +58,16 @@ type Number interface {
 // this constraint will be modified to include them.
 type Ordered interface {
 	Integer | Float | ~string
+}
+
+// Decimal is an arbitrary precision fixed-point decimal.
+//
+// Supports [shopspring/decimal] and [ericlagergren/decimal].
+//
+// [shopspring/decimal]: https://pkg.go.dev/github.com/shopspring/decimal
+// [ericlagergren/decimal]: https://pkg.go.dev/github.com/ericlagergren/decimal
+type Decimal interface {
+	sql.Scanner
+	driver.Valuer
+	Sign() int
 }
