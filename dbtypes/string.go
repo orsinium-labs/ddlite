@@ -70,13 +70,14 @@ func Text[T ~string]() ColumnType[T] {
 	}
 }
 
+// UUID is a random and unique 16-bytes identifier (RFC 4122).
 func UUID[T ~string]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "UUID",
-		mysql:     "",
-		oracle:    "",
+		mysql:     "BINARY(16)",
+		oracle:    "RAW(16)",
 		postgres:  "UUID",
-		sqlite:    "",
-		sqlserver: "",
+		sqlite:    "BLOB",
+		sqlserver: "BINARY(16)",
 	}
 }

@@ -71,3 +71,14 @@ type Decimal interface {
 	driver.Valuer
 	Sign() int
 }
+
+// UUID is a random and unique 16-bytes identifier (RFC 4122).
+//
+// Supports [google/uuid].
+//
+// [google/uuid]: https://github.com/google/uuid
+type UUID interface {
+	sql.Scanner
+	driver.Valuer
+	URN() string
+}
