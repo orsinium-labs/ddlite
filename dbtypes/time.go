@@ -5,22 +5,22 @@ import "time"
 func Date() ColumnType[time.Time] {
 	return colType0[time.Time]{
 		cocroach:  "DATE",
-		mysql:     "",
+		mysql:     "DATE",
 		oracle:    "DATE",
 		postgres:  "DATE",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "DATE",
 	}
 }
 
 func DateTime() ColumnType[time.Time] {
 	return colType0[time.Time]{
 		cocroach:  "TIMESTAMP",
-		mysql:     "",
+		mysql:     "DATETIME",
 		oracle:    "TIMESTAMP",
 		postgres:  "TIMESTAMP",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "DATETIME",
 	}
 }
 
@@ -31,17 +31,17 @@ func Interval() ColumnType[time.Duration] {
 		oracle:    "INTERVAL",
 		postgres:  "INTERVAL",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "DATETIMEOFFSET",
 	}
 }
 
 func Time() ColumnType[time.Duration] {
 	return colType0[time.Duration]{
 		cocroach:  "TIME",
-		mysql:     "",
+		mysql:     "TIME",
 		oracle:    "INTERVAL",
 		postgres:  "TIME",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "TIME",
 	}
 }

@@ -13,29 +13,41 @@ func Decimal[T c.Decimal, I1, I2 c.Integer](precision I1, scale I2) ColumnType[T
 		oracle:    call2("NUMBER", precision, scale),
 		postgres:  call2("NUMERIC", precision, scale),
 		sqlite:    "NUMERIC",
-		sqlserver: "",
+		sqlserver: call2("DECIMAL", precision, scale),
 	}
 }
 
 func Float32[T ~float32]() ColumnType[T] {
 	return colType0[T]{
-		cocroach:  "FLOAT",
+		cocroach:  "REAL",
 		mysql:     "FLOAT",
 		oracle:    "FLOAT(63)",
 		postgres:  "REAL",
 		sqlite:    "REAL",
-		sqlserver: "",
+		sqlserver: "REAL",
 	}
 }
 
 func Float64[T ~float32 | ~float64]() ColumnType[T] {
 	return colType0[T]{
-		cocroach:  "FLOAT",
+		cocroach:  "DOUBLE PRECISION",
 		mysql:     "DOUBLE",
 		oracle:    "FLOAT",
 		postgres:  "DOUBLE PRECISION",
 		sqlite:    "REAL",
-		sqlserver: "",
+		sqlserver: "FLOAT",
+	}
+}
+
+func Float[T ~float32 | ~float64, I c.Integer](precision I) ColumnType[T] {
+	// precision <= 53
+	return colType0[T]{
+		cocroach:  "FLOAT",
+		mysql:     call("FLOAT", precision),
+		oracle:    call("FLOAT", precision),
+		postgres:  call("FLOAT", precision),
+		sqlite:    "FLOAT",
+		sqlserver: call("FLOAT", precision),
 	}
 }
 
@@ -46,7 +58,7 @@ func Int8[T ~int8]() ColumnType[T] {
 		oracle:    "NUMBER(3,0)",
 		postgres:  "SMALLINT",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "TINYINT",
 	}
 }
 
@@ -57,7 +69,7 @@ func Int16[T ~int16]() ColumnType[T] {
 		oracle:    "NUMBER(5,0)",
 		postgres:  "SMALLINT",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "SMALLINT",
 	}
 }
 
@@ -68,7 +80,7 @@ func Int32[T ~int32 | ~int]() ColumnType[T] {
 		oracle:    "NUMBER(10,0)",
 		postgres:  "INTEGER",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "INT",
 	}
 }
 
@@ -79,7 +91,7 @@ func Int64[T ~int64 | ~int]() ColumnType[T] {
 		oracle:    "NUMBER(20,0)",
 		postgres:  "BIGINT",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "BIGINT",
 	}
 }
 

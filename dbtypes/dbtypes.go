@@ -1,6 +1,9 @@
 package dbtypes
 
 import (
+	"fmt"
+
+	c "github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
@@ -48,6 +51,13 @@ func (c colType0[T]) SQL(conf dbconfig.Config) string {
 	}
 }
 
+func call[I c.Integer](prefix string, size I) string {
+	return fmt.Sprintf("%s(%d)", prefix, size)
+}
+
+func call2[I1, I2 c.Integer](prefix string, a I1, b I2) string {
+	return fmt.Sprintf("%s(%d, %d)", prefix, a, b)
+}
 func Bool[T ~bool]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "BOOL",
@@ -55,7 +65,7 @@ func Bool[T ~bool]() ColumnType[T] {
 		oracle:    "NUMBER(1)",
 		postgres:  "BOOLEAN",
 		sqlite:    "INTEGER",
-		sqlserver: "",
+		sqlserver: "TINYINT",
 	}
 }
 

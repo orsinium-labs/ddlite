@@ -1,18 +1,8 @@
 package dbtypes
 
 import (
-	"fmt"
-
 	c "github.com/orsinium-labs/sequel/constraints"
 )
-
-func call[I c.Integer](prefix string, size I) string {
-	return fmt.Sprintf("%s(%d)", prefix, size)
-}
-
-func call2[I1, I2 c.Integer](prefix string, a I1, b I2) string {
-	return fmt.Sprintf("%s(%d, %d)", prefix, a, b)
-}
 
 func Char[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
@@ -21,7 +11,7 @@ func Char[T ~string, I c.Integer](size I) ColumnType[T] {
 		oracle:    call("CHAR", size),
 		postgres:  call("CHAR", size),
 		sqlite:    "TEXT",
-		sqlserver: "",
+		sqlserver: call("CHAR", size),
 	}
 }
 
@@ -32,7 +22,7 @@ func Enum[T ~string, I c.Integer](size I) ColumnType[T] {
 		oracle:    call("VARCHAR2", size),
 		postgres:  "ENUM",
 		sqlite:    "TEXT",
-		sqlserver: "",
+		sqlserver: "TEXT",
 	}
 }
 
@@ -43,7 +33,7 @@ func NChar[T ~string, I c.Integer](size I) ColumnType[T] {
 		oracle:    call("NCHAR", size),
 		postgres:  call("CHAR", size),
 		sqlite:    "TEXT",
-		sqlserver: "",
+		sqlserver: call("NCHAR", size),
 	}
 }
 
@@ -54,7 +44,7 @@ func NVarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 		oracle:    call("NVARCHAR2", size),
 		postgres:  call("VARCHAR", size),
 		sqlite:    "TEXT",
-		sqlserver: "",
+		sqlserver: call("NVARCHAR", size),
 	}
 }
 
@@ -65,7 +55,7 @@ func VarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 		oracle:    call("VARCHAR2", size),
 		postgres:  call("VARCHAR", size),
 		sqlite:    "TEXT",
-		sqlserver: "",
+		sqlserver: call("VARCHAR", size),
 	}
 }
 
@@ -76,7 +66,7 @@ func Text[T ~string]() ColumnType[T] {
 		oracle:    "",
 		postgres:  "TEXT",
 		sqlite:    "TEXT",
-		sqlserver: "",
+		sqlserver: "TEXT", // Should be NTEXT?
 	}
 }
 
