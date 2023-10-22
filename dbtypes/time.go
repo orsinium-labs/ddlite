@@ -2,6 +2,7 @@ package dbtypes
 
 import "time"
 
+// Date without time.
 func Date() ColumnType[time.Time] {
 	return colType0[time.Time]{
 		cocroach:  "DATE",
@@ -13,6 +14,7 @@ func Date() ColumnType[time.Time] {
 	}
 }
 
+// DateTime is date and time.
 func DateTime() ColumnType[time.Time] {
 	return colType0[time.Time]{
 		cocroach:  "TIMESTAMP",
@@ -24,6 +26,7 @@ func DateTime() ColumnType[time.Time] {
 	}
 }
 
+// Interval is a difference between two datetimes.
 func Interval() ColumnType[time.Duration] {
 	return colType0[time.Duration]{
 		cocroach:  "INTERVAL",
@@ -35,6 +38,7 @@ func Interval() ColumnType[time.Duration] {
 	}
 }
 
+// Time of the day, without date.
 func Time() ColumnType[time.Duration] {
 	return colType0[time.Duration]{
 		cocroach:  "TIME",

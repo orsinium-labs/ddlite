@@ -1,9 +1,12 @@
 package dbtypes
 
 import (
+	"strings"
+
 	c "github.com/orsinium-labs/sequel/constraints"
 )
 
+// Char can store an ASCII string of the given size in bytes.
 func Char[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
@@ -15,17 +18,24 @@ func Char[T ~string, I c.Integer](size I) ColumnType[T] {
 	}
 }
 
-func Enum[T ~string, I c.Integer](size I) ColumnType[T] {
+// Enum is a string type with a pre-defined list of members.
+func Enum[T string, I c.Integer](size I, members ...T) ColumnType[T] {
+	ms := make([]string, len(members))
+	for _, m := range members {
+		ms = append(ms, "'"+string(m)+"'")
+	}
+	suffix := "(" + strings.Join(ms, ",") + ")"
 	return colType0[T]{
-		cocroach:  "ENUM",
-		mysql:     "ENUM",
+		cocroach:  "ENUM" + suffix,
+		mysql:     "ENUM" + suffix,
 		oracle:    call("VARCHAR2", size),
-		postgres:  "ENUM",
+		postgres:  "ENUM" + suffix,
 		sqlite:    "TEXT",
 		sqlserver: "TEXT",
 	}
 }
 
+// Char can store a Unicode string of the given size in byte-pairs.
 func NChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
@@ -37,6 +47,7 @@ func NChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	}
 }
 
+// NVarChar can store a Unicode string of any length up to the given size in byte-pairs.
 func NVarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
@@ -48,6 +59,7 @@ func NVarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	}
 }
 
+// VarChar can store an ASCII string of any length up to the given size in bytes.
 func VarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",
@@ -59,6 +71,7 @@ func VarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 	}
 }
 
+// Text can store a string of any length.
 func Text[T ~string]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "STRING",

@@ -7,13 +7,6 @@ import (
 	"github.com/orsinium-labs/sequel/dbconfig"
 )
 
-// https://www.sqlite.org/datatype3.html
-// https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html
-// https://www.cockroachlabs.com/docs/stable/data-types
-// https://dev.mysql.com/doc/refman/8.0/en/data-types.html
-// https://www.postgresql.org/docs/current/datatype.html
-// https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16
-
 type ColumnType[T any] interface {
 	Default() T
 	SQL(dbconfig.Config) string
