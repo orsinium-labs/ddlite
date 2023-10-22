@@ -4,23 +4,23 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 type Model any
 
-func GetModelName(model Model) string {
+// GetTableName converts struct name into table name.
+func GetTableName(conf dbconf.Config, model Model) string {
 	t := reflect.ValueOf(model).Elem().Type()
-	return strings.ToLower(t.Name())
+	return conf.ToTable(t.Name())
 }
 
 // GetField extracts the value from the given struct in the given struct field.
 //
 // `model` is the struct and `field` is the struct field name
 // from which extract the vlaue.
-func GetField(model any, field string) (any, error) {
+func GetField(model Model, field string) (any, error) {
 	vmodel := reflect.ValueOf(model)
 	if vmodel.Kind() != reflect.Pointer {
 		return "", errors.New("the model is not a pointer")
@@ -34,12 +34,14 @@ func GetField(model any, field string) (any, error) {
 	return f.Addr().Interface(), nil
 }
 
+// GetColumnName returns column name for the given struct field.
 func GetColumnName(conf dbconf.Config, field any) (string, error) {
 	name, err := GetFieldName(conf, field)
 	name = conf.ToColumn(name)
 	return name, err
 }
 
+// GetFieldName returns the name of the given struct field.
 func GetFieldName(conf dbconf.Config, field any) (string, error) {
 	target := reflect.ValueOf(field)
 	if target.Kind() != reflect.Pointer {

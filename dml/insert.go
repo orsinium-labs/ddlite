@@ -42,7 +42,7 @@ func (i tInsert[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	}
 
 	// make builder, set column names and table name
-	q := squirrel.Insert(internal.GetModelName(i.model))
+	q := squirrel.Insert(internal.GetTableName(conf, i.model))
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 	q = q.Columns(cnames...)
 

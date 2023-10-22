@@ -24,8 +24,8 @@ func (q tDropTable) IfExists() tDropTable {
 	return q
 }
 
-func (q tDropTable) Squirrel(dbconf.Config) (squirrel.Sqlizer, error) {
-	tableName := internal.GetModelName(q.model)
+func (q tDropTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+	tableName := internal.GetTableName(conf, q.model)
 	ifExists := ""
 	if q.ifExists {
 		ifExists = "IF EXISTS "

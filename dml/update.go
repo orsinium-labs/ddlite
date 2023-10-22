@@ -38,7 +38,7 @@ func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
 func (u tUpdate[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 	conf = conf.WithModel(u.model)
 	// make builder, set column names and table name
-	q := squirrel.Update(internal.GetModelName(u.model))
+	q := squirrel.Update(internal.GetTableName(conf, u.model))
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 
 	// generate SET clause

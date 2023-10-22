@@ -47,7 +47,7 @@ func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
 		}
 		colNames = append(colNames, csql)
 	}
-	tableName := internal.GetModelName(q.model)
+	tableName := internal.GetTableName(conf, q.model)
 	cdefs := strings.Join(colNames, ", ")
 	sql := fmt.Sprintf("CREATE TABLE %s (%s)", tableName, cdefs)
 	return sql, nil

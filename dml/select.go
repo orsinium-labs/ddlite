@@ -43,7 +43,7 @@ func (s tSelectModel[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) 
 	}
 	q := squirrel.Select(fnames...)
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
-	q = q.From(internal.GetModelName(s.model))
+	q = q.From(internal.GetTableName(conf, s.model))
 
 	if len(s.conds) != 0 {
 		preds := make([]squirrel.Sqlizer, 0, len(s.conds))
