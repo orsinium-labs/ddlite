@@ -1,4 +1,4 @@
-package qb
+package dml
 
 import (
 	"github.com/Masterminds/squirrel"

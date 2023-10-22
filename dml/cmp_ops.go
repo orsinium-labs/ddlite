@@ -1,4 +1,4 @@
-package qb
+package dml
 
 import (
 	"github.com/Masterminds/squirrel"
@@ -26,11 +26,11 @@ func (op tCmpOp[T]) Squirrel(c dbconf.Config) squirrel.Sqlizer {
 //
 // This is an alias for:
 //
-//	qb.Eq(qb.C(&column), qb.V(value))
+//	dml.Eq(dml.C(&column), dml.V(value))
 //
 // Example:
 //
-//	qb.E(&u.age, 18) // SQL: age = 18
+//	dml.E(&u.age, 18) // SQL: age = 18
 func E[T comparable](column *T, value T) Expr[bool] {
 	return Eq(C(column), V(value))
 }
@@ -39,7 +39,7 @@ func E[T comparable](column *T, value T) Expr[bool] {
 //
 // Example:
 //
-//	qb.Gt(qb.C(&u.age), qb.V(18)) // SQL: age > 18
+//	dml.Gt(dml.C(&u.age), dml.V(18)) // SQL: age > 18
 func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: ">", right: right}
 }
@@ -48,7 +48,7 @@ func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 //
 // Example:
 //
-//	qb.Gte(qb.C(&u.age), qb.V(18)) // SQL: age >= 18
+//	dml.Gte(dml.C(&u.age), dml.V(18)) // SQL: age >= 18
 func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: ">=", right: right}
 }
@@ -57,7 +57,7 @@ func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 //
 // Example:
 //
-//	qb.Lt(qb.C(&u.age), qb.V(18)) // SQL: age < 18
+//	dml.Lt(dml.C(&u.age), dml.V(18)) // SQL: age < 18
 func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<", right: right}
 }
@@ -66,7 +66,7 @@ func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 //
 // Example:
 //
-//	qb.Lte(qb.C(&u.age), qb.V(18)) // SQL: age <= 18
+//	dml.Lte(dml.C(&u.age), dml.V(18)) // SQL: age <= 18
 func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<=", right: right}
 }
@@ -75,7 +75,7 @@ func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 //
 // Example:
 //
-//	qb.Eq(&u.created_at, &u.updated_at) // SQL: created_at = updated_at
+//	dml.Eq(&u.created_at, &u.updated_at) // SQL: created_at = updated_at
 func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "=", right: right}
 }
@@ -84,7 +84,7 @@ func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 //
 // Example:
 //
-//	qb.Neq(qb.C(&u.age), qb.V(18)) // SQL: age != 18
+//	dml.Neq(dml.C(&u.age), dml.V(18)) // SQL: age != 18
 func Neq[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left: left, op: "<>", right: right}
 }
@@ -98,7 +98,7 @@ func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 //
 // Example:
 //
-//	qb.And(qb.C(&u.is_admin), qb.E(&u.name, "admin"))
+//	dml.And(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin AND name = "admin"
 func And(left, right Expr[bool]) Expr[bool] {
 	return tCmpOp[bool]{left: left, op: "AND", right: right}
@@ -108,7 +108,7 @@ func And(left, right Expr[bool]) Expr[bool] {
 //
 // Example:
 //
-//	qb.Or(qb.C(&u.is_admin), qb.E(&u.name, "admin"))
+//	dml.Or(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin OR name = "admin"
 func Or(left, right Expr[bool]) Expr[bool] {
 	return tCmpOp[bool]{left: left, op: "OR", right: right}

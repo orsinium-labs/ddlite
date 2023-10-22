@@ -7,7 +7,7 @@ import (
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbfuncs"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/dml"
 )
 
 type Squirrler interface {
@@ -21,17 +21,17 @@ func TestNumericFuncsSQL(t *testing.T) {
 		args  []any
 	}{
 		{
-			given: dbfuncs.Abs(qb.V(12)),
+			given: dbfuncs.Abs(dml.V(12)),
 			sql:   "abs(?)",
 			args:  []any{12},
 		},
 		{
-			given: dbfuncs.Ceil[int](qb.V(12.0)),
+			given: dbfuncs.Ceil[int](dml.V(12.0)),
 			sql:   "ceil(?)",
 			args:  []any{12.0},
 		},
 		{
-			given: dbfuncs.Div[int](qb.V(12), qb.V(5)),
+			given: dbfuncs.Div[int](dml.V(12), dml.V(5)),
 			sql:   "div(?, ?)",
 			args:  []any{12, 5},
 		},

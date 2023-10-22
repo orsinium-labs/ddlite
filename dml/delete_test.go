@@ -1,4 +1,4 @@
-package qb_test
+package dml_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel"
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/dml"
 )
 
 func TestDeleteSmoke(t *testing.T) {
@@ -16,7 +16,7 @@ func TestDeleteSmoke(t *testing.T) {
 		name string
 	}
 	u := User{}
-	q := qb.Delete(&u).Where(qb.E(&u.name, "Aragorn"))
+	q := dml.Delete(&u).Where(dml.E(&u.name, "Aragorn"))
 	conf := dbconf.New("postgres")
 	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)

@@ -1,4 +1,4 @@
-package qb
+package dml
 
 import (
 	"database/sql"

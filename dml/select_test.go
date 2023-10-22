@@ -1,11 +1,11 @@
-package qb_test
+package dml_test
 
 import (
 	"testing"
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbfuncs"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/dml"
 )
 
 func TestSelectString(t *testing.T) {
@@ -16,8 +16,8 @@ func TestSelectString(t *testing.T) {
 		age  int
 	}
 	u := User{}
-	q := qb.Select(&u, &u.name, &u.age)
-	q = q.Where(qb.Gt(qb.C(&u.age), qb.V(18)))
-	q = q.And(qb.Gt(qb.C(&u.age), dbfuncs.Abs(qb.V(-18))))
+	q := dml.Select(&u, &u.name, &u.age)
+	q = q.Where(dml.Gt(dml.C(&u.age), dml.V(18)))
+	q = q.And(dml.Gt(dml.C(&u.age), dbfuncs.Abs(dml.V(-18))))
 	is.Equal(q.String(), "SELECT name, age FROM user WHERE (age > ? AND age > abs(?))")
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/ddl"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/dml"
 )
 
 func TestFetchOne(t *testing.T) {
@@ -42,7 +42,7 @@ func TestFetchOne(t *testing.T) {
 
 	// INSERT
 	_, err = sequel.Exec(conf, tx,
-		qb.Insert(&p, &p.Country, &p.City, &p.TelCode).Values(
+		dml.Insert(&p, &p.Country, &p.City, &p.TelCode).Values(
 			Place{"United States", "New York", 1},
 		),
 	)
@@ -50,14 +50,14 @@ func TestFetchOne(t *testing.T) {
 
 	// INSERT
 	_, err = sequel.Exec(conf, tx,
-		qb.Insert(&p, &p.Country, &p.TelCode).Values(
+		dml.Insert(&p, &p.Country, &p.TelCode).Values(
 			Place{Country: "Hong Kong", TelCode: 852},
 		),
 	)
 	is.NoErr(err)
 
 	// SELECT
-	q := qb.Select(&p, &p.City, &p.Country).Where(qb.E(&p.TelCode, 1))
+	q := dml.Select(&p, &p.City, &p.Country).Where(dml.E(&p.TelCode, 1))
 	r, err := sequel.FetchOne[Place](conf, tx, q)
 	is.NoErr(err)
 	is.Equal(r.City, "New York")

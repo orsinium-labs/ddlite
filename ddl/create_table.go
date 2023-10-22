@@ -17,7 +17,7 @@ type tCreateTable struct {
 
 // A private type to represent column definitions and table constraints.
 //
-// Can be constructed with `qb.ColumnDef` and `qb.Unique` functions.
+// Can be constructed with `dml.ColumnDef` and `dml.Unique` functions.
 type iColumnDef interface {
 	SQL(dbconf.Config) (string, error)
 }

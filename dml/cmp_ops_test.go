@@ -1,11 +1,11 @@
-package qb_test
+package dml_test
 
 import (
 	"testing"
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/dml"
 )
 
 func TestCmpOps(t *testing.T) {
@@ -15,57 +15,57 @@ func TestCmpOps(t *testing.T) {
 	}
 	u := User{}
 	testCases := []struct {
-		given qb.Expr[bool]
+		given dml.Expr[bool]
 		sql   string
 		args  []any
 	}{
 		{
-			given: qb.Eq(qb.C(&u.name), qb.V("Aragorn")),
+			given: dml.Eq(dml.C(&u.name), dml.V("Aragorn")),
 			sql:   "name = ?",
 			args:  []any{"Aragorn"},
 		},
 		{
-			given: qb.Eq(qb.C(&u.age), qb.V(18)),
+			given: dml.Eq(dml.C(&u.age), dml.V(18)),
 			sql:   "age = ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.E(&u.age, 18),
+			given: dml.E(&u.age, 18),
 			sql:   "age = ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.Neq(qb.C(&u.age), qb.V(18)),
+			given: dml.Neq(dml.C(&u.age), dml.V(18)),
 			sql:   "age <> ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.Gt(qb.C(&u.age), qb.V(18)),
+			given: dml.Gt(dml.C(&u.age), dml.V(18)),
 			sql:   "age > ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.Gte(qb.C(&u.age), qb.V(18)),
+			given: dml.Gte(dml.C(&u.age), dml.V(18)),
 			sql:   "age >= ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.Lt(qb.C(&u.age), qb.V(18)),
+			given: dml.Lt(dml.C(&u.age), dml.V(18)),
 			sql:   "age < ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.Lte(qb.C(&u.age), qb.V(18)),
+			given: dml.Lte(dml.C(&u.age), dml.V(18)),
 			sql:   "age <= ?",
 			args:  []any{18},
 		},
 		{
-			given: qb.And(qb.E(&u.age, 18), qb.E(&u.age, 19)),
+			given: dml.And(dml.E(&u.age, 18), dml.E(&u.age, 19)),
 			sql:   "age = ? AND age = ?",
 			args:  []any{18, 19},
 		},
 		{
-			given: qb.Or(qb.E(&u.age, 18), qb.E(&u.age, 19)),
+			given: dml.Or(dml.E(&u.age, 18), dml.E(&u.age, 19)),
 			sql:   "age = ? OR age = ?",
 			args:  []any{18, 19},
 		},

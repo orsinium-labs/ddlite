@@ -6,8 +6,8 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dml"
 	"github.com/orsinium-labs/sequel/internal"
-	"github.com/orsinium-labs/sequel/qb"
 )
 
 type query interface {
@@ -16,7 +16,7 @@ type query interface {
 
 type scannableQuery[T internal.Model] interface {
 	query
-	Scanner(dbconf.Config, *T) (qb.Scanner[T], error)
+	Scanner(dbconf.Config, *T) (dml.Scanner[T], error)
 }
 
 type dbOrTx interface {

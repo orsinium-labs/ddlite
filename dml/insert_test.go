@@ -1,4 +1,4 @@
-package qb_test
+package dml_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel"
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/qb"
+	"github.com/orsinium-labs/sequel/dml"
 )
 
 func TestInsertSQL(t *testing.T) {
@@ -17,7 +17,7 @@ func TestInsertSQL(t *testing.T) {
 		Age  int
 	}
 	u := User{}
-	q := qb.Insert(&u, &u.Name, &u.Age)
+	q := dml.Insert(&u, &u.Name, &u.Age)
 	q = q.Values(User{"Aragorn", 88})
 	conf := dbconf.New("postgres")
 	sql, _, err := sequel.SQL(conf, q)
