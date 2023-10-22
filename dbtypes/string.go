@@ -74,9 +74,9 @@ func UUID[T ~string]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "UUID",
 		mysql:     "",
-		oracle:    "BLOB",
-		postgres:  "",
-		sqlite:    "TEXT",
+		oracle:    "",
+		postgres:  "UUID",
+		sqlite:    "",
 		sqlserver: "",
 	}
 }

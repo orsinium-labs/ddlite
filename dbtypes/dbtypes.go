@@ -12,6 +12,7 @@ import (
 // https://www.cockroachlabs.com/docs/stable/data-types
 // https://dev.mysql.com/doc/refman/8.0/en/data-types.html
 // https://www.postgresql.org/docs/current/datatype.html
+// https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16
 
 type ColumnType[T any] interface {
 	Default() T
@@ -58,6 +59,11 @@ func call[I c.Integer](prefix string, size I) string {
 func call2[I1, I2 c.Integer](prefix string, a I1, b I2) string {
 	return fmt.Sprintf("%s(%d, %d)", prefix, a, b)
 }
+
+// Bool is a boolean type.
+//
+// If the database doesn't support BOOL natively,
+// the smallest integer type is used.
 func Bool[T ~bool]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "BOOL",
@@ -69,6 +75,7 @@ func Bool[T ~bool]() ColumnType[T] {
 	}
 }
 
+// Blob is raw binary data.
 func Blob[T ~[]byte]() ColumnType[T] {
 	return colType0[T]{
 		cocroach:  "BYTES",
