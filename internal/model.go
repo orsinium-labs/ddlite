@@ -11,7 +11,13 @@ import (
 type Model any
 
 // GetTableName converts struct name into table name.
+//
+// If the given model is a string, that string is returned as-is.
 func GetTableName(conf dbconf.Config, model Model) string {
+	name, ok := model.(string)
+	if ok {
+		return name
+	}
 	t := reflect.ValueOf(model).Elem().Type()
 	return conf.ToTable(t.Name())
 }
