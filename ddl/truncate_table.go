@@ -2,9 +2,9 @@ package ddl
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tTruncateTable struct {
@@ -19,16 +19,17 @@ func TruncateTable(table Safe) tTruncateTable {
 }
 
 func (q tTruncateTable) SQL(conf dbconf.Config) (string, error) {
-	// https://en.wikipedia.org/wiki/Data_definition_language#TRUNCATE_statement
-	// https://www.sqlite.org/lang_delete.html
-
 	if q.table == "" {
 		return "", errors.New("table name must not be empty")
 	}
-	prefix := "TRUNCATE TABLE"
+	ts := tokens.New()
 	if conf.Dialect == dbconf.SQLite {
-		prefix = "DELETE FROM"
+		// https://www.sqlite.org/lang_delete.html
+		ts.Add(tokens.Keyword("DELETE FROM"))
+	} else {
+		// https://en.wikipedia.org/wiki/Data_definition_language#TRUNCATE_statement
+		ts.Add(tokens.Keyword("TRUNCATE TABLE"))
 	}
-	sql := fmt.Sprintf("%s %s", prefix, q.table)
-	return sql, nil
+	ts.Add(tokens.ColumnName(q.table))
+	return ts.SQL(conf)
 }

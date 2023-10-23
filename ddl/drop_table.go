@@ -2,9 +2,9 @@ package ddl
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tDropTable struct {
@@ -27,10 +27,10 @@ func (q tDropTable) SQL(conf dbconf.Config) (string, error) {
 	if q.table == "" {
 		return "", errors.New("table name must not be empty")
 	}
-	ifExists := ""
+	ts := tokens.New(tokens.Keyword("DROP TABLE"))
 	if q.ifExists {
-		ifExists = "IF EXISTS "
+		ts.Add(tokens.Keyword("IF EXISTS"))
 	}
-	sql := fmt.Sprintf("DROP TABLE %s%s", ifExists, q.table)
-	return sql, nil
+	ts.Add(tokens.TableName(q.table))
+	return ts.SQL(conf)
 }

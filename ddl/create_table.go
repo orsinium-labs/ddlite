@@ -3,11 +3,11 @@ package ddl
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tCreateTable struct {
@@ -38,7 +38,12 @@ func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
 		}
 		colDefs = append(colDefs, colSQL)
 	}
-	colDefsJoined := strings.Join(colDefs, ", ")
-	sql := fmt.Sprintf("CREATE TABLE %s (%s)", q.table, colDefsJoined)
-	return sql, nil
+	ts := tokens.New(
+		tokens.Keyword("CREATE TABLE"),
+		tokens.TableName(q.table),
+		tokens.LParen(),
+		tokens.Raws(colDefs...),
+		tokens.RParen(),
+	)
+	return ts.SQL(conf)
 }

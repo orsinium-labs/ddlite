@@ -7,6 +7,7 @@ import (
 
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 // Safe is a string that is used in SQL queries as-is, without escaping.
@@ -86,11 +87,11 @@ func (def tUnique) SQL(conf dbconf.Config) (string, error) {
 	if len(def.names) == 0 {
 		return "", errors.New("unique index must have at least one column specified")
 	}
-	names := make([]string, 0, len(def.names))
-	for _, name := range def.names {
-		names = append(names, string(name))
-	}
-	joined := strings.Join(names, ", ")
-	sql := fmt.Sprintf("UNIQUE (%s)", joined)
-	return sql, nil
+	ts := tokens.New(
+		tokens.Keyword("UNIQUE"),
+		tokens.LParen(),
+		tokens.Raws(def.names...),
+		tokens.RParen(),
+	)
+	return ts.SQL(conf)
 }

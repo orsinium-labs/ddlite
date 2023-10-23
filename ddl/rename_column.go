@@ -2,9 +2,9 @@ package ddl
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tRenameColumn struct {
@@ -27,6 +27,13 @@ func (q tRenameColumn) SQL(conf dbconf.Config) (string, error) {
 	if q.new == "" {
 		return "", errors.New("new column name must not be empty")
 	}
-	sql := fmt.Sprintf("ALTER TABLE %s RENAME COLUMN %s TO %s", q.table, q.old, q.new)
-	return sql, nil
+	ts := tokens.New(
+		tokens.Keyword("ALTER TABLE"),
+		tokens.TableName(q.table),
+		tokens.Keyword("RENAME COLUMN"),
+		tokens.ColumnName(q.old),
+		tokens.Keyword("TO"),
+		tokens.ColumnName(q.new),
+	)
+	return ts.SQL(conf)
 }

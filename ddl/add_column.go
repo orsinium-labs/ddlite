@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tAddColumn struct {
@@ -25,6 +26,11 @@ func (q tAddColumn) SQL(conf dbconf.Config) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("generate SQL for ColumnDef: %v", err)
 	}
-	sql := fmt.Sprintf("ALTER TABLE %s ADD COLUMN %s", q.table, columnSQL)
-	return sql, nil
+	ts := tokens.New(
+		tokens.Keyword("ALTER TABLE"),
+		tokens.TableName(q.table),
+		tokens.Keyword("ADD COLUMN"),
+		tokens.Raw(columnSQL),
+	)
+	return ts.SQL(conf)
 }

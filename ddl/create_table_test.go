@@ -22,7 +22,7 @@ func TestCreateTable(t *testing.T) {
 	)
 	sql, err := q.SQL(conf)
 	is.NoErr(err)
-	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT)")
+	is.Equal(sql, "CREATE TABLE user ( name TEXT, age SMALLINT )")
 }
 
 func TestColumnDef(t *testing.T) {
@@ -61,11 +61,11 @@ func TestColumnDef(t *testing.T) {
 		},
 		{
 			def: ddl.Unique("age"),
-			sql: "UNIQUE (age)",
+			sql: "UNIQUE ( age )",
 		},
 		{
 			def: ddl.Unique("age", "name"),
-			sql: "UNIQUE (age, name)",
+			sql: "UNIQUE ( age, name )",
 		},
 	}
 	for _, testCase := range testCases {
