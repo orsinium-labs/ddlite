@@ -27,7 +27,7 @@ func TestFetchOne(t *testing.T) {
 
 	// CREATE TABLE
 	schema := ddl.CreateTable(
-		&p,
+		"place",
 		ddl.ColumnDef("country", dbtypes.Text()),
 		ddl.ColumnDef("city", dbtypes.Text()).Null(),
 		ddl.ColumnDef("tel_code", dbtypes.Int32()),

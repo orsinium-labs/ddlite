@@ -15,10 +15,8 @@ type sqlized interface {
 
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
-	type User struct{}
-	u := User{}
 	conf := dbconf.New("postgres")
-	q := ddl.CreateTable(&u,
+	q := ddl.CreateTable("user",
 		ddl.ColumnDef("name", dbtypes.Text()),
 		ddl.ColumnDef("age", dbtypes.Int8()),
 	)
@@ -28,9 +26,7 @@ func TestCreateTable(t *testing.T) {
 }
 
 func TestColumnDef(t *testing.T) {
-	type User struct{}
-	u := User{}
-	conf := dbconf.New("postgres").WithModel(&u)
+	conf := dbconf.New("postgres")
 	testCases := []struct {
 		def sqlized
 		sql string

@@ -10,13 +10,13 @@ import (
 )
 
 type tCreateTable struct {
-	model internal.Model
+	table string
 	cols  []iColumnDef
 }
 
-func CreateTable[T internal.Model](model *T, cols ...iColumnDef) tCreateTable {
+func CreateTable(table string, cols ...iColumnDef) tCreateTable {
 	return tCreateTable{
-		model: model,
+		table: table,
 		cols:  cols,
 	}
 }
@@ -26,7 +26,6 @@ func (q tCreateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 }
 
 func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
-	conf = conf.WithModel(q.model)
 	colNames := make([]string, 0, len(q.cols))
 	for _, col := range q.cols {
 		csql, err := col.SQL(conf)
@@ -35,8 +34,7 @@ func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
 		}
 		colNames = append(colNames, csql)
 	}
-	tableName := internal.GetTableName(conf, q.model)
 	cdefs := strings.Join(colNames, ", ")
-	sql := fmt.Sprintf("CREATE TABLE %s (%s)", tableName, cdefs)
+	sql := fmt.Sprintf("CREATE TABLE %s (%s)", q.table, cdefs)
 	return sql, nil
 }

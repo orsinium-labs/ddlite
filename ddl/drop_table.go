@@ -4,17 +4,16 @@ import (
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/internal"
 )
 
 type tDropTable struct {
-	model    internal.Model
+	table    string
 	ifExists bool
 }
 
-func DropTable[T internal.Model](model *T) tDropTable {
+func DropTable(table string) tDropTable {
 	return tDropTable{
-		model: model,
+		table: table,
 	}
 }
 
@@ -24,11 +23,10 @@ func (q tDropTable) IfExists() tDropTable {
 }
 
 func (q tDropTable) SQL(conf dbconf.Config) (string, error) {
-	tableName := internal.GetTableName(conf, q.model)
 	ifExists := ""
 	if q.ifExists {
 		ifExists = "IF EXISTS "
 	}
-	sql := fmt.Sprintf("DROP TABLE %s%s", ifExists, tableName)
+	sql := fmt.Sprintf("DROP TABLE %s%s", ifExists, q.table)
 	return sql, nil
 }
