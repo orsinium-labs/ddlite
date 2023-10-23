@@ -8,11 +8,11 @@ import (
 
 type tAddColumn struct {
 	table Safe
-	col   tColumnDef
+	col   tColumn
 }
 
 // AddColumn builds query that adds a new column to the table.
-func AddColumn(table Safe, col tColumnDef) tAddColumn {
+func AddColumn(table Safe, col tColumn) tAddColumn {
 	return tAddColumn{table: table, col: col}
 }
 

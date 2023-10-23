@@ -28,9 +28,9 @@ func TestFetchOne(t *testing.T) {
 	// CREATE TABLE
 	schema := ddl.CreateTable(
 		"place",
-		ddl.ColumnDef("country", dbtypes.Text()),
-		ddl.ColumnDef("city", dbtypes.Text()).Null(),
-		ddl.ColumnDef("tel_code", dbtypes.Int32()),
+		ddl.Column("country", dbtypes.Text()),
+		ddl.Column("city", dbtypes.Text()).Null(),
+		ddl.Column("tel_code", dbtypes.Int32()),
 	)
 	conf := dbconf.New("sqlite3")
 	_, err = sequel.Exec(conf, db, schema)

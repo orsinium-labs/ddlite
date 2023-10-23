@@ -11,10 +11,10 @@ import (
 
 type tCreateTable struct {
 	table Safe
-	cols  []iColumnDef
+	cols  []iColumn
 }
 
-func CreateTable(table Safe, cols ...iColumnDef) tCreateTable {
+func CreateTable(table Safe, cols ...iColumn) tCreateTable {
 	return tCreateTable{
 		table: table,
 		cols:  cols,

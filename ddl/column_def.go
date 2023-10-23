@@ -18,51 +18,51 @@ type Safe string
 
 // A private type to represent column definitions and table constraints.
 //
-// Can be constructed with [ColumnDef] and [Unique].
-type iColumnDef interface {
+// Can be constructed with [Column] and [Unique].
+type iColumn interface {
 	SQL(dbconf.Config) (string, error)
 }
 
-type tColumnDef struct {
+type tColumn struct {
 	name        Safe
 	colType     dbtypes.ColumnType
 	constraints []string
 }
 
-func ColumnDef(name Safe, ctype dbtypes.ColumnType) tColumnDef {
-	return tColumnDef{
+func Column(name Safe, ctype dbtypes.ColumnType) tColumn {
+	return tColumn{
 		name:        name,
 		colType:     ctype,
 		constraints: make([]string, 0),
 	}
 }
 
-func (def tColumnDef) Null() tColumnDef {
+func (def tColumn) Null() tColumn {
 	def.constraints = append(def.constraints, "NULL")
 	return def
 }
 
-func (def tColumnDef) NotNull() tColumnDef {
+func (def tColumn) NotNull() tColumn {
 	def.constraints = append(def.constraints, "NOT NULL")
 	return def
 }
 
-func (def tColumnDef) Unique() tColumnDef {
+func (def tColumn) Unique() tColumn {
 	def.constraints = append(def.constraints, "UNIQUE")
 	return def
 }
 
-func (def tColumnDef) PrimaryKey() tColumnDef {
+func (def tColumn) PrimaryKey() tColumn {
 	def.constraints = append(def.constraints, "PRIMARY KEY")
 	return def
 }
 
-func (def tColumnDef) Collate(collationName string) tColumnDef {
+func (def tColumn) Collate(collationName string) tColumn {
 	def.constraints = append(def.constraints, "COLLATE", collationName)
 	return def
 }
 
-func (def tColumnDef) SQL(conf dbconf.Config) (string, error) {
+func (def tColumn) SQL(conf dbconf.Config) (string, error) {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType.SQL(conf)
 	sql := fmt.Sprintf("%s %s %s", def.name, colSQL, constraints)
@@ -70,15 +70,15 @@ func (def tColumnDef) SQL(conf dbconf.Config) (string, error) {
 	return sql, nil
 }
 
-type tUniqueDef struct {
+type tUnique struct {
 	names []Safe
 }
 
-func Unique(names ...Safe) iColumnDef {
-	return tUniqueDef{names: names}
+func Unique(names ...Safe) iColumn {
+	return tUnique{names: names}
 }
 
-func (def tUniqueDef) SQL(conf dbconf.Config) (string, error) {
+func (def tUnique) SQL(conf dbconf.Config) (string, error) {
 	names := make([]string, 0, len(def.names))
 	for _, name := range def.names {
 		names = append(names, string(name))
