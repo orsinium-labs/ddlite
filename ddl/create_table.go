@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 )
@@ -18,6 +19,10 @@ func CreateTable[T internal.Model](model *T, cols ...iColumnDef) tCreateTable {
 		model: model,
 		cols:  cols,
 	}
+}
+
+func (q tCreateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+	return internal.SQL2Squirrel(conf, q)
 }
 
 func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {

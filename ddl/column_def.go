@@ -6,7 +6,6 @@ import (
 
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
-	"github.com/orsinium-labs/sequel/internal"
 )
 
 // A private type to represent column definitions and table constraints.
@@ -16,75 +15,63 @@ type iColumnDef interface {
 	SQL(dbconf.Config) (string, error)
 }
 
-type tColumnDef[T any] struct {
-	field       *T
-	colType     dbtypes.ColumnType[T]
+type tColumnDef struct {
+	name        string
+	colType     dbtypes.ColumnType
 	constraints []string
 }
 
-func ColumnDef[T any](field *T, ctype dbtypes.ColumnType[T]) tColumnDef[T] {
-	return tColumnDef[T]{
-		field:       field,
+func ColumnDef(name string, ctype dbtypes.ColumnType) tColumnDef {
+	return tColumnDef{
+		name:        name,
 		colType:     ctype,
 		constraints: make([]string, 0),
 	}
 }
 
-func (def tColumnDef[T]) Null() tColumnDef[T] {
+func (def tColumnDef) Null() tColumnDef {
 	def.constraints = append(def.constraints, "NULL")
 	return def
 }
 
-func (def tColumnDef[T]) NotNull() tColumnDef[T] {
+func (def tColumnDef) NotNull() tColumnDef {
 	def.constraints = append(def.constraints, "NOT NULL")
 	return def
 }
 
-func (def tColumnDef[T]) Unique() tColumnDef[T] {
+func (def tColumnDef) Unique() tColumnDef {
 	def.constraints = append(def.constraints, "UNIQUE")
 	return def
 }
 
-func (def tColumnDef[T]) PrimaryKey() tColumnDef[T] {
+func (def tColumnDef) PrimaryKey() tColumnDef {
 	def.constraints = append(def.constraints, "PRIMARY KEY")
 	return def
 }
 
-func (def tColumnDef[T]) Collate(collationName string) tColumnDef[T] {
+func (def tColumnDef) Collate(collationName string) tColumnDef {
 	def.constraints = append(def.constraints, "COLLATE", collationName)
 	return def
 }
 
-func (def tColumnDef[T]) SQL(conf dbconf.Config) (string, error) {
-	fieldName, err := internal.GetColumnName(conf, def.field)
-	if err != nil {
-		return "", fmt.Errorf("get field name: %v", err)
-	}
+func (def tColumnDef) SQL(conf dbconf.Config) (string, error) {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType.SQL(conf)
-	sql := fmt.Sprintf("%s %s %s", fieldName, colSQL, constraints)
+	sql := fmt.Sprintf("%s %s %s", def.name, colSQL, constraints)
 	sql = strings.TrimRight(sql, " ")
 	return sql, nil
 }
 
 type tUniqueDef struct {
-	fields []any
+	names []string
 }
 
-func Unique(fields ...any) iColumnDef {
-	return tUniqueDef{fields: fields}
+func Unique(names ...string) iColumnDef {
+	return tUniqueDef{names: names}
 }
 
 func (def tUniqueDef) SQL(conf dbconf.Config) (string, error) {
-	columnNames := make([]string, 0, len(def.fields))
-	for _, field := range def.fields {
-		fieldName, err := internal.GetColumnName(conf, field)
-		if err != nil {
-			return "", fmt.Errorf("get field name: %v", err)
-		}
-		columnNames = append(columnNames, fieldName)
-	}
-	joined := strings.Join(columnNames, ", ")
+	joined := strings.Join(def.names, ", ")
 	sql := fmt.Sprintf("UNIQUE (%s)", joined)
 	return sql, nil
 }

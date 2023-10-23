@@ -7,8 +7,8 @@ import (
 // TODO: Serial
 
 // Decimal is an arbitrary fixed-precision decimal number type.
-func Decimal[T c.Decimal, I1, I2 c.Integer](precision I1, scale I2) ColumnType[T] {
-	return colType0[T]{
+func Decimal[I1, I2 c.Integer](precision I1, scale I2) ColumnType {
+	return colType0{
 		cocroach:  call2("DECIMAL", precision, scale),
 		mysql:     call2("DECIMAL", precision, scale),
 		oracle:    call2("NUMBER", precision, scale),
@@ -19,8 +19,8 @@ func Decimal[T c.Decimal, I1, I2 c.Integer](precision I1, scale I2) ColumnType[T
 }
 
 // Float32 is an inexact floating-point variable-precision number type equivalent to float32.
-func Float32[T ~float32]() ColumnType[T] {
-	return colType0[T]{
+func Float32() ColumnType {
+	return colType0{
 		cocroach:  "REAL",
 		mysql:     "FLOAT",
 		oracle:    "FLOAT(63)",
@@ -31,8 +31,8 @@ func Float32[T ~float32]() ColumnType[T] {
 }
 
 // Float64 is an inexact floating-point variable-precision number type equivalent to float64.
-func Float64[T ~float32 | ~float64]() ColumnType[T] {
-	return colType0[T]{
+func Float64() ColumnType {
+	return colType0{
 		cocroach:  "DOUBLE PRECISION",
 		mysql:     "DOUBLE",
 		oracle:    "FLOAT",
@@ -43,9 +43,9 @@ func Float64[T ~float32 | ~float64]() ColumnType[T] {
 }
 
 // Float32 is an inexact floating-point variable-precision number type of arbitrary precision.
-func Float[T ~float32 | ~float64, I c.Integer](precision I) ColumnType[T] {
+func Float[I c.Integer](precision I) ColumnType {
 	// precision <= 53
-	return colType0[T]{
+	return colType0{
 		cocroach:  "FLOAT",
 		mysql:     call("FLOAT", precision),
 		oracle:    call("FLOAT", precision),
@@ -56,8 +56,8 @@ func Float[T ~float32 | ~float64, I c.Integer](precision I) ColumnType[T] {
 }
 
 // Int8 is an integer number from -128 to 127.
-func Int8[T ~int8]() ColumnType[T] {
-	return colType0[T]{
+func Int8() ColumnType {
+	return colType0{
 		cocroach:  "INT2",
 		mysql:     "TINYINT",
 		oracle:    "NUMBER(3,0)",
@@ -68,8 +68,8 @@ func Int8[T ~int8]() ColumnType[T] {
 }
 
 // Int16 is an integer number from -32_768 to 32_767.
-func Int16[T ~int16]() ColumnType[T] {
-	return colType0[T]{
+func Int16() ColumnType {
+	return colType0{
 		cocroach:  "INT2",
 		mysql:     "SMALLINT",
 		oracle:    "NUMBER(5,0)",
@@ -82,8 +82,8 @@ func Int16[T ~int16]() ColumnType[T] {
 // Int32 is an integer number from -2_147_483_648 to 2_147_483_647.
 //
 // Typically represented as INT in the database.
-func Int32[T ~int32 | ~int]() ColumnType[T] {
-	return colType0[T]{
+func Int32() ColumnType {
+	return colType0{
 		cocroach:  "INT4",
 		mysql:     "INT",
 		oracle:    "NUMBER(10,0)",
@@ -96,8 +96,8 @@ func Int32[T ~int32 | ~int]() ColumnType[T] {
 // Int64 is an integer number from -2⁶³ to 2⁶³-1.
 //
 // Typically represented as BIGINT in the database.
-func Int64[T ~int64 | ~int]() ColumnType[T] {
-	return colType0[T]{
+func Int64() ColumnType {
+	return colType0{
 		cocroach:  "INT",
 		mysql:     "BIGINT",
 		oracle:    "NUMBER(20,0)",
@@ -110,8 +110,8 @@ func Int64[T ~int64 | ~int]() ColumnType[T] {
 // UInt8 is an unsigned (non-negative) integer number from 0 to 255.
 //
 // If the database doesn't support unsigned numbers, the equivalent of [Int16] is used.
-func UInt8[T ~uint8]() ColumnType[T] {
-	return colType0[T]{
+func UInt8() ColumnType {
+	return colType0{
 		cocroach:  "INT2",
 		mysql:     "INT UNSIGNED",
 		oracle:    "NUMBER(3,0)",
@@ -124,8 +124,8 @@ func UInt8[T ~uint8]() ColumnType[T] {
 // UInt16 is an unsigned (non-negative) integer number from 0 to 65_535.
 //
 // If the database doesn't support unsigned numbers, the equivalent of [Int32] is used.
-func UInt16[T ~uint16]() ColumnType[T] {
-	return colType0[T]{
+func UInt16() ColumnType {
+	return colType0{
 		cocroach:  "INT",
 		mysql:     "SMALLINT UNSIGNED",
 		oracle:    "NUMBER(6,0)",
@@ -138,8 +138,8 @@ func UInt16[T ~uint16]() ColumnType[T] {
 // UInt32 is an unsigned (non-negative) integer number from 0 to 4_294_967_295.
 //
 // If the database doesn't support unsigned numbers, the equivalent of [Int64] is used.
-func UInt32[T ~uint32 | ~uintptr]() ColumnType[T] {
-	return colType0[T]{
+func UInt32() ColumnType {
+	return colType0{
 		cocroach:  "OID",
 		mysql:     "INT UNSIGNED",
 		oracle:    "NUMBER(10,0)",
@@ -153,8 +153,8 @@ func UInt32[T ~uint32 | ~uintptr]() ColumnType[T] {
 //
 // Many databses don't support unsigned numbers. So, if that last bit isn't important,
 // prefer using [Int64] instead.
-func UInt64[T ~uint64 | ~uintptr]() ColumnType[T] {
-	return colType0[T]{
+func UInt64() ColumnType {
+	return colType0{
 		cocroach:  "INT",
 		mysql:     "BIGINT UNSIGNED",
 		oracle:    "NUMBER(20,0)",

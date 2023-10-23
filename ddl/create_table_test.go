@@ -15,15 +15,12 @@ type sqlized interface {
 
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
-	type User struct {
-		name string
-		age  int8
-	}
+	type User struct{}
 	u := User{}
 	conf := dbconf.New("postgres")
 	q := ddl.CreateTable(&u,
-		ddl.ColumnDef(&u.name, dbtypes.Text[string]()),
-		ddl.ColumnDef(&u.age, dbtypes.Int8[int8]()),
+		ddl.ColumnDef("name", dbtypes.Text()),
+		ddl.ColumnDef("age", dbtypes.Int8()),
 	)
 	sql, err := q.SQL(conf)
 	is.NoErr(err)
@@ -31,10 +28,7 @@ func TestCreateTable(t *testing.T) {
 }
 
 func TestColumnDef(t *testing.T) {
-	type User struct {
-		name string
-		age  int
-	}
+	type User struct{}
 	u := User{}
 	conf := dbconf.New("postgres").WithModel(&u)
 	testCases := []struct {
@@ -42,39 +36,39 @@ func TestColumnDef(t *testing.T) {
 		sql string
 	}{
 		{
-			def: ddl.ColumnDef(&u.name, dbtypes.Text[string]()),
+			def: ddl.ColumnDef("name", dbtypes.Text()),
 			sql: "name TEXT",
 		},
 		{
-			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()),
+			def: ddl.ColumnDef("age", dbtypes.Int32()),
 			sql: "age INTEGER",
 		},
 		{
-			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).Unique(),
+			def: ddl.ColumnDef("age", dbtypes.Int32()).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).Null(),
+			def: ddl.ColumnDef("age", dbtypes.Int32()).Null(),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).NotNull(),
+			def: ddl.ColumnDef("age", dbtypes.Int32()).NotNull(),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: ddl.ColumnDef(&u.age, dbtypes.Int32[int]()).PrimaryKey(),
+			def: ddl.ColumnDef("age", dbtypes.Int32()).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
-			def: ddl.ColumnDef(&u.name, dbtypes.VarChar[string](20)).Collate("NOCASE"),
+			def: ddl.ColumnDef("name", dbtypes.VarChar(20)).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{
-			def: ddl.Unique(&u.age),
+			def: ddl.Unique("age"),
 			sql: "UNIQUE (age)",
 		},
 		{
-			def: ddl.Unique(&u.age, &u.name),
+			def: ddl.Unique("age", "name"),
 			sql: "UNIQUE (age, name)",
 		},
 	}

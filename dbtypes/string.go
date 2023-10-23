@@ -7,8 +7,8 @@ import (
 )
 
 // Char can store an ASCII string of the given size in bytes.
-func Char[T ~string, I c.Integer](size I) ColumnType[T] {
-	return colType0[T]{
+func Char[I c.Integer](size I) ColumnType {
+	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("CHAR", size),
 		oracle:    call("CHAR", size),
@@ -19,13 +19,13 @@ func Char[T ~string, I c.Integer](size I) ColumnType[T] {
 }
 
 // Enum is a string type with a pre-defined list of members.
-func Enum[T string, I c.Integer](size I, members ...T) ColumnType[T] {
+func Enum[I c.Integer](size I, members ...string) ColumnType {
 	ms := make([]string, len(members))
 	for _, m := range members {
 		ms = append(ms, "'"+string(m)+"'")
 	}
 	suffix := "(" + strings.Join(ms, ",") + ")"
-	return colType0[T]{
+	return colType0{
 		cocroach:  "ENUM" + suffix,
 		mysql:     "ENUM" + suffix,
 		oracle:    call("VARCHAR2", size),
@@ -36,8 +36,8 @@ func Enum[T string, I c.Integer](size I, members ...T) ColumnType[T] {
 }
 
 // Char can store a Unicode string of the given size in byte-pairs.
-func NChar[T ~string, I c.Integer](size I) ColumnType[T] {
-	return colType0[T]{
+func NChar[I c.Integer](size I) ColumnType {
+	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("NCHAR", size),
 		oracle:    call("NCHAR", size),
@@ -48,8 +48,8 @@ func NChar[T ~string, I c.Integer](size I) ColumnType[T] {
 }
 
 // NVarChar can store a Unicode string of any length up to the given size in byte-pairs.
-func NVarChar[T ~string, I c.Integer](size I) ColumnType[T] {
-	return colType0[T]{
+func NVarChar[I c.Integer](size I) ColumnType {
+	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("NVARCHAR", size),
 		oracle:    call("NVARCHAR2", size),
@@ -60,8 +60,8 @@ func NVarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 }
 
 // VarChar can store an ASCII string of any length up to the given size in bytes.
-func VarChar[T ~string, I c.Integer](size I) ColumnType[T] {
-	return colType0[T]{
+func VarChar[I c.Integer](size I) ColumnType {
+	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("VARCHAR", size),
 		oracle:    call("VARCHAR2", size),
@@ -72,8 +72,8 @@ func VarChar[T ~string, I c.Integer](size I) ColumnType[T] {
 }
 
 // Text can store a string of any length.
-func Text[T ~string]() ColumnType[T] {
-	return colType0[T]{
+func Text() ColumnType {
+	return colType0{
 		cocroach:  "STRING",
 		mysql:     "TEXT",
 		oracle:    "",
@@ -84,8 +84,8 @@ func Text[T ~string]() ColumnType[T] {
 }
 
 // UUID is a random and unique 16-bytes identifier (RFC 4122).
-func UUID[T ~string]() ColumnType[T] {
-	return colType0[T]{
+func UUID() ColumnType {
+	return colType0{
 		cocroach:  "UUID",
 		mysql:     "BINARY(16)",
 		oracle:    "RAW(16)",

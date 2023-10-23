@@ -1,10 +1,8 @@
 package dbtypes
 
-import "time"
-
 // Date without time.
-func Date() ColumnType[time.Time] {
-	return colType0[time.Time]{
+func Date() ColumnType {
+	return colType0{
 		cocroach:  "DATE",
 		mysql:     "DATE",
 		oracle:    "DATE",
@@ -15,8 +13,8 @@ func Date() ColumnType[time.Time] {
 }
 
 // DateTime is date and time.
-func DateTime() ColumnType[time.Time] {
-	return colType0[time.Time]{
+func DateTime() ColumnType {
+	return colType0{
 		cocroach:  "TIMESTAMP",
 		mysql:     "DATETIME",
 		oracle:    "TIMESTAMP",
@@ -27,8 +25,8 @@ func DateTime() ColumnType[time.Time] {
 }
 
 // Interval is a difference between two datetimes.
-func Interval() ColumnType[time.Duration] {
-	return colType0[time.Duration]{
+func Interval() ColumnType {
+	return colType0{
 		cocroach:  "INTERVAL",
 		mysql:     "",
 		oracle:    "INTERVAL",
@@ -39,8 +37,8 @@ func Interval() ColumnType[time.Duration] {
 }
 
 // Time of the day, without date.
-func Time() ColumnType[time.Duration] {
-	return colType0[time.Duration]{
+func Time() ColumnType {
+	return colType0{
 		cocroach:  "TIME",
 		mysql:     "TIME",
 		oracle:    "INTERVAL",

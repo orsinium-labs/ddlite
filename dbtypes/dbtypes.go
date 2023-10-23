@@ -7,13 +7,12 @@ import (
 	"github.com/orsinium-labs/sequel/dbconf"
 )
 
-type ColumnType[T any] interface {
-	Default() T
+type ColumnType interface {
 	SQL(dbconf.Config) string
 }
 
 // colType0 is a column type without parametrization.
-type colType0[T any] struct {
+type colType0 struct {
 	cocroach  string
 	mysql     string
 	oracle    string
@@ -22,11 +21,7 @@ type colType0[T any] struct {
 	sqlserver string
 }
 
-func (c colType0[T]) Default() T {
-	return *new(T)
-}
-
-func (c colType0[T]) SQL(conf dbconf.Config) string {
+func (c colType0) SQL(conf dbconf.Config) string {
 	switch conf.Dialect {
 	case dbconf.CockroachDB:
 		return c.cocroach
@@ -57,8 +52,8 @@ func call2[I1, I2 c.Integer](prefix string, a I1, b I2) string {
 //
 // If the database doesn't support BOOL natively,
 // the smallest integer type is used.
-func Bool[T ~bool]() ColumnType[T] {
-	return colType0[T]{
+func Bool() ColumnType {
+	return colType0{
 		cocroach:  "BOOL",
 		mysql:     "TINYINT(1)",
 		oracle:    "NUMBER(1)",
@@ -69,8 +64,8 @@ func Bool[T ~bool]() ColumnType[T] {
 }
 
 // Blob is raw binary data.
-func Blob[T ~[]byte]() ColumnType[T] {
-	return colType0[T]{
+func Blob() ColumnType {
+	return colType0{
 		cocroach:  "BYTES",
 		mysql:     "BLOB",
 		oracle:    "BLOB",
