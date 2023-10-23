@@ -1,6 +1,7 @@
 package ddl
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
@@ -23,6 +24,9 @@ func (q tDropTable) IfExists() tDropTable {
 }
 
 func (q tDropTable) SQL(conf dbconf.Config) (string, error) {
+	if q.table == "" {
+		return "", errors.New("table name must not be empty")
+	}
 	ifExists := ""
 	if q.ifExists {
 		ifExists = "IF EXISTS "

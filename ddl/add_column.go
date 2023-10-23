@@ -1,6 +1,7 @@
 package ddl
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
@@ -17,6 +18,9 @@ func AddColumn(table Safe, col tColumn) tAddColumn {
 }
 
 func (q tAddColumn) SQL(conf dbconf.Config) (string, error) {
+	if q.table == "" {
+		return "", errors.New("table name must not be empty")
+	}
 	columnSQL, err := q.col.SQL(conf)
 	if err != nil {
 		return "", fmt.Errorf("generate SQL for ColumnDef: %v", err)

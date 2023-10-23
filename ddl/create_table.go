@@ -1,6 +1,7 @@
 package ddl
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -26,6 +27,9 @@ func (q tCreateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 }
 
 func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
+	if len(q.cols) == 0 {
+		return "", errors.New("new table must have columns defined")
+	}
 	colDefs := make([]string, 0, len(q.cols))
 	for _, col := range q.cols {
 		colSQL, err := col.SQL(conf)

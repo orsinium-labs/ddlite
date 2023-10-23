@@ -1,6 +1,7 @@
 package ddl
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
@@ -16,6 +17,12 @@ func RenameTable(old, new Safe) tRenameTable {
 }
 
 func (q tRenameTable) SQL(conf dbconf.Config) (string, error) {
+	if q.old == "" {
+		return "", errors.New("old table name must not be empty")
+	}
+	if q.new == "" {
+		return "", errors.New("new table name must not be empty")
+	}
 	sql := fmt.Sprintf("ALTER TABLE %s RENAME TO %s", q.old, q.new)
 	return sql, nil
 }

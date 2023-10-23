@@ -1,6 +1,7 @@
 package ddl
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -63,6 +64,9 @@ func (def tColumn) Collate(collationName string) tColumn {
 }
 
 func (def tColumn) SQL(conf dbconf.Config) (string, error) {
+	if def.name == "" {
+		return "", errors.New("column name must not be empty")
+	}
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType.SQL(conf)
 	sql := fmt.Sprintf("%s %s %s", def.name, colSQL, constraints)
@@ -79,6 +83,9 @@ func Unique(names ...Safe) iColumn {
 }
 
 func (def tUnique) SQL(conf dbconf.Config) (string, error) {
+	if len(def.names) == 0 {
+		return "", errors.New("unique index must have at least one column specified")
+	}
 	names := make([]string, 0, len(def.names))
 	for _, name := range def.names {
 		names = append(names, string(name))
