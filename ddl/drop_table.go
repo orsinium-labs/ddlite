@@ -7,11 +7,11 @@ import (
 )
 
 type tDropTable struct {
-	table    string
+	table    Safe
 	ifExists bool
 }
 
-func DropTable(table string) tDropTable {
+func DropTable(table Safe) tDropTable {
 	return tDropTable{
 		table: table,
 	}

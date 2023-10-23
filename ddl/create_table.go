@@ -10,11 +10,11 @@ import (
 )
 
 type tCreateTable struct {
-	table string
+	table Safe
 	cols  []iColumnDef
 }
 
-func CreateTable(table string, cols ...iColumnDef) tCreateTable {
+func CreateTable(table Safe, cols ...iColumnDef) tCreateTable {
 	return tCreateTable{
 		table: table,
 		cols:  cols,
@@ -26,15 +26,15 @@ func (q tCreateTable) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 }
 
 func (q tCreateTable) SQL(conf dbconf.Config) (string, error) {
-	colNames := make([]string, 0, len(q.cols))
+	colDefs := make([]string, 0, len(q.cols))
 	for _, col := range q.cols {
-		csql, err := col.SQL(conf)
+		colSQL, err := col.SQL(conf)
 		if err != nil {
 			return "", fmt.Errorf("generate SQL for ColumnDef: %v", err)
 		}
-		colNames = append(colNames, csql)
+		colDefs = append(colDefs, colSQL)
 	}
-	cdefs := strings.Join(colNames, ", ")
-	sql := fmt.Sprintf("CREATE TABLE %s (%s)", q.table, cdefs)
+	colDefsJoined := strings.Join(colDefs, ", ")
+	sql := fmt.Sprintf("CREATE TABLE %s (%s)", q.table, colDefsJoined)
 	return sql, nil
 }

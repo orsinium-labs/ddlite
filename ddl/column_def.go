@@ -8,20 +8,28 @@ import (
 	"github.com/orsinium-labs/sequel/dbtypes"
 )
 
+// Safe is a string that is used in SQL queries as-is, without escaping.
+//
+// String literals and constants are automatically considered safe.
+// Variables need to be explicitly converted to Safe.
+//
+// Never convert to Safe untrusted input, it allows evil people to do SQL injections.
+type Safe string
+
 // A private type to represent column definitions and table constraints.
 //
-// Can be constructed with `dml.ColumnDef` and `dml.Unique` functions.
+// Can be constructed with [ColumnDef] and [Unique].
 type iColumnDef interface {
 	SQL(dbconf.Config) (string, error)
 }
 
 type tColumnDef struct {
-	name        string
+	name        Safe
 	colType     dbtypes.ColumnType
 	constraints []string
 }
 
-func ColumnDef(name string, ctype dbtypes.ColumnType) tColumnDef {
+func ColumnDef(name Safe, ctype dbtypes.ColumnType) tColumnDef {
 	return tColumnDef{
 		name:        name,
 		colType:     ctype,
@@ -63,15 +71,19 @@ func (def tColumnDef) SQL(conf dbconf.Config) (string, error) {
 }
 
 type tUniqueDef struct {
-	names []string
+	names []Safe
 }
 
-func Unique(names ...string) iColumnDef {
+func Unique(names ...Safe) iColumnDef {
 	return tUniqueDef{names: names}
 }
 
 func (def tUniqueDef) SQL(conf dbconf.Config) (string, error) {
-	joined := strings.Join(def.names, ", ")
+	names := make([]string, 0, len(def.names))
+	for _, name := range def.names {
+		names = append(names, string(name))
+	}
+	joined := strings.Join(names, ", ")
 	sql := fmt.Sprintf("UNIQUE (%s)", joined)
 	return sql, nil
 }

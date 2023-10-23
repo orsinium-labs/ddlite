@@ -7,11 +7,11 @@ import (
 )
 
 type tDropColumn struct {
-	table string
-	col   string
+	table Safe
+	col   Safe
 }
 
-func DropColumn(table string, col string) tDropColumn {
+func DropColumn(table Safe, col Safe) tDropColumn {
 	return tDropColumn{table: table, col: col}
 }
 

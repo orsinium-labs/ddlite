@@ -7,11 +7,11 @@ import (
 )
 
 type tTruncateTable struct {
-	table string
+	table Safe
 }
 
 // TruncateTable builds TRUNCATE TABLE query that removes all data from the table.
-func TruncateTable(table string) tTruncateTable {
+func TruncateTable(table Safe) tTruncateTable {
 	return tTruncateTable{
 		table: table,
 	}

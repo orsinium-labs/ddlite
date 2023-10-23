@@ -7,12 +7,12 @@ import (
 )
 
 type tRenameColumn struct {
-	table string
-	old   string
-	new   string
+	table Safe
+	old   Safe
+	new   Safe
 }
 
-func RenameColumn(table string, old, new string) tRenameColumn {
+func RenameColumn(table, old, new Safe) tRenameColumn {
 	return tRenameColumn{table: table, old: old, new: new}
 }
 

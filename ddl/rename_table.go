@@ -7,11 +7,11 @@ import (
 )
 
 type tRenameTable struct {
-	old string
-	new string
+	old Safe
+	new Safe
 }
 
-func RenameTable(old, new string) tRenameTable {
+func RenameTable(old, new Safe) tRenameTable {
 	return tRenameTable{old: old, new: new}
 }
 
