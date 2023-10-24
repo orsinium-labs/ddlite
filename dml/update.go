@@ -6,6 +6,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tChange struct {
@@ -52,11 +53,22 @@ func (u tUpdate[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
 
 	// generate WHERE clause
 	if len(u.conds) != 0 {
-		preds := make([]squirrel.Sqlizer, 0, len(u.conds))
-		for _, cond := range u.conds {
-			preds = append(preds, cond.Squirrel(conf))
+		preds := tokens.New()
+		first := true
+		for _, pred := range u.conds {
+			if first {
+				first = false
+			} else {
+				preds.Add(tokens.Keyword("AND"))
+			}
+			preds.Extend(pred.Tokens(conf))
 		}
-		q = q.Where(squirrel.And(preds))
+		sql, args, err := preds.SQL(conf)
+		if err != nil {
+			return nil, fmt.Errorf("generate SQL for predicates: %w", err)
+		}
+		q = q.Where(squirrel.Expr(sql, args...))
+
 	}
 
 	return q, nil

@@ -1,9 +1,12 @@
 package dml
 
 import (
+	"fmt"
+
 	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tDelete[T internal.Model] struct {
@@ -25,17 +28,27 @@ func (d tDelete[T]) And(conds ...Expr[bool]) tDelete[T] {
 	return d.Where(conds...)
 }
 
-func (s tDelete[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
-	conf = conf.WithModel(s.model)
-	q := squirrel.Delete(internal.GetTableName(conf, s.model))
+func (d tDelete[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+	conf = conf.WithModel(d.model)
+	q := squirrel.Delete(internal.GetTableName(conf, d.model))
 	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
 
-	if len(s.conds) != 0 {
-		preds := make([]squirrel.Sqlizer, 0, len(s.conds))
-		for _, c := range s.conds {
-			preds = append(preds, c.Squirrel(conf))
+	if len(d.conds) != 0 {
+		preds := tokens.New()
+		first := true
+		for _, pred := range d.conds {
+			if first {
+				first = false
+			} else {
+				preds.Add(tokens.Keyword("AND"))
+			}
+			preds.Extend(pred.Tokens(conf))
 		}
-		q = q.Where(squirrel.And(preds))
+		sql, args, err := preds.SQL(conf)
+		if err != nil {
+			return nil, fmt.Errorf("generate SQL for predicates: %w", err)
+		}
+		q = q.Where(squirrel.Expr(sql, args...))
 	}
 
 	return q, nil

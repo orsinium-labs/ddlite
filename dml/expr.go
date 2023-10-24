@@ -1,19 +1,16 @@
 package dml
 
 import (
-	"fmt"
-	"strings"
-
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
 type Expr[T any] interface {
 	ExprType() T
-	Squirrel(dbconf.Config) squirrel.Sqlizer
+	Tokens(dbconf.Config) tokens.Tokens
 }
 
 // tFunc is a private type to represent stored function expression.
@@ -32,14 +29,22 @@ func (tFunc[A, R]) ExprType() R {
 	return *new(R)
 }
 
-func (fn tFunc[A, R]) Squirrel(c dbconf.Config) squirrel.Sqlizer {
-	args := make([]any, 0, len(fn.Args))
+func (fn tFunc[A, R]) Tokens(conf dbconf.Config) tokens.Tokens {
+	ts := tokens.New(
+		tokens.Raw(fn.Name),
+		tokens.LParen(),
+	)
+	first := true
 	for _, arg := range fn.Args {
-		args = append(args, arg.Squirrel(c))
+		if first {
+			first = false
+		} else {
+			ts.Add(tokens.Comma())
+		}
+		ts.Extend(arg.Tokens(conf))
 	}
-	phs := strings.Repeat("?, ", len(args))
-	phs = phs[:len(phs)-2]
-	return squirrel.Expr(fmt.Sprintf("%s(%s)", fn.Name, phs), args...)
+	ts.Add(tokens.RParen())
+	return ts
 }
 
 // tFunc is a private type to represent 2-argument stored function expression.
@@ -62,10 +67,16 @@ func (tFunc2[A1, A2, R]) ExprType() R {
 	return *new(R)
 }
 
-func (fn tFunc2[A1, A2, R]) Squirrel(c dbconf.Config) squirrel.Sqlizer {
-	arg1 := fn.Arg1.Squirrel(c)
-	arg2 := fn.Arg2.Squirrel(c)
-	return squirrel.Expr(fmt.Sprintf("%s(?, ?)", fn.Name), arg1, arg2)
+func (fn tFunc2[A1, A2, R]) Tokens(conf dbconf.Config) tokens.Tokens {
+	ts := tokens.New(
+		tokens.Raw(fn.Name),
+		tokens.LParen(),
+	)
+	ts.Extend(fn.Arg1.Tokens(conf))
+	ts.Add(tokens.Comma())
+	ts.Extend(fn.Arg2.Tokens(conf))
+	ts.Add(tokens.RParen())
+	return ts
 }
 
 // tCol is aprivate type to represent a column name expression.
@@ -87,12 +98,12 @@ func (tCol[T]) ExprType() T {
 	return *new(T)
 }
 
-func (col tCol[T]) Squirrel(conf dbconf.Config) squirrel.Sqlizer {
-	fname, err := internal.GetColumnName(conf, col.val)
+func (col tCol[T]) Tokens(conf dbconf.Config) tokens.Tokens {
+	colName, err := internal.GetColumnName(conf, col.val)
 	if err != nil {
 		panic("uknown column")
 	}
-	return squirrel.Expr(fname)
+	return tokens.New(tokens.ColumnName(colName))
 }
 
 // tVal is a private type to represent a literal value expression.
@@ -109,6 +120,6 @@ func (tVal[T]) ExprType() T {
 	return *new(T)
 }
 
-func (val tVal[T]) Squirrel(c dbconf.Config) squirrel.Sqlizer {
-	return squirrel.Expr("?", val.val)
+func (val tVal[T]) Tokens(dbconf.Config) tokens.Tokens {
+	return tokens.New(tokens.Bind(val.val))
 }

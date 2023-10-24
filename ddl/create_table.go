@@ -39,7 +39,7 @@ func (q tCreateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 			ts.Add(tokens.Comma())
 		}
 		first = false
-		ts.Add(colTokens)
+		ts.Extend(colTokens)
 	}
 	ts.Add(tokens.RParen())
 	return ts, nil

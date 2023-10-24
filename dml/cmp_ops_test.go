@@ -74,8 +74,7 @@ func TestCmpOps(t *testing.T) {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
 			conf := dbconf.New("postgres").WithModel(&u)
-			sqlizer := tc.given.Squirrel(conf)
-			sql, args, err := sqlizer.ToSql()
+			sql, args, err := tc.given.Tokens(conf).SQL(conf)
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)
 			is.Equal(args, tc.args)

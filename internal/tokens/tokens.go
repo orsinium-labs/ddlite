@@ -7,7 +7,7 @@ import (
 )
 
 type Token interface {
-	SQL(dbconf.Config) (string, []any, error)
+	sql(dbconf.Config) (string, []any, error)
 }
 
 func New(ts ...Token) Tokens {
@@ -30,7 +30,7 @@ func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
 	parts := make([]string, 0, len(tokens.tokens))
 	args := make([]any, 0)
 	for _, token := range tokens.tokens {
-		sql, subArgs, err := token.SQL(conf)
+		sql, subArgs, err := token.sql(conf)
 		if err != nil {
 			return "", nil, err
 		}
@@ -57,6 +57,10 @@ func Keyword(s string) Token {
 	return tRaw(s)
 }
 
+func Operator(s string) Token {
+	return tRaw(s)
+}
+
 // Left parenthesis
 func LParen() Token {
 	return tRaw("(")
@@ -73,7 +77,7 @@ func Comma() Token {
 
 type tRaw string
 
-func (token tRaw) SQL(dbconf.Config) (string, []any, error) {
+func (token tRaw) sql(dbconf.Config) (string, []any, error) {
 	return string(token), nil, nil
 }
 
@@ -88,6 +92,16 @@ func Raws[T ~string](ss ...T) Token {
 
 type tList []string
 
-func (token tList) SQL(dbconf.Config) (string, []any, error) {
+func (token tList) sql(dbconf.Config) (string, []any, error) {
 	return strings.Join(token, ", "), nil, nil
+}
+
+func Bind(val any) Token {
+	return tBind{val}
+}
+
+type tBind struct{ val any }
+
+func (token tBind) sql(dbconf.Config) (string, []any, error) {
+	return "?", []any{token.val}, nil
 }

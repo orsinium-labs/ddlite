@@ -23,5 +23,5 @@ func TestUpdateSQL(t *testing.T) {
 	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)
 	// is.Equal(args, []any{88, "Aragorn"})
-	is.Equal(sql, "UPDATE user SET age = $1 WHERE (name = $2)")
+	is.Equal(sql, "UPDATE user SET age = $1 WHERE name = $2")
 }

@@ -20,5 +20,5 @@ func TestDeleteSmoke(t *testing.T) {
 	conf := dbconf.New("postgres")
 	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)
-	is.Equal(sql, "DELETE FROM user WHERE (name = $1)")
+	is.Equal(sql, "DELETE FROM user WHERE name = $1")
 }

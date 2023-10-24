@@ -1,8 +1,8 @@
 package dml
 
 import (
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 // tCmpOp is a private type representing binary comparison operations.
@@ -16,10 +16,12 @@ func (tCmpOp[T]) ExprType() bool {
 	return false
 }
 
-func (op tCmpOp[T]) Squirrel(c dbconf.Config) squirrel.Sqlizer {
-	lhs := op.left.Squirrel(c)
-	rhs := op.right.Squirrel(c)
-	return squirrel.ConcatExpr(lhs, " ", op.op, " ", rhs)
+func (op tCmpOp[T]) Tokens(c dbconf.Config) tokens.Tokens {
+	ts := tokens.New()
+	ts.Extend(op.left.Tokens(c))
+	ts.Add(tokens.Operator(op.op))
+	ts.Extend(op.right.Tokens(c))
+	return ts
 }
 
 // E (=) checks if the given column value is equal to the given fixed value.
