@@ -22,17 +22,17 @@ func TestNumericFuncsSQL(t *testing.T) {
 	}{
 		{
 			given: dbfuncs.Abs(dml.V(12)),
-			sql:   "abs ( ? )",
+			sql:   "abs( ? )",
 			args:  []any{12},
 		},
 		{
 			given: dbfuncs.Ceil[int](dml.V(12.0)),
-			sql:   "ceil ( ? )",
+			sql:   "ceil( ? )",
 			args:  []any{12.0},
 		},
 		{
 			given: dbfuncs.Div[int](dml.V(12), dml.V(5)),
-			sql:   "div ( ? , ? )",
+			sql:   "div( ? , ? )",
 			args:  []any{12, 5},
 		},
 	}

@@ -31,7 +31,7 @@ func (tFunc[A, R]) ExprType() R {
 
 func (fn tFunc[A, R]) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New(
-		tokens.Raw(fn.Name),
+		tokens.FuncName(fn.Name),
 		tokens.LParen(),
 	)
 	first := true
@@ -69,7 +69,7 @@ func (tFunc2[A1, A2, R]) ExprType() R {
 
 func (fn tFunc2[A1, A2, R]) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New(
-		tokens.Raw(fn.Name),
+		tokens.FuncName(fn.Name),
 		tokens.LParen(),
 	)
 	ts.Extend(fn.Arg1.Tokens(conf))

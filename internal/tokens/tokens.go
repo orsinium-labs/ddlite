@@ -35,7 +35,10 @@ func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
 			return "", nil, err
 		}
 		result.WriteString(sql)
-		result.WriteString(" ")
+		_, isFunc := token.(tFuncName)
+		if !isFunc {
+			result.WriteString(" ")
+		}
 		args = append(args, subArgs...)
 	}
 	return strings.TrimRight(result.String(), " "), args, nil
@@ -52,6 +55,16 @@ func TableName[T ~string](s T) Token {
 
 func ColumnName[T ~string](s T) Token {
 	return tRaw(s)
+}
+
+func FuncName[T ~string](s T) Token {
+	return tFuncName(s)
+}
+
+type tFuncName string
+
+func (token tFuncName) sql(dbconf.Config) (string, []any, error) {
+	return string(token), nil, nil
 }
 
 func Keyword(s string) Token {
