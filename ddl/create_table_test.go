@@ -23,7 +23,7 @@ func TestCreateTable(t *testing.T) {
 	)
 	sql, _, err := ddl.SQL(conf, q)
 	is.NoErr(err)
-	is.Equal(sql, "CREATE TABLE user ( name TEXT , age SMALLINT )")
+	is.Equal(sql, "CREATE TABLE user ( name TEXT, age SMALLINT )")
 }
 
 func TestColumnDef(t *testing.T) {

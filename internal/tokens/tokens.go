@@ -29,19 +29,33 @@ func (tokens *Tokens) Extend(ts Tokens) {
 func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
 	result := strings.Builder{}
 	args := make([]any, 0)
-	for _, token := range tokens.tokens {
+	for i, token := range tokens.tokens {
 		sql, subArgs, err := token.sql(conf)
 		if err != nil {
 			return "", nil, err
 		}
 		result.WriteString(sql)
-		_, isFunc := token.(tFuncName)
-		if !isFunc {
+		if tokens.needsSpace(i) {
 			result.WriteString(" ")
 		}
 		args = append(args, subArgs...)
 	}
-	return strings.TrimRight(result.String(), " "), args, nil
+	return result.String(), args, nil
+}
+
+func (tokens Tokens) needsSpace(i int) bool {
+	curr := tokens.tokens[i]
+	_, isFunc := curr.(tFuncName)
+	if isFunc {
+		return false
+	}
+
+	if i >= len(tokens.tokens)-1 {
+		return false
+	}
+	next := tokens.tokens[i+1]
+	_, isComma := next.(tComma)
+	return !isComma
 }
 
 // Raw SQL string
@@ -86,7 +100,13 @@ func RParen() Token {
 }
 
 func Comma() Token {
-	return tRaw(",")
+	return tComma{}
+}
+
+type tComma struct{}
+
+func (token tComma) sql(dbconf.Config) (string, []any, error) {
+	return ",", nil, nil
 }
 
 type tRaw string

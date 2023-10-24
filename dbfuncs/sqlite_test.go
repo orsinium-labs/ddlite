@@ -32,7 +32,7 @@ func TestNumericFuncsSQL(t *testing.T) {
 		},
 		{
 			given: dbfuncs.Div[int](dml.V(12), dml.V(5)),
-			sql:   "div( ? , ? )",
+			sql:   "div( ?, ? )",
 			args:  []any{12, 5},
 		},
 	}
