@@ -2,7 +2,6 @@ package ddl
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/orsinium-labs/sequel/dbconf"
@@ -10,19 +9,11 @@ import (
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
-// Safe is a string that is used in SQL queries as-is, without escaping.
-//
-// String literals and constants are automatically considered safe.
-// Variables need to be explicitly converted to Safe.
-//
-// Never convert to Safe untrusted input, it allows evil people to do SQL injections.
-type Safe string
-
 // A private type to represent column definitions and table constraints.
 //
 // Can be constructed with [Column] and [Unique].
 type iColumn interface {
-	SQL(dbconf.Config) (string, error)
+	Tokens(dbconf.Config) (tokens.Tokens, error)
 }
 
 type tColumn struct {
@@ -64,15 +55,20 @@ func (def tColumn) Collate(collationName string) tColumn {
 	return def
 }
 
-func (def tColumn) SQL(conf dbconf.Config) (string, error) {
+func (def tColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if def.name == "" {
-		return "", errors.New("column name must not be empty")
+		return tokens.New(), errors.New("column name must not be empty")
 	}
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType.SQL(conf)
-	sql := fmt.Sprintf("%s %s %s", def.name, colSQL, constraints)
-	sql = strings.TrimRight(sql, " ")
-	return sql, nil
+	ts := tokens.New(
+		tokens.ColumnName(def.name),
+		tokens.Raw(colSQL),
+	)
+	if constraints != "" {
+		ts.Add(tokens.Raw(constraints))
+	}
+	return ts, nil
 }
 
 type tUnique struct {
@@ -83,9 +79,9 @@ func Unique(names ...Safe) iColumn {
 	return tUnique{names: names}
 }
 
-func (def tUnique) SQL(conf dbconf.Config) (string, error) {
+func (def tUnique) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if len(def.names) == 0 {
-		return "", errors.New("unique index must have at least one column specified")
+		return tokens.New(), errors.New("unique index must have at least one column specified")
 	}
 	ts := tokens.New(
 		tokens.Keyword("UNIQUE"),
@@ -93,5 +89,5 @@ func (def tUnique) SQL(conf dbconf.Config) (string, error) {
 		tokens.Raws(def.names...),
 		tokens.RParen(),
 	)
-	return ts.SQL(conf)
+	return ts, nil
 }

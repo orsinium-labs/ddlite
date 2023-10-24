@@ -7,7 +7,7 @@ import (
 )
 
 type Token interface {
-	SQL(dbconf.Config) (string, error)
+	SQL(dbconf.Config) (string, []any, error)
 }
 
 func New(ts ...Token) Tokens {
@@ -22,16 +22,22 @@ func (tokens *Tokens) Add(ts ...Token) {
 	tokens.tokens = append(tokens.tokens, ts...)
 }
 
-func (tokens Tokens) SQL(conf dbconf.Config) (string, error) {
+func (tokens *Tokens) Extend(ts Tokens) {
+	tokens.tokens = append(tokens.tokens, ts.tokens...)
+}
+
+func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
 	parts := make([]string, 0, len(tokens.tokens))
+	args := make([]any, 0)
 	for _, token := range tokens.tokens {
-		sql, err := token.SQL(conf)
+		sql, subArgs, err := token.SQL(conf)
 		if err != nil {
-			return "", err
+			return "", nil, err
 		}
 		parts = append(parts, sql)
+		args = append(args, subArgs...)
 	}
-	return strings.Join(parts, " "), nil
+	return strings.Join(parts, " "), args, nil
 }
 
 // Raw SQL string
@@ -61,10 +67,14 @@ func RParen() Token {
 	return tRaw(")")
 }
 
+func Comma() Token {
+	return tRaw(",")
+}
+
 type tRaw string
 
-func (token tRaw) SQL(dbconf.Config) (string, error) {
-	return string(token), nil
+func (token tRaw) SQL(dbconf.Config) (string, []any, error) {
+	return string(token), nil, nil
 }
 
 // List of raw SQL values
@@ -78,6 +88,6 @@ func Raws[T ~string](ss ...T) Token {
 
 type tList []string
 
-func (token tList) SQL(dbconf.Config) (string, error) {
-	return strings.Join(token, ", "), nil
+func (token tList) SQL(dbconf.Config) (string, []any, error) {
+	return strings.Join(token, ", "), nil, nil
 }

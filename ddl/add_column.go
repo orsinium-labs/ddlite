@@ -18,19 +18,19 @@ func AddColumn(table Safe, col tColumn) tAddColumn {
 	return tAddColumn{table: table, col: col}
 }
 
-func (q tAddColumn) SQL(conf dbconf.Config) (string, error) {
+func (q tAddColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if q.table == "" {
-		return "", errors.New("table name must not be empty")
+		return tokens.New(), errors.New("table name must not be empty")
 	}
-	columnSQL, err := q.col.SQL(conf)
+	colTokens, err := q.col.Tokens(conf)
 	if err != nil {
-		return "", fmt.Errorf("generate SQL for ColumnDef: %v", err)
+		return tokens.New(), fmt.Errorf("generate SQL for ColumnDef: %v", err)
 	}
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),
 		tokens.Keyword("ADD COLUMN"),
-		tokens.Raw(columnSQL),
 	)
-	return ts.SQL(conf)
+	ts.Extend(colTokens)
+	return ts, nil
 }

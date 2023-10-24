@@ -16,12 +16,12 @@ func DropColumn(table Safe, col Safe) tDropColumn {
 	return tDropColumn{table: table, col: col}
 }
 
-func (q tDropColumn) SQL(conf dbconf.Config) (string, error) {
+func (q tDropColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if q.table == "" {
-		return "", errors.New("table name must not be empty")
+		return tokens.New(), errors.New("table name must not be empty")
 	}
 	if q.col == "" {
-		return "", errors.New("column name must not be empty")
+		return tokens.New(), errors.New("column name must not be empty")
 	}
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
@@ -29,5 +29,5 @@ func (q tDropColumn) SQL(conf dbconf.Config) (string, error) {
 		tokens.Keyword("DROP COLUMN"),
 		tokens.ColumnName(q.col),
 	)
-	return ts.SQL(conf)
+	return ts, nil
 }

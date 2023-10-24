@@ -18,9 +18,9 @@ func TruncateTable(table Safe) tTruncateTable {
 	}
 }
 
-func (q tTruncateTable) SQL(conf dbconf.Config) (string, error) {
+func (q tTruncateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if q.table == "" {
-		return "", errors.New("table name must not be empty")
+		return tokens.New(), errors.New("table name must not be empty")
 	}
 	ts := tokens.New()
 	if conf.Dialect == dbconf.SQLite {
@@ -31,5 +31,5 @@ func (q tTruncateTable) SQL(conf dbconf.Config) (string, error) {
 		ts.Add(tokens.Keyword("TRUNCATE TABLE"))
 	}
 	ts.Add(tokens.ColumnName(q.table))
-	return ts.SQL(conf)
+	return ts, nil
 }

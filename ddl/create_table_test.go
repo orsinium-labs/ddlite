@@ -7,10 +7,11 @@ import (
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/ddl"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
-type sqlized interface {
-	SQL(dbconf.Config) (string, error)
+type tokener interface {
+	Tokens(dbconf.Config) (tokens.Tokens, error)
 }
 
 func TestCreateTable(t *testing.T) {
@@ -20,15 +21,15 @@ func TestCreateTable(t *testing.T) {
 		ddl.Column("name", dbtypes.Text()),
 		ddl.Column("age", dbtypes.Int8()),
 	)
-	sql, err := q.SQL(conf)
+	sql, _, err := ddl.SQL(conf, q)
 	is.NoErr(err)
-	is.Equal(sql, "CREATE TABLE user ( name TEXT, age SMALLINT )")
+	is.Equal(sql, "CREATE TABLE user ( name TEXT , age SMALLINT )")
 }
 
 func TestColumnDef(t *testing.T) {
 	conf := dbconf.New("postgres")
 	testCases := []struct {
-		def sqlized
+		def tokener
 		sql string
 	}{
 		{
@@ -71,7 +72,7 @@ func TestColumnDef(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.sql, func(t *testing.T) {
 			is := is.New(t)
-			sql, err := testCase.def.SQL(conf)
+			sql, _, err := ddl.SQL(conf, testCase.def)
 			is.NoErr(err)
 			is.Equal(sql, testCase.sql)
 		})

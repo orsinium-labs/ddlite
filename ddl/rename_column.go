@@ -17,15 +17,15 @@ func RenameColumn(table, old, new Safe) tRenameColumn {
 	return tRenameColumn{table: table, old: old, new: new}
 }
 
-func (q tRenameColumn) SQL(conf dbconf.Config) (string, error) {
+func (q tRenameColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if q.table == "" {
-		return "", errors.New("table name must not be empty")
+		return tokens.New(), errors.New("table name must not be empty")
 	}
 	if q.old == "" {
-		return "", errors.New("old column name must not be empty")
+		return tokens.New(), errors.New("old column name must not be empty")
 	}
 	if q.new == "" {
-		return "", errors.New("new column name must not be empty")
+		return tokens.New(), errors.New("new column name must not be empty")
 	}
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
@@ -35,5 +35,5 @@ func (q tRenameColumn) SQL(conf dbconf.Config) (string, error) {
 		tokens.Keyword("TO"),
 		tokens.ColumnName(q.new),
 	)
-	return ts.SQL(conf)
+	return ts, nil
 }
