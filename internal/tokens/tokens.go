@@ -43,10 +43,13 @@ func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
 	return result.String(), args, nil
 }
 
+// needsSpace checks if space should be added after the token with the given index.
 func (tokens Tokens) needsSpace(i int) bool {
 	curr := tokens.tokens[i]
-	_, isFunc := curr.(tFuncName)
-	if isFunc {
+	switch curr.(type) {
+	case tFuncName:
+		return false
+	case tLParen:
 		return false
 	}
 
@@ -54,8 +57,13 @@ func (tokens Tokens) needsSpace(i int) bool {
 		return false
 	}
 	next := tokens.tokens[i+1]
-	_, isComma := next.(tComma)
-	return !isComma
+	switch next.(type) {
+	case tComma:
+		return false
+	case tRParen:
+		return false
+	}
+	return true
 }
 
 // Raw SQL string
@@ -91,12 +99,24 @@ func Operator(s string) Token {
 
 // Left parenthesis
 func LParen() Token {
-	return tRaw("(")
+	return tLParen{}
+}
+
+type tLParen struct{}
+
+func (token tLParen) sql(dbconf.Config) (string, []any, error) {
+	return "(", nil, nil
 }
 
 // Right parenthesis
 func RParen() Token {
-	return tRaw(")")
+	return tRParen{}
+}
+
+type tRParen struct{}
+
+func (token tRParen) sql(dbconf.Config) (string, []any, error) {
+	return ")", nil, nil
 }
 
 func Comma() Token {
