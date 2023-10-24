@@ -34,11 +34,8 @@ func (fn tFunc[A, R]) Tokens(conf dbconf.Config) tokens.Tokens {
 		tokens.FuncName(fn.Name),
 		tokens.LParen(),
 	)
-	first := true
-	for _, arg := range fn.Args {
-		if first {
-			first = false
-		} else {
+	for i, arg := range fn.Args {
+		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
 		ts.Extend(arg.Tokens(conf))

@@ -29,16 +29,14 @@ func (q tCreateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		tokens.TableName(q.table),
 		tokens.LParen(),
 	)
-	first := true
-	for _, col := range q.cols {
+	for i, col := range q.cols {
 		colTokens, err := col.Tokens(conf)
 		if err != nil {
 			return tokens.New(), fmt.Errorf("generate SQL for ColumnDef: %v", err)
 		}
-		if !first {
+		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
-		first = false
 		ts.Extend(colTokens)
 	}
 	ts.Add(tokens.RParen())

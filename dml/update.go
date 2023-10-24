@@ -62,11 +62,8 @@ func (u tUpdate[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	// generate WHERE clause
 	if len(u.conds) != 0 {
 		ts.Add(tokens.Keyword("WHERE"))
-		first := true
-		for _, pred := range u.conds {
-			if first {
-				first = false
-			} else {
+		for i, pred := range u.conds {
+			if i > 0 {
 				ts.Add(tokens.Keyword("AND"))
 			}
 			ts.Extend(pred.Tokens(conf))

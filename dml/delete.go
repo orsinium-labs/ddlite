@@ -34,11 +34,8 @@ func (d tDelete[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 
 	if len(d.conds) != 0 {
 		ts.Add(tokens.Keyword("WHERE"))
-		first := true
-		for _, pred := range d.conds {
-			if first {
-				first = false
-			} else {
+		for i, pred := range d.conds {
+			if i > 0 {
 				ts.Add(tokens.Keyword("AND"))
 			}
 			ts.Extend(pred.Tokens(conf))
