@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dml"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type query interface {
-	Squirrel(dbconf.Config) (squirrel.Sqlizer, error)
+	Tokens(dbconf.Config) (tokens.Tokens, error)
 }
 
 type scannableQuery[T internal.Model] interface {
@@ -32,17 +32,21 @@ func Must[T any](val T, err error) T {
 	return val
 }
 
-// SQL converts the given expression to SQL.
-func SQL(conf dbconf.Config, q query) (string, []any, error) {
-	builder, err := q.Squirrel(conf)
+// SQL generates SQL string for the given sequel query.
+func SQL(conf dbconf.Config, query query) (string, []any, error) {
+	ts, err := query.Tokens(conf)
 	if err != nil {
-		return "", nil, fmt.Errorf("build query: %v", err)
+		return "", nil, fmt.Errorf("generate tokens: %w", err)
 	}
-	sql, arg, err := builder.ToSql()
+	sql, args, err := ts.SQL(conf)
 	if err != nil {
-		return "", nil, fmt.Errorf("convert query to SQL: %v", err)
+		return "", nil, fmt.Errorf("convert tokens to SQL: %w", err)
 	}
-	return sql, arg, nil
+	sql, err = conf.SquirrelPlaceholder().ReplacePlaceholders(sql)
+	if err != nil {
+		return "", nil, fmt.Errorf("convert placeholders: %w", err)
+	}
+	return sql, args, nil
 }
 
 func Exec(
@@ -50,12 +54,7 @@ func Exec(
 	db dbOrTx,
 	q query,
 ) (sql.Result, error) {
-	builder, err := q.Squirrel(conf)
-	if err != nil {
-		return nil, fmt.Errorf("build query: %w", err)
-	}
-	// driver.DriverName()
-	sqlQ, args, err := builder.ToSql()
+	sqlQ, args, err := SQL(conf, q)
 	if err != nil {
 		return nil, fmt.Errorf("generate SQL query: %w", err)
 	}
@@ -88,11 +87,7 @@ func FetchOneInto[T internal.Model](
 	q scannableQuery[T],
 	target *T,
 ) error {
-	builder, err := q.Squirrel(conf)
-	if err != nil {
-		return fmt.Errorf("build query: %w", err)
-	}
-	sqlQ, args, err := builder.ToSql()
+	sqlQ, args, err := SQL(conf, q)
 	if err != nil {
 		return fmt.Errorf("generate SQL query: %w", err)
 	}
