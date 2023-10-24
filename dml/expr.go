@@ -12,12 +12,7 @@ import (
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
 type Expr[T any] interface {
-	// Default method is used for type checking
-	// to ensure that the given expression has the correct type.
-	// Without it, Expr[int] and Expr[bool] would be the same interface.
-	Default() T
-
-	// Squirrel converts the expression into a squirrel AST.
+	ExprType() T
 	Squirrel(dbconf.Config) squirrel.Sqlizer
 }
 
@@ -33,7 +28,7 @@ func F[A, T any](name string, args ...Expr[A]) Expr[T] {
 	return tFunc[A, T]{Name: name, Args: args}
 }
 
-func (tFunc[A, R]) Default() R {
+func (tFunc[A, R]) ExprType() R {
 	return *new(R)
 }
 
@@ -63,7 +58,7 @@ func F2[A1, A2, T any](name string, arg1 Expr[A1], arg2 Expr[A2]) Expr[T] {
 	return tFunc2[A1, A2, T]{Name: name, Arg1: arg1, Arg2: arg2}
 }
 
-func (tFunc2[A1, A2, R]) Default() R {
+func (tFunc2[A1, A2, R]) ExprType() R {
 	return *new(R)
 }
 
@@ -88,7 +83,7 @@ func M[T any](val *constraints.Option[T]) Expr[T] {
 	return tCol[T]{val: val}
 }
 
-func (tCol[T]) Default() T {
+func (tCol[T]) ExprType() T {
 	return *new(T)
 }
 
@@ -110,7 +105,7 @@ func V[T any](val T) Expr[T] {
 	return tVal[T]{val: val}
 }
 
-func (tVal[T]) Default() T {
+func (tVal[T]) ExprType() T {
 	return *new(T)
 }
 

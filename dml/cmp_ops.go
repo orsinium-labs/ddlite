@@ -12,7 +12,7 @@ type tCmpOp[T any] struct {
 	right Expr[T]
 }
 
-func (tCmpOp[T]) Default() bool {
+func (tCmpOp[T]) ExprType() bool {
 	return false
 }
 
