@@ -27,17 +27,18 @@ func (tokens *Tokens) Extend(ts Tokens) {
 }
 
 func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
-	parts := make([]string, 0, len(tokens.tokens))
+	result := strings.Builder{}
 	args := make([]any, 0)
 	for _, token := range tokens.tokens {
 		sql, subArgs, err := token.sql(conf)
 		if err != nil {
 			return "", nil, err
 		}
-		parts = append(parts, sql)
+		result.WriteString(sql)
+		result.WriteString(" ")
 		args = append(args, subArgs...)
 	}
-	return strings.Join(parts, " "), args, nil
+	return strings.TrimRight(result.String(), " "), args, nil
 }
 
 // Raw SQL string
