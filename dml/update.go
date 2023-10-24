@@ -3,7 +3,6 @@ package dml
 import (
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 	"github.com/orsinium-labs/sequel/internal/tokens"
@@ -36,40 +35,43 @@ func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
 	return u
 }
 
-func (u tUpdate[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+func (u tUpdate[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	conf = conf.WithModel(u.model)
-	// make builder, set column names and table name
-	q := squirrel.Update(internal.GetTableName(conf, u.model))
-	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
+	ts := tokens.New(
+		tokens.Keyword("UPDATE"),
+		tokens.TableName(internal.GetTableName(conf, u.model)),
+		tokens.Keyword("SET"),
+	)
 
 	// generate SET clause
-	for _, change := range u.changes {
-		fname, err := internal.GetColumnName(conf, change.field)
+	for i, change := range u.changes {
+		colName, err := internal.GetColumnName(conf, change.field)
 		if err != nil {
-			return nil, fmt.Errorf("get field name: %v", err)
+			return tokens.New(), fmt.Errorf("get field name: %v", err)
 		}
-		q = q.Set(fname, change.value)
+		if i > 0 {
+			ts.Add(tokens.Comma())
+		}
+		ts.Add(
+			tokens.ColumnName(colName),
+			tokens.Operator("="),
+			tokens.Bind(change.value),
+		)
 	}
 
 	// generate WHERE clause
 	if len(u.conds) != 0 {
-		preds := tokens.New()
+		ts.Add(tokens.Keyword("WHERE"))
 		first := true
 		for _, pred := range u.conds {
 			if first {
 				first = false
 			} else {
-				preds.Add(tokens.Keyword("AND"))
+				ts.Add(tokens.Keyword("AND"))
 			}
-			preds.Extend(pred.Tokens(conf))
+			ts.Extend(pred.Tokens(conf))
 		}
-		sql, args, err := preds.SQL(conf)
-		if err != nil {
-			return nil, fmt.Errorf("generate SQL for predicates: %w", err)
-		}
-		q = q.Where(squirrel.Expr(sql, args...))
-
 	}
 
-	return q, nil
+	return ts, nil
 }

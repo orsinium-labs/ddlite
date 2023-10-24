@@ -3,9 +3,9 @@ package dml
 import (
 	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type tInsert[T internal.Model] struct {
@@ -27,37 +27,49 @@ func (i tInsert[T]) Values(items ...T) tInsert[T] {
 	return i
 }
 
-func (i tInsert[T]) Squirrel(conf dbconf.Config) (squirrel.Sqlizer, error) {
+func (i tInsert[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	conf = conf.WithModel(i.model)
+	ts := tokens.New(
+		tokens.Keyword("INSERT INTO"),
+		tokens.TableName(internal.GetTableName(conf, i.model)),
+		tokens.LParen(),
+	)
 	// get column names
-	fnames := make([]string, 0, len(i.fields))
-	cnames := make([]string, 0, len(i.fields))
-	for _, f := range i.fields {
-		fname, err := internal.GetFieldName(conf, f)
-		if err != nil {
-			return squirrel.InsertBuilder{}, fmt.Errorf("get column name: %v", err)
+	fieldNames := make([]string, 0, len(i.fields))
+	for i, field := range i.fields {
+		if i > 0 {
+			ts.Add(tokens.Comma())
 		}
-		fnames = append(fnames, fname)
-		cnames = append(cnames, conf.ToColumn(fname))
+		fieldName, err := internal.GetFieldName(conf, field)
+		if err != nil {
+			return tokens.New(), fmt.Errorf("get column name: %v", err)
+		}
+		fieldNames = append(fieldNames, fieldName)
+		ts.Add(tokens.ColumnName(conf.ToColumn(fieldName)))
 	}
-
-	// make builder, set column names and table name
-	q := squirrel.Insert(internal.GetTableName(conf, i.model))
-	q = q.PlaceholderFormat(conf.SquirrelPlaceholder())
-	q = q.Columns(cnames...)
+	ts.Add(
+		tokens.RParen(),
+		tokens.Keyword("VALUES"),
+	)
 
 	// set values to insert
-	for _, item := range i.items {
-		values := make([]any, 0, len(fnames))
-		for _, fname := range fnames {
+	for i, item := range i.items {
+		if i > 0 {
+			ts.Add(tokens.Comma())
+		}
+		ts.Add(tokens.LParen())
+		for i, fname := range fieldNames {
+			if i > 0 {
+				ts.Add(tokens.Comma())
+			}
 			value, err := internal.GetField(&item, fname)
 			if err != nil {
-				return q, fmt.Errorf("get field value: %v", err)
+				return tokens.New(), fmt.Errorf("get field value: %v", err)
 			}
-			values = append(values, value)
+			ts.Add(tokens.Bind(value))
 		}
-		q = q.Values(values...)
+		ts.Add(tokens.RParen())
 	}
 
-	return q, nil
+	return ts, nil
 }
