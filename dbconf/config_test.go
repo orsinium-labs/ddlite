@@ -3,7 +3,6 @@ package dbconf_test
 import (
 	"testing"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
 )
@@ -46,25 +45,6 @@ func TestNew_Placeholder(t *testing.T) {
 	is.Equal(n("SQLServer").Placeholder, dbconf.AtP)
 	is.Equal(n("").Placeholder, dbconf.Question)
 	is.Equal(n("unknown").Placeholder, dbconf.Question)
-}
-
-func TestConfig_SquirrelPlaceholder(t *testing.T) {
-	t.Parallel()
-	is := is.New(t)
-	n := dbconf.New
-	is.Equal(n("sqlite3").SquirrelPlaceholder(), squirrel.Question)
-	is.Equal(n("sqlite").SquirrelPlaceholder(), squirrel.Question)
-	is.Equal(n("mysql").SquirrelPlaceholder(), squirrel.Question)
-	is.Equal(n("postgres").SquirrelPlaceholder(), squirrel.Dollar)
-	is.Equal(n("goracle").SquirrelPlaceholder(), squirrel.Colon)
-	is.Equal(n("sqlserver").SquirrelPlaceholder(), squirrel.AtP)
-	is.Equal(n("SQLServer").SquirrelPlaceholder(), squirrel.AtP)
-	is.Equal(n("").SquirrelPlaceholder(), squirrel.Question)
-	is.Equal(n("unknown").SquirrelPlaceholder(), squirrel.Question)
-
-	c := n("unknown")
-	c.Placeholder = 13
-	is.Equal(c.SquirrelPlaceholder(), squirrel.Question)
 }
 
 func TestConfig_WithModel(t *testing.T) {

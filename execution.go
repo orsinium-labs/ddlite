@@ -42,7 +42,6 @@ func SQL(conf dbconf.Config, query query) (string, []any, error) {
 	if err != nil {
 		return "", nil, fmt.Errorf("convert tokens to SQL: %w", err)
 	}
-	sql, err = conf.SquirrelPlaceholder().ReplacePlaceholders(sql)
 	if err != nil {
 		return "", nil, fmt.Errorf("convert placeholders: %w", err)
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 type Token interface {
-	sql(dbconf.Config) (string, []any, error)
+	sql(conf dbconf.Config, pos int) (string, []any, error)
 }
 
 func New(ts ...Token) Tokens {
@@ -30,7 +30,7 @@ func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
 	result := strings.Builder{}
 	args := make([]any, 0)
 	for i, token := range tokens.tokens {
-		sql, subArgs, err := token.sql(conf)
+		sql, subArgs, err := token.sql(conf, len(args))
 		if err != nil {
 			return "", nil, err
 		}
@@ -85,7 +85,7 @@ func FuncName[T ~string](s T) Token {
 
 type tFuncName string
 
-func (token tFuncName) sql(dbconf.Config) (string, []any, error) {
+func (token tFuncName) sql(dbconf.Config, int) (string, []any, error) {
 	return string(token), nil, nil
 }
 
@@ -104,7 +104,7 @@ func LParen() Token {
 
 type tLParen struct{}
 
-func (token tLParen) sql(dbconf.Config) (string, []any, error) {
+func (token tLParen) sql(dbconf.Config, int) (string, []any, error) {
 	return "(", nil, nil
 }
 
@@ -115,7 +115,7 @@ func RParen() Token {
 
 type tRParen struct{}
 
-func (token tRParen) sql(dbconf.Config) (string, []any, error) {
+func (token tRParen) sql(dbconf.Config, int) (string, []any, error) {
 	return ")", nil, nil
 }
 
@@ -125,13 +125,13 @@ func Comma() Token {
 
 type tComma struct{}
 
-func (token tComma) sql(dbconf.Config) (string, []any, error) {
+func (token tComma) sql(dbconf.Config, int) (string, []any, error) {
 	return ",", nil, nil
 }
 
 type tRaw string
 
-func (token tRaw) sql(dbconf.Config) (string, []any, error) {
+func (token tRaw) sql(dbconf.Config, int) (string, []any, error) {
 	return string(token), nil, nil
 }
 
@@ -146,7 +146,7 @@ func Raws[T ~string](ss ...T) Token {
 
 type tList []string
 
-func (token tList) sql(dbconf.Config) (string, []any, error) {
+func (token tList) sql(dbconf.Config, int) (string, []any, error) {
 	return strings.Join(token, ", "), nil, nil
 }
 
@@ -156,6 +156,7 @@ func Bind(val any) Token {
 
 type tBind struct{ val any }
 
-func (token tBind) sql(dbconf.Config) (string, []any, error) {
-	return "?", []any{token.val}, nil
+func (token tBind) sql(conf dbconf.Config, pos int) (string, []any, error) {
+	ph := conf.Placeholder.Make(pos)
+	return ph, []any{token.val}, nil
 }

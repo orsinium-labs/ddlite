@@ -73,7 +73,7 @@ func TestCmpOps(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
-			conf := dbconf.New("postgres").WithModel(&u)
+			conf := dbconf.New("sqlite3").WithModel(&u)
 			sql, args, err := tc.given.Tokens(conf).SQL(conf)
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)

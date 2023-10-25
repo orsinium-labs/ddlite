@@ -3,25 +3,6 @@ package dbconf
 import (
 	"regexp"
 	"strings"
-
-	"github.com/Masterminds/squirrel"
-)
-
-// Placeholder is the style of placeholder for variable binding.
-type Placeholder rune
-
-const (
-	// Question is the default question placeholder (e.g. ?)
-	Question Placeholder = '?'
-
-	// Dollar is a dollar-prefixed positional placeholder (e.g. $1, $2, $3).
-	Dollar Placeholder = '$'
-
-	// Colon is a colon-prefixed positional placeholder (e.g. :1, :2, :3).
-	Colon Placeholder = ':'
-
-	// AtP is a "@p"-prefixed positional placeholder (e.g. @p1, @p2, @p3).
-	AtP Placeholder = '@'
 )
 
 type Dialect rune
@@ -76,9 +57,10 @@ type Config struct {
 
 // New creates a new config instance for the given DB driver name with good defaults.
 func New(driver string) Config {
+	dialect := dialectForDriver(driver)
 	return Config{
 		Placeholder: placeholderForDriver(driver),
-		Dialect:     dialectForDriver(driver),
+		Dialect:     dialect,
 		DriverName:  driver,
 		ToTable:     CamelToSnake,
 		ToColumn:    CamelToSnake,
@@ -92,24 +74,6 @@ func New(driver string) Config {
 func (c Config) WithModel(m any) Config {
 	c.Models = append([]any{m}, c.Models...)
 	return c
-}
-
-// SquirrelPlaceholder returns Placeholder recognized by squirrel.
-//
-// The method is used by SQL query builders.
-func (c Config) SquirrelPlaceholder() squirrel.PlaceholderFormat {
-	switch c.Placeholder {
-	case Question:
-		return squirrel.Question
-	case Dollar:
-		return squirrel.Dollar
-	case Colon:
-		return squirrel.Colon
-	case AtP:
-		return squirrel.AtP
-	default:
-		return squirrel.Question
-	}
 }
 
 var (
