@@ -13,7 +13,7 @@ import (
 //
 // Can be constructed with [Column] and [Unique].
 type iColumn interface {
-	Tokens(dbconf.Config) (tokens.Tokens, error)
+	Tokens(dbconf.Config) tokens.Tokens
 }
 
 type tColumn struct {
@@ -55,10 +55,7 @@ func (def tColumn) Collate(collationName string) tColumn {
 	return def
 }
 
-func (def tColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
-	if def.name == "" {
-		return tokens.New(), errors.New("column name must not be empty")
-	}
+func (def tColumn) Tokens(conf dbconf.Config) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType.SQL(conf)
 	ts := tokens.New(
@@ -68,7 +65,7 @@ func (def tColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	if constraints != "" {
 		ts.Add(tokens.Raw(constraints))
 	}
-	return ts, nil
+	return ts
 }
 
 type tUnique struct {
@@ -79,9 +76,10 @@ func Unique(names ...Safe) iColumn {
 	return tUnique{names: names}
 }
 
-func (def tUnique) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (def tUnique) Tokens(conf dbconf.Config) tokens.Tokens {
 	if len(def.names) == 0 {
-		return tokens.New(), errors.New("unique index must have at least one column specified")
+		err := errors.New("unique index must have at least one column specified")
+		return tokens.New(tokens.Err(err))
 	}
 	ts := tokens.New(
 		tokens.Keyword("UNIQUE"),
@@ -89,5 +87,5 @@ func (def tUnique) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		tokens.Raws(def.names...),
 		tokens.RParen(),
 	)
-	return ts, nil
+	return ts
 }

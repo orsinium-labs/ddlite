@@ -21,11 +21,11 @@ func (q tDropTable) IfExists() tDropTable {
 	return q
 }
 
-func (q tDropTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (q tDropTable) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("DROP TABLE"))
 	if q.ifExists {
 		ts.Add(tokens.Keyword("IF EXISTS"))
 	}
 	ts.Add(tokens.TableName(q.table))
-	return ts, nil
+	return ts
 }

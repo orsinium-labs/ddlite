@@ -27,7 +27,7 @@ func (i tInsert[T]) Values(items ...T) tInsert[T] {
 	return i
 }
 
-func (i tInsert[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (i tInsert[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 	conf = conf.WithModel(i.model)
 	ts := tokens.New(
 		tokens.Keyword("INSERT INTO"),
@@ -42,7 +42,8 @@ func (i tInsert[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		}
 		fieldName, err := internal.GetFieldName(conf, field)
 		if err != nil {
-			return tokens.New(), fmt.Errorf("get column name: %v", err)
+			err = fmt.Errorf("get column name: %v", err)
+			return tokens.New(tokens.Err(err))
 		}
 		fieldNames = append(fieldNames, fieldName)
 		ts.Add(tokens.ColumnName(conf.ToColumn(fieldName)))
@@ -64,12 +65,13 @@ func (i tInsert[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 			}
 			value, err := internal.GetField(&item, fname)
 			if err != nil {
-				return tokens.New(), fmt.Errorf("get field value: %v", err)
+				err = fmt.Errorf("get field value: %v", err)
+				return tokens.New(tokens.Err(err))
 			}
 			ts.Add(tokens.Bind(value))
 		}
 		ts.Add(tokens.RParen())
 	}
 
-	return ts, nil
+	return ts
 }

@@ -31,7 +31,7 @@ func (s tSelectModel[T]) And(conds ...Expr[bool]) tSelectModel[T] {
 	return s.Where(conds...)
 }
 
-func (s tSelectModel[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (s tSelectModel[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 	conf = conf.WithModel(s.model)
 	ts := tokens.New(tokens.Keyword("SELECT"))
 	for i, f := range s.fields {
@@ -55,7 +55,7 @@ func (s tSelectModel[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		}
 	}
 
-	return ts, nil
+	return ts
 }
 
 func (s tSelectModel[T]) Scanner(conf dbconf.Config, target *T) (Scanner[T], error) {

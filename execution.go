@@ -11,7 +11,7 @@ import (
 )
 
 type query interface {
-	Tokens(dbconf.Config) (tokens.Tokens, error)
+	Tokens(dbconf.Config) tokens.Tokens
 }
 
 type scannableQuery[T internal.Model] interface {
@@ -34,11 +34,7 @@ func Must[T any](val T, err error) T {
 
 // SQL generates SQL string for the given sequel query.
 func SQL(conf dbconf.Config, query query) (string, []any, error) {
-	ts, err := query.Tokens(conf)
-	if err != nil {
-		return "", nil, fmt.Errorf("generate tokens: %w", err)
-	}
-	sql, args, err := ts.SQL(conf)
+	sql, args, err := query.Tokens(conf).SQL(conf)
 	if err != nil {
 		return "", nil, fmt.Errorf("convert tokens to SQL: %w", err)
 	}

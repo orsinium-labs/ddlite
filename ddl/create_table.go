@@ -2,7 +2,6 @@ package ddl
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal/tokens"
@@ -20,9 +19,10 @@ func CreateTable(table Safe, cols ...iColumn) tCreateTable {
 	}
 }
 
-func (q tCreateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (q tCreateTable) Tokens(conf dbconf.Config) tokens.Tokens {
 	if len(q.cols) == 0 {
-		return tokens.New(), errors.New("new table must have columns defined")
+		err := errors.New("new table must have columns defined")
+		return tokens.New(tokens.Err(err))
 	}
 	ts := tokens.New(
 		tokens.Keyword("CREATE TABLE"),
@@ -30,15 +30,11 @@ func (q tCreateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		tokens.LParen(),
 	)
 	for i, col := range q.cols {
-		colTokens, err := col.Tokens(conf)
-		if err != nil {
-			return tokens.New(), fmt.Errorf("generate SQL for ColumnDef: %v", err)
-		}
 		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
-		ts.Extend(colTokens)
+		ts.Extend(col.Tokens(conf))
 	}
 	ts.Add(tokens.RParen())
-	return ts, nil
+	return ts
 }

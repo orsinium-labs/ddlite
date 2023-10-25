@@ -15,7 +15,7 @@ func RenameColumn(table, old, new Safe) tRenameColumn {
 	return tRenameColumn{table: table, old: old, new: new}
 }
 
-func (q tRenameColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (q tRenameColumn) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),
@@ -24,5 +24,5 @@ func (q tRenameColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		tokens.Keyword("TO"),
 		tokens.ColumnName(q.new),
 	)
-	return ts, nil
+	return ts
 }

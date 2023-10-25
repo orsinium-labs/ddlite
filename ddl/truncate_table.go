@@ -16,7 +16,7 @@ func TruncateTable(table Safe) tTruncateTable {
 	}
 }
 
-func (q tTruncateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (q tTruncateTable) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
 	if conf.Dialect == dbconf.SQLite {
 		// https://www.sqlite.org/lang_delete.html
@@ -26,5 +26,5 @@ func (q tTruncateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		ts.Add(tokens.Keyword("TRUNCATE TABLE"))
 	}
 	ts.Add(tokens.ColumnName(q.table))
-	return ts, nil
+	return ts
 }

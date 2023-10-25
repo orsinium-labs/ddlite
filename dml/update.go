@@ -33,7 +33,7 @@ func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
 	return u
 }
 
-func (u tUpdate[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (u tUpdate[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 	conf = conf.WithModel(u.model)
 	ts := tokens.New(
 		tokens.Keyword("UPDATE"),
@@ -64,5 +64,5 @@ func (u tUpdate[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		}
 	}
 
-	return ts, nil
+	return ts
 }

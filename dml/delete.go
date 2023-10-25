@@ -25,7 +25,7 @@ func (d tDelete[T]) And(conds ...Expr[bool]) tDelete[T] {
 	return d.Where(conds...)
 }
 
-func (d tDelete[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
+func (d tDelete[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 	conf = conf.WithModel(d.model)
 	ts := tokens.New(
 		tokens.Keyword("DELETE FROM"),
@@ -42,5 +42,5 @@ func (d tDelete[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 		}
 	}
 
-	return ts, nil
+	return ts
 }

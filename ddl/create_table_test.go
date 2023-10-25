@@ -12,7 +12,7 @@ import (
 )
 
 type tokener interface {
-	Tokens(dbconf.Config) (tokens.Tokens, error)
+	Tokens(dbconf.Config) tokens.Tokens
 }
 
 func TestCreateTable(t *testing.T) {

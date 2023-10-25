@@ -1,8 +1,6 @@
 package ddl
 
 import (
-	"fmt"
-
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
@@ -17,16 +15,12 @@ func AddColumn(table Safe, col tColumn) tAddColumn {
 	return tAddColumn{table: table, col: col}
 }
 
-func (q tAddColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
-	colTokens, err := q.col.Tokens(conf)
-	if err != nil {
-		return tokens.New(), fmt.Errorf("generate SQL for ColumnDef: %v", err)
-	}
+func (q tAddColumn) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),
 		tokens.Keyword("ADD COLUMN"),
 	)
-	ts.Extend(colTokens)
-	return ts, nil
+	ts.Extend(q.col.Tokens(conf))
+	return ts
 }
