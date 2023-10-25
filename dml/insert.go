@@ -31,7 +31,7 @@ func (i tInsert[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	conf = conf.WithModel(i.model)
 	ts := tokens.New(
 		tokens.Keyword("INSERT INTO"),
-		tokens.TableName(internal.GetTableName(conf, i.model)),
+		internal.GetTableName(conf, i.model),
 		tokens.LParen(),
 	)
 	// get column names

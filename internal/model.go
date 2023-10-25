@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type Model any
@@ -13,13 +14,18 @@ type Model any
 // GetTableName converts struct name into table name.
 //
 // If the given model is a string, that string is returned as-is.
-func GetTableName(conf dbconf.Config, model Model) string {
+func GetTableName(conf dbconf.Config, model Model) tokens.Token {
 	name, ok := model.(string)
 	if ok {
-		return name
+		return tokens.TableName(name)
 	}
-	t := reflect.ValueOf(model).Elem().Type()
-	return conf.ToTable(t.Name())
+	vmodel := reflect.ValueOf(model)
+	if vmodel.Kind() != reflect.Pointer {
+		return tokens.Err(errors.New("the model is not a pointer"))
+	}
+	t := vmodel.Elem().Type()
+	name = conf.ToTable(t.Name())
+	return tokens.TableName(name)
 }
 
 // GetField extracts the value from the given struct in the given struct field.

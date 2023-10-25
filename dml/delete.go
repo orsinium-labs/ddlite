@@ -29,7 +29,7 @@ func (d tDelete[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	conf = conf.WithModel(d.model)
 	ts := tokens.New(
 		tokens.Keyword("DELETE FROM"),
-		tokens.TableName(internal.GetTableName(conf, d.model)),
+		internal.GetTableName(conf, d.model),
 	)
 
 	if len(d.conds) != 0 {

@@ -66,6 +66,16 @@ func (tokens Tokens) needsSpace(i int) bool {
 	return true
 }
 
+func Err(err error) Token {
+	return tErr{err}
+}
+
+type tErr struct{ err error }
+
+func (token tErr) sql(dbconf.Config, int) (string, []any, error) {
+	return "", nil, token.err
+}
+
 // Raw SQL string
 func Raw[T ~string](s T) Token {
 	return tRaw(s)

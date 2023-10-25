@@ -46,7 +46,7 @@ func (s tSelectModel[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	}
 	ts.Add(
 		tokens.Keyword("FROM"),
-		tokens.TableName(internal.GetTableName(conf, s.model)),
+		internal.GetTableName(conf, s.model),
 	)
 
 	if len(s.conds) != 0 {

@@ -39,7 +39,7 @@ func (u tUpdate[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	conf = conf.WithModel(u.model)
 	ts := tokens.New(
 		tokens.Keyword("UPDATE"),
-		tokens.TableName(internal.GetTableName(conf, u.model)),
+		internal.GetTableName(conf, u.model),
 		tokens.Keyword("SET"),
 	)
 
