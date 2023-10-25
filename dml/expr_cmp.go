@@ -5,7 +5,7 @@ import (
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
-// tCmpOp is a private type representing binary comparison operations.
+// Expression representing binary a operation returning a bool.
 type tCmpOp[T any] struct {
 	left  Expr[T]
 	op    string
@@ -43,7 +43,7 @@ func E[T comparable](column *T, value T) Expr[bool] {
 //
 //	dml.Gt(dml.C(&u.age), dml.V(18)) // SQL: age > 18
 func Gt[T comparable](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: ">", right: right}
+	return tCmpOp[T]{left, ">", right}
 }
 
 // Gte (>=) checks that the left expression is greater than or equal to the right one.
@@ -52,7 +52,7 @@ func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 //
 //	dml.Gte(dml.C(&u.age), dml.V(18)) // SQL: age >= 18
 func Gte[T comparable](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: ">=", right: right}
+	return tCmpOp[T]{left, ">=", right}
 }
 
 // Lt (<) checks that the left expression is less than the right one.
@@ -61,7 +61,7 @@ func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 //
 //	dml.Lt(dml.C(&u.age), dml.V(18)) // SQL: age < 18
 func Lt[T comparable](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: "<", right: right}
+	return tCmpOp[T]{left, "<", right}
 }
 
 // Lte (<=) checks that the left expression is less than or equal to the right one.
@@ -70,7 +70,7 @@ func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 //
 //	dml.Lte(dml.C(&u.age), dml.V(18)) // SQL: age <= 18
 func Lte[T comparable](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: "<=", right: right}
+	return tCmpOp[T]{left, "<=", right}
 }
 
 // Eq (=) checks that the left expression is equal to the right one.
@@ -79,7 +79,7 @@ func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 //
 //	dml.Eq(&u.created_at, &u.updated_at) // SQL: created_at = updated_at
 func Eq[T comparable](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: "=", right: right}
+	return tCmpOp[T]{left, "=", right}
 }
 
 // Neq (<>) checks that the left expression is not equal to the right one.
@@ -88,12 +88,7 @@ func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 //
 //	dml.Neq(dml.C(&u.age), dml.V(18)) // SQL: age != 18
 func Neq[T comparable](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: "<>", right: right}
-}
-
-// Is equal to value or both are nulls (missing data) (`IS NOT DISTINCT FROM`)
-func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
-	return tCmpOp[T]{left: left, op: "IS NOT DISTINCT FROM", right: right}
+	return tCmpOp[T]{left, "<>", right}
 }
 
 // And checks that both left and right expressions are true.
@@ -103,7 +98,7 @@ func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 //	dml.And(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin AND name = "admin"
 func And(left, right Expr[bool]) Expr[bool] {
-	return tCmpOp[bool]{left: left, op: "AND", right: right}
+	return tCmpOp[bool]{left, "AND", right}
 }
 
 // Or checks that left, right, or both expressions are true.
@@ -113,5 +108,46 @@ func And(left, right Expr[bool]) Expr[bool] {
 //	dml.Or(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin OR name = "admin"
 func Or(left, right Expr[bool]) Expr[bool] {
-	return tCmpOp[bool]{left: left, op: "OR", right: right}
+	return tCmpOp[bool]{left, "OR", right}
+}
+
+func Like(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "LIKE", right}
+}
+
+func NotLike(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "NOT LIKE", right}
+}
+
+func Glob(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "GLOB", right}
+}
+
+func NotGlob(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "NOT GLOB", right}
+}
+
+func RegExp(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "REGEXP", right}
+}
+
+func NotRegExp(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "NOT REGEXP", right}
+}
+
+func Match(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "MATCH", right}
+}
+
+func NotMatch(left, right Expr[string]) Expr[bool] {
+	return tCmpOp[string]{left, "NOT MATCH", right}
+}
+
+func IsDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
+	return tCmpOp[T]{left, "IS DISTINCT FROM", right}
+}
+
+// Is equal to value or both are nulls (missing data) (`IS NOT DISTINCT FROM`)
+func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
+	return tCmpOp[T]{left, "IS NOT DISTINCT FROM", right}
 }
