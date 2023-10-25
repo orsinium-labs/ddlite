@@ -1,8 +1,6 @@
 package dml
 
 import (
-	"fmt"
-
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 	"github.com/orsinium-labs/sequel/internal/tokens"
@@ -45,15 +43,11 @@ func (u tUpdate[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 
 	// generate SET clause
 	for i, change := range u.changes {
-		colName, err := internal.GetColumnName(conf, change.field)
-		if err != nil {
-			return tokens.New(), fmt.Errorf("get field name: %v", err)
-		}
 		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
 		ts.Add(
-			tokens.ColumnName(colName),
+			internal.GetColumnName(conf, change.field),
 			tokens.Operator("="),
 			tokens.Bind(change.value),
 		)

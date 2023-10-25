@@ -96,11 +96,7 @@ func (tCol[T]) ExprType() T {
 }
 
 func (col tCol[T]) Tokens(conf dbconf.Config) tokens.Tokens {
-	colName, err := internal.GetColumnName(conf, col.val)
-	if err != nil {
-		panic("uknown column")
-	}
-	return tokens.New(tokens.ColumnName(colName))
+	return tokens.New(internal.GetColumnName(conf, col.val))
 }
 
 // tVal is a private type to represent a literal value expression.

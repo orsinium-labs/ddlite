@@ -47,10 +47,13 @@ func GetField(model Model, field string) (any, error) {
 }
 
 // GetColumnName returns column name for the given struct field.
-func GetColumnName(conf dbconf.Config, field any) (string, error) {
+func GetColumnName(conf dbconf.Config, field any) tokens.Token {
 	name, err := GetFieldName(conf, field)
+	if err != nil {
+		return tokens.Err(err)
+	}
 	name = conf.ToColumn(name)
-	return name, err
+	return tokens.ColumnName(name)
 }
 
 // GetFieldName returns the name of the given struct field.

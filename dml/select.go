@@ -35,14 +35,10 @@ func (s tSelectModel[T]) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
 	conf = conf.WithModel(s.model)
 	ts := tokens.New(tokens.Keyword("SELECT"))
 	for i, f := range s.fields {
-		colName, err := internal.GetColumnName(conf, f)
-		if err != nil {
-			return tokens.New(), fmt.Errorf("get column name: %v", err)
-		}
 		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
-		ts.Add(tokens.ColumnName(colName))
+		ts.Add(internal.GetColumnName(conf, f))
 	}
 	ts.Add(
 		tokens.Keyword("FROM"),
