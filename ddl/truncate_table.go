@@ -1,8 +1,6 @@
 package ddl
 
 import (
-	"errors"
-
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
@@ -19,9 +17,6 @@ func TruncateTable(table Safe) tTruncateTable {
 }
 
 func (q tTruncateTable) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
-	if q.table == "" {
-		return tokens.New(), errors.New("table name must not be empty")
-	}
 	ts := tokens.New()
 	if conf.Dialect == dbconf.SQLite {
 		// https://www.sqlite.org/lang_delete.html

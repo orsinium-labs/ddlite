@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/orsinium-labs/sequel/dbconf"
@@ -82,14 +83,23 @@ func Raw[T ~string](s T) Token {
 }
 
 func TableName[T ~string](s T) Token {
+	if s == "" {
+		return tErr{errors.New("table name must not be empty")}
+	}
 	return tRaw(s)
 }
 
 func ColumnName[T ~string](s T) Token {
+	if s == "" {
+		return tErr{errors.New("column name must not be empty")}
+	}
 	return tRaw(s)
 }
 
 func FuncName[T ~string](s T) Token {
+	if s == "" {
+		return tErr{errors.New("function name must not be empty")}
+	}
 	return tFuncName(s)
 }
 
@@ -167,6 +177,9 @@ func Bind(val any) Token {
 type tBind struct{ val any }
 
 func (token tBind) sql(conf dbconf.Config, pos int) (string, []any, error) {
+	if pos < 0 {
+		panic("negative position")
+	}
 	ph := conf.Placeholder.Make(pos)
 	return ph, []any{token.val}, nil
 }

@@ -1,8 +1,6 @@
 package ddl
 
 import (
-	"errors"
-
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
@@ -18,15 +16,6 @@ func RenameColumn(table, old, new Safe) tRenameColumn {
 }
 
 func (q tRenameColumn) Tokens(conf dbconf.Config) (tokens.Tokens, error) {
-	if q.table == "" {
-		return tokens.New(), errors.New("table name must not be empty")
-	}
-	if q.old == "" {
-		return tokens.New(), errors.New("old column name must not be empty")
-	}
-	if q.new == "" {
-		return tokens.New(), errors.New("new column name must not be empty")
-	}
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),
