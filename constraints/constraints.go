@@ -11,15 +11,6 @@ import (
 	"database/sql/driver"
 )
 
-// Option is a Maybe monad used to represent a NULLable field.
-//
-// Compatible with Option defined in the `mo` package.
-//
-// https://github.com/samber/mo
-type Option[T any] interface {
-	Get() (T, bool)
-}
-
 // Signed is a constraint that permits any signed integer type.
 // If future releases of Go add new predeclared signed integer types,
 // this constraint will be modified to include them.
@@ -81,4 +72,15 @@ type UUID interface {
 	sql.Scanner
 	driver.Valuer
 	URN() string
+}
+
+// Option is a Maybe monad used to represent a NULLable field.
+//
+// Compatible with Option defined in the `mo` package.
+//
+// https://github.com/samber/mo
+type Option[T any] interface {
+	sql.Scanner
+	driver.Valuer
+	Get() (T, bool)
 }

@@ -87,7 +87,7 @@ func C[T any](val *T) Expr[T] {
 }
 
 // M is a column wrapped into Option/Optional/Maybe monad.
-func M[T any](val *constraints.Option[T]) Expr[T] {
+func M[T any](val constraints.Option[T]) Expr[T] {
 	return tCol[T]{val: val}
 }
 
