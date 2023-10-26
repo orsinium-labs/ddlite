@@ -91,26 +91,6 @@ func Neq[T comparable](left, right Expr[T]) Expr[bool] {
 	return tCmpOp[T]{left, "<>", right}
 }
 
-// And checks that both left and right expressions are true.
-//
-// Example:
-//
-//	dml.And(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
-//	// SQL: is_admin AND name = "admin"
-func And(left, right Expr[bool]) Expr[bool] {
-	return tCmpOp[bool]{left, "AND", right}
-}
-
-// Or checks that left, right, or both expressions are true.
-//
-// Example:
-//
-//	dml.Or(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
-//	// SQL: is_admin OR name = "admin"
-func Or(left, right Expr[bool]) Expr[bool] {
-	return tCmpOp[bool]{left, "OR", right}
-}
-
 func Like(left, right Expr[string]) Expr[bool] {
 	return tCmpOp[string]{left, "LIKE", right}
 }
