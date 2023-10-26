@@ -8,12 +8,14 @@ import (
 	"github.com/orsinium-labs/sequel/dml"
 )
 
-func TestCmpOps(t *testing.T) {
+func TestExpr_SQL(t *testing.T) {
 	type User struct {
 		name string
 		age  int
 	}
 	u := User{}
+	age18 := dml.E(&u.age, 18)
+	age19 := dml.E(&u.age, 19)
 	testCases := []struct {
 		given dml.Expr[bool]
 		sql   string
@@ -30,7 +32,7 @@ func TestCmpOps(t *testing.T) {
 			args:  []any{18},
 		},
 		{
-			given: dml.E(&u.age, 18),
+			given: age18,
 			sql:   "age = ?",
 			args:  []any{18},
 		},
@@ -60,14 +62,64 @@ func TestCmpOps(t *testing.T) {
 			args:  []any{18},
 		},
 		{
-			given: dml.And(dml.E(&u.age, 18), dml.E(&u.age, 19)),
+			given: dml.And(age18, age19),
 			sql:   "age = ? AND age = ?",
 			args:  []any{18, 19},
 		},
 		{
-			given: dml.Or(dml.E(&u.age, 18), dml.E(&u.age, 19)),
+			given: dml.Or(age18, age19),
 			sql:   "age = ? OR age = ?",
 			args:  []any{18, 19},
+		},
+		{
+			given: dml.And(age18, age19, dml.E(&u.name, "A")),
+			sql:   "age = ? AND age = ? AND name = ?",
+			args:  []any{18, 19, "A"},
+		},
+		{
+			given: dml.Or(dml.And(age18, age18), dml.And(age19, age19)),
+			sql:   "age = ? AND age = ? OR age = ? AND age = ?",
+			args:  []any{18, 18, 19, 19},
+		},
+		// {
+		// 	given: dml.And(dml.Or(age18, age18), dml.Or(age19, age19)),
+		// 	sql:   "(age = ? OR age = ?) AND (age = ? OR age = ?)",
+		// 	args:  []any{18, 18, 19, 19},
+		// },
+		{
+			given: dml.Not(age18),
+			sql:   "NOT age = ?",
+			args:  []any{18},
+		},
+		{
+			given: dml.And(dml.Not(age18), age19),
+			sql:   "NOT age = ? AND age = ?",
+			args:  []any{18, 19},
+		},
+		{
+			given: dml.Not(dml.And(age18, age19)),
+			sql:   "NOT (age = ? AND age = ?)",
+			args:  []any{18, 19},
+		},
+		{
+			given: dml.IsNull(dml.C(&u.age)),
+			sql:   "age IS NULL",
+			args:  []any{},
+		},
+		{
+			given: dml.Not(dml.IsNull(dml.C(&u.age))),
+			sql:   "NOT age IS NULL",
+			args:  []any{},
+		},
+		{
+			given: dml.IsNull(age18),
+			sql:   "age = ? IS NULL",
+			args:  []any{18},
+		},
+		{
+			given: dml.IsNull(dml.Not(age18)),
+			sql:   "(NOT age = ?) IS NULL",
+			args:  []any{18},
 		},
 	}
 	for _, tc := range testCases {

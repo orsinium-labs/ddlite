@@ -31,15 +31,37 @@ func (expr exprOperator[T, R]) Priority() priority.Priority {
 
 func (expr exprOperator[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
+
+	// write prefix
 	if expr.prefix {
 		ts.Add(expr.token)
 	}
+
+	// write left expression
+	paren := expr.left.Priority() < expr.Priority()
+	if paren {
+		ts.Add(tokens.LParen())
+	}
 	ts.Extend(expr.left.Tokens(c))
+	if paren {
+		ts.Add(tokens.RParen())
+	}
+
+	// write infix (or suffix if there is no right)
 	if !expr.prefix {
 		ts.Add(expr.token)
 	}
+
+	// write right (if provided)
 	if expr.right != nil {
+		paren := expr.right.Priority() <= expr.Priority()
+		if paren {
+			ts.Add(tokens.LParen())
+		}
 		ts.Extend(expr.right.Tokens(c))
+		if paren {
+			ts.Add(tokens.RParen())
+		}
 	}
 	return ts
 }

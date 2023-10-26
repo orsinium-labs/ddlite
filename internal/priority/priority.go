@@ -1,8 +1,18 @@
 package priority
 
+// Operation precedence.
+//
+// References:
+//
+//   - https://www.sqlite.org/lang_expr.html
+//   - https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-PRECEDENCE
+//
+// In PostgreSQL, [Like] has higher precedence than [Comparison].
+// In SQLite, the other way around. We follow PostgreSQL here,
+// but it won't make a difference because type safety will prevent you
+// from chaining Like and Comparison.
 type Priority uint8
 
-// https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-PRECEDENCE
 const (
 	Atomic     Priority = 20 // Atomic components (literals, names)
 	Unary      Priority = 19 // unary plus, unary minus
