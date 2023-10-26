@@ -12,3 +12,34 @@ type Expr[T any] interface {
 	Priority() priority.Priority
 	Tokens(dbconf.Config) tokens.Tokens
 }
+
+type exprOperator[T, R any] struct {
+	priority priority.Priority
+	prefix   bool
+	token    tokens.Token
+	left     Expr[T]
+	right    Expr[T]
+}
+
+func (expr exprOperator[T, R]) ExprType() R {
+	return *new(R)
+}
+
+func (expr exprOperator[T, R]) Priority() priority.Priority {
+	return expr.priority
+}
+
+func (expr exprOperator[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
+	ts := tokens.New()
+	if expr.prefix {
+		ts.Add(expr.token)
+	}
+	ts.Extend(expr.left.Tokens(c))
+	if !expr.prefix {
+		ts.Add(expr.token)
+	}
+	if expr.right != nil {
+		ts.Extend(expr.right.Tokens(c))
+	}
+	return ts
+}

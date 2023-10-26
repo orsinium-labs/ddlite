@@ -8,61 +8,21 @@ import (
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
-type tIsNull[T, R any] struct {
-	left   Expr[T]
-	suffix string
-}
-
-func (tIsNull[T, R]) ExprType() R {
-	return *new(R)
-}
-
-func (tIsNull[T, R]) Priority() priority.Priority {
-	return priority.Is
-}
-
-func (expr tIsNull[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
-	ts := tokens.New()
-	ts.Extend(expr.left.Tokens(c))
-	ts.Add(tokens.Keyword(expr.suffix))
-	return ts
-}
-
-type tNot[T, R any] struct {
-	prefix string
-	right  Expr[T]
-}
-
-func (tNot[T, R]) Priority() priority.Priority {
-	return priority.Not
-}
-
-func (tNot[T, R]) ExprType() R {
-	return *new(R)
-}
-
-func (expr tNot[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
-	ts := tokens.New()
-	ts.Add(tokens.Keyword(expr.prefix))
-	ts.Extend(expr.right.Tokens(c))
-	return ts
-}
-
-type tChain struct {
+type exprChain struct {
 	items []Expr[bool]
 	infix string
 	prio  priority.Priority
 }
 
-func (tChain) ExprType() bool {
+func (exprChain) ExprType() bool {
 	return false
 }
 
-func (expr tChain) Priority() priority.Priority {
+func (expr exprChain) Priority() priority.Priority {
 	return expr.prio
 }
 
-func (expr tChain) Tokens(c dbconf.Config) tokens.Tokens {
+func (expr exprChain) Tokens(c dbconf.Config) tokens.Tokens {
 	switch len(expr.items) {
 	case 0:
 		err := fmt.Errorf("operator %s requires at least one item", expr.infix)
@@ -82,15 +42,28 @@ func (expr tChain) Tokens(c dbconf.Config) tokens.Tokens {
 }
 
 func IsNull[T any](val Expr[T]) Expr[bool] {
-	return tIsNull[T, bool]{val, "IS NULL"}
+	return exprOperator[T, bool]{
+		priority: priority.Is,
+		left:     val,
+		token:    tokens.Keyword("IS NULL"),
+	}
 }
 
 func IsNotNull[T any](val Expr[T]) Expr[bool] {
-	return tIsNull[T, bool]{val, "IS NOT NULL"}
+	return exprOperator[T, bool]{
+		priority: priority.Is,
+		left:     val,
+		token:    tokens.Keyword("IS NOT NULL"),
+	}
 }
 
 func Not(val Expr[bool]) Expr[bool] {
-	return tNot[bool, bool]{"NOT", val}
+	return exprOperator[bool, bool]{
+		priority: priority.Not,
+		token:    tokens.Keyword("NOT"),
+		left:     val,
+		prefix:   true,
+	}
 }
 
 // And checks that all given expressions are true.
@@ -100,7 +73,7 @@ func Not(val Expr[bool]) Expr[bool] {
 //	dml.And(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin AND name = "admin"
 func And(items ...Expr[bool]) Expr[bool] {
-	return tChain{items, "AND", priority.And}
+	return exprChain{items, "AND", priority.And}
 }
 
 // Or checks any of the expressions is true.
@@ -110,5 +83,5 @@ func And(items ...Expr[bool]) Expr[bool] {
 //	dml.Or(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin OR name = "admin"
 func Or(items ...Expr[bool]) Expr[bool] {
-	return tChain{items, "OR", priority.Or}
+	return exprChain{items, "OR", priority.Or}
 }
