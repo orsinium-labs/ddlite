@@ -5,6 +5,7 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/dml"
 )
 
@@ -125,7 +126,7 @@ func TestExpr_SQL(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
-			conf := dbconf.New("sqlite3").WithModel(&u)
+			conf := dbconf.New(dialects.SQLite).WithModel(&u)
 			sql, args, err := tc.given.Tokens(conf).SQL(conf)
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 )
 
 func TestCamelToSnake(t *testing.T) {
@@ -32,21 +33,6 @@ func TestSnakeToCamel(t *testing.T) {
 	is.Equal(f("a_user"), "AUser")
 }
 
-func TestNew_Placeholder(t *testing.T) {
-	t.Parallel()
-	is := is.New(t)
-	n := dbconf.New
-	is.Equal(n("sqlite3").Placeholder, dbconf.Question)
-	is.Equal(n("sqlite").Placeholder, dbconf.Question)
-	is.Equal(n("mysql").Placeholder, dbconf.Question)
-	is.Equal(n("postgres").Placeholder, dbconf.Dollar)
-	is.Equal(n("goracle").Placeholder, dbconf.Colon)
-	is.Equal(n("sqlserver").Placeholder, dbconf.AtP)
-	is.Equal(n("SQLServer").Placeholder, dbconf.AtP)
-	is.Equal(n("").Placeholder, dbconf.Question)
-	is.Equal(n("unknown").Placeholder, dbconf.Question)
-}
-
 func TestConfig_WithModel(t *testing.T) {
 	t.Parallel()
 	is := is.New(t)
@@ -55,7 +41,7 @@ func TestConfig_WithModel(t *testing.T) {
 	u1 := User{}
 	u2 := User{}
 
-	c1 := dbconf.New("sqlite3")
+	c1 := dbconf.New(dialects.SQLite)
 	c2 := c1.WithModel(u1)
 	c3 := c2.WithModel(u2)
 	c4 := c1.WithModel(u2)

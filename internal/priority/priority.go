@@ -6,6 +6,7 @@ package priority
 //
 //   - https://www.sqlite.org/lang_expr.html
 //   - https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-PRECEDENCE
+//   - https://dev.mysql.com/doc/refman/8.2/en/operator-precedence.html
 //
 // In PostgreSQL, [Like] has higher precedence than [Comparison].
 // In SQLite, the other way around. We follow PostgreSQL here,

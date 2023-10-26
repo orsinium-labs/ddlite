@@ -5,6 +5,7 @@ import (
 
 	c "github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 )
 
 type ColumnType interface {
@@ -23,18 +24,18 @@ type colType0 struct {
 
 func (c colType0) SQL(conf dbconf.Config) string {
 	switch conf.Dialect {
-	case dbconf.CockroachDB:
+	case dialects.CocroachDB:
 		return c.cocroach
-	case dbconf.MySQL:
+	case dialects.MySQL:
 		return c.mysql
-	case dbconf.OracleDB:
-		return c.oracle
-	case dbconf.PostgreSQL:
+	// case dialects.OracleDB:
+	// 	return c.oracle
+	case dialects.PostgreSQL:
 		return c.postgres
-	case dbconf.SQLite:
+	case dialects.SQLite:
 		return c.sqlite
-	case dbconf.SQLServer:
-		return c.sqlserver
+	// case dialects.SQLServer:
+	// 	return c.sqlserver
 	default:
 		return c.sqlite
 	}

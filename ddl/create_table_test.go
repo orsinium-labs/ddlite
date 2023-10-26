@@ -8,6 +8,7 @@ import (
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/ddl"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
@@ -17,7 +18,7 @@ type tokener interface {
 
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
-	conf := dbconf.New("postgres")
+	conf := dbconf.New(dialects.PostgreSQL)
 	q := ddl.CreateTable("user",
 		ddl.Column("name", dbtypes.Text()),
 		ddl.Column("age", dbtypes.Int8()),
@@ -28,7 +29,7 @@ func TestCreateTable(t *testing.T) {
 }
 
 func TestColumnDef(t *testing.T) {
-	conf := dbconf.New("postgres")
+	conf := dbconf.New(dialects.PostgreSQL)
 	testCases := []struct {
 		def tokener
 		sql string

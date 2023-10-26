@@ -3,35 +3,19 @@ package dbconf
 import (
 	"regexp"
 	"strings"
+
+	"github.com/orsinium-labs/sequel/dialects"
 )
 
 type Dialect rune
 
-const (
-	CockroachDB Dialect = '🪳'
-	MySQL       Dialect = '🐬'
-	OracleDB    Dialect = '👁'
-	PostgreSQL  Dialect = '🐘'
-	SQLite      Dialect = '🪶'
-	SQLServer   Dialect = '🪟'
-)
-
 type NameMapper func(string) string
 
 type Config struct {
-	// Placeholder style for variable binding.
-	//
-	// It varies for different databases. The default placeholder style
-	// is detected based on the passed driver name.
-	Placeholder Placeholder
-
 	// Dialect indicates which syntax should be used for the database.
 	//
 	// The default dialect is detected based on the passed driver name.
-	Dialect Dialect
-
-	// DriverName is the name of the package used as the DB driver.
-	DriverName string
+	Dialect dialects.Dialect
 
 	// ToTable converts Go struct name into DB table name.
 	//
@@ -56,15 +40,15 @@ type Config struct {
 }
 
 // New creates a new config instance for the given DB driver name with good defaults.
-func New(driver string) Config {
-	dialect := dialectForDriver(driver)
+func New(dialect dialects.Dialect) Config {
+	if dialect == nil {
+		panic("dialect must not be nil")
+	}
 	return Config{
-		Placeholder: placeholderForDriver(driver),
-		Dialect:     dialect,
-		DriverName:  driver,
-		ToTable:     CamelToSnake,
-		ToColumn:    CamelToSnake,
-		ToField:     SnakeToCamel,
+		Dialect:  dialect,
+		ToTable:  CamelToSnake,
+		ToColumn: CamelToSnake,
+		ToField:  SnakeToCamel,
 	}
 }
 
@@ -116,40 +100,4 @@ func SnakeToCamel(s string) string {
 		}
 	}
 	return camelCase
-}
-
-// placeholderForDriver infers the correct placeholder for the given driver name.
-func placeholderForDriver(driver string) Placeholder {
-	switch strings.ToLower(driver) {
-	case "postgres", "pgx", "pq", "pq-timeouts", "cloudsqlpostgres", "ql", "nrpostgres", "cockroach":
-		return Dollar
-	case "mysql", "sqlite", "sqlite3", "nrmysql", "nrsqlite3":
-		return Question
-	case "oci8", "ora", "goracle", "oracle", "godror":
-		return Colon
-	case "sqlserver":
-		return AtP
-	default:
-		return Question
-	}
-}
-
-// dialectForDriver infers the correct dialect for the given driver name.
-func dialectForDriver(driver string) Dialect {
-	switch strings.ToLower(driver) {
-	case "cockroach":
-		return CockroachDB
-	case "mysql", "nrmysql":
-		return MySQL
-	case "oci8", "ora", "goracle", "oracle", "godror":
-		return OracleDB
-	case "postgres", "pgx", "pq", "pq-timeouts", "cloudsqlpostgres", "ql", "nrpostgres":
-		return PostgreSQL
-	case "sqlite", "sqlite3", "nrsqlite3":
-		return SQLite
-	case "sqlserver":
-		return SQLServer
-	default:
-		return SQLite
-	}
 }

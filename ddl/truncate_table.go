@@ -2,6 +2,7 @@ package ddl
 
 import (
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
@@ -18,7 +19,7 @@ func TruncateTable(table Safe) tTruncateTable {
 
 func (q tTruncateTable) Tokens(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
-	if conf.Dialect == dbconf.SQLite {
+	if conf.Dialect == dialects.SQLite {
 		// https://www.sqlite.org/lang_delete.html
 		ts.Add(tokens.Keyword("DELETE FROM"))
 	} else {

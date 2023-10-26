@@ -10,6 +10,7 @@ import (
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/ddl"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/dml"
 )
 
@@ -32,7 +33,7 @@ func TestFetchOne(t *testing.T) {
 		ddl.Column("city", dbtypes.Text()).Null(),
 		ddl.Column("tel_code", dbtypes.Int32()),
 	)
-	conf := dbconf.New("sqlite3")
+	conf := dbconf.New(dialects.SQLite)
 	_, err = sequel.Exec(conf, db, schema)
 	is.NoErr(err)
 	tx := db.MustBegin()

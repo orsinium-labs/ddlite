@@ -1,4 +1,4 @@
-package dbconf
+package dialects
 
 import "strconv"
 

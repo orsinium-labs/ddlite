@@ -6,6 +6,7 @@ import (
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbfuncs"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/dml"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
@@ -39,7 +40,7 @@ func TestNumericFuncsSQL(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
 			is := is.New(t)
-			conf := dbconf.New("sqlite3")
+			conf := dbconf.New(dialects.SQLite)
 			sql, args, err := tc.given.Tokens(conf).SQL(conf)
 			is.NoErr(err)
 			is.Equal(sql, tc.sql)

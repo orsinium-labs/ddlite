@@ -26,7 +26,7 @@ func E[T comparable](column *T, value T) Expr[bool] {
 func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
 		priority: priority.Comparison,
-		token:    tokens.Keyword(">"),
+		token:    tokens.Operator(">"),
 		left:     left,
 		right:    right,
 	}
@@ -40,7 +40,7 @@ func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
 		priority: priority.Comparison,
-		token:    tokens.Keyword(">="),
+		token:    tokens.Operator(">="),
 		left:     left,
 		right:    right,
 	}
@@ -54,7 +54,7 @@ func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
 		priority: priority.Comparison,
-		token:    tokens.Keyword("<"),
+		token:    tokens.Operator("<"),
 		left:     left,
 		right:    right,
 	}
@@ -68,7 +68,7 @@ func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
 		priority: priority.Comparison,
-		token:    tokens.Keyword("<="),
+		token:    tokens.Operator("<="),
 		left:     left,
 		right:    right,
 	}
@@ -82,7 +82,7 @@ func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
 		priority: priority.Comparison,
-		token:    tokens.Keyword("="),
+		token:    tokens.Operator("="),
 		left:     left,
 		right:    right,
 	}
@@ -96,7 +96,7 @@ func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 func Neq[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
 		priority: priority.Comparison,
-		token:    tokens.Keyword("<>"),
+		token:    tokens.Operator("<>"),
 		left:     left,
 		right:    right,
 	}
