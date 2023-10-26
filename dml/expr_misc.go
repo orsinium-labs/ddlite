@@ -4,35 +4,44 @@ import (
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/internal/priority"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
-type tSuffix[T, R any] struct {
+type tIsNull[T, R any] struct {
 	left   Expr[T]
 	suffix string
 }
 
-func (tSuffix[T, R]) ExprType() R {
+func (tIsNull[T, R]) ExprType() R {
 	return *new(R)
 }
 
-func (expr tSuffix[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
+func (tIsNull[T, R]) Priority() priority.Priority {
+	return priority.Is
+}
+
+func (expr tIsNull[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
 	ts.Extend(expr.left.Tokens(c))
 	ts.Add(tokens.Keyword(expr.suffix))
 	return ts
 }
 
-type tPrefix[T, R any] struct {
+type tNot[T, R any] struct {
 	prefix string
 	right  Expr[T]
 }
 
-func (tPrefix[T, R]) ExprType() R {
+func (tNot[T, R]) Priority() priority.Priority {
+	return priority.Not
+}
+
+func (tNot[T, R]) ExprType() R {
 	return *new(R)
 }
 
-func (expr tPrefix[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
+func (expr tNot[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
 	ts.Add(tokens.Keyword(expr.prefix))
 	ts.Extend(expr.right.Tokens(c))
@@ -42,10 +51,15 @@ func (expr tPrefix[T, R]) Tokens(c dbconf.Config) tokens.Tokens {
 type tChain struct {
 	items []Expr[bool]
 	infix string
+	prio  priority.Priority
 }
 
 func (tChain) ExprType() bool {
 	return false
+}
+
+func (expr tChain) Priority() priority.Priority {
+	return expr.prio
 }
 
 func (expr tChain) Tokens(c dbconf.Config) tokens.Tokens {
@@ -68,15 +82,15 @@ func (expr tChain) Tokens(c dbconf.Config) tokens.Tokens {
 }
 
 func IsNull[T any](val Expr[T]) Expr[bool] {
-	return tSuffix[T, bool]{val, "IS NULL"}
+	return tIsNull[T, bool]{val, "IS NULL"}
 }
 
 func IsNotNull[T any](val Expr[T]) Expr[bool] {
-	return tSuffix[T, bool]{val, "IS NOT NULL"}
+	return tIsNull[T, bool]{val, "IS NOT NULL"}
 }
 
 func Not(val Expr[bool]) Expr[bool] {
-	return tPrefix[bool, bool]{"NOT", val}
+	return tNot[bool, bool]{"NOT", val}
 }
 
 // And checks that all given expressions are true.
@@ -86,7 +100,7 @@ func Not(val Expr[bool]) Expr[bool] {
 //	dml.And(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin AND name = "admin"
 func And(items ...Expr[bool]) Expr[bool] {
-	return tChain{items, "AND"}
+	return tChain{items, "AND", priority.And}
 }
 
 // Or checks any of the expressions is true.
@@ -96,5 +110,5 @@ func And(items ...Expr[bool]) Expr[bool] {
 //	dml.Or(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin OR name = "admin"
 func Or(items ...Expr[bool]) Expr[bool] {
-	return tChain{items, "OR"}
+	return tChain{items, "OR", priority.Or}
 }

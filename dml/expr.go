@@ -4,12 +4,14 @@ import (
 	"github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
+	"github.com/orsinium-labs/sequel/internal/priority"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 // Expr is an SQL expression. I can be used as part of SQL queries.
 type Expr[T any] interface {
 	ExprType() T
+	Priority() priority.Priority
 	Tokens(dbconf.Config) tokens.Tokens
 }
 
@@ -23,6 +25,10 @@ type tFunc[A, R any] struct {
 // F is a stored function.
 func F[A, T any](name string, args ...Expr[A]) Expr[T] {
 	return tFunc[A, T]{Name: name, Args: args}
+}
+
+func (tFunc[A, R]) Priority() priority.Priority {
+	return priority.Atomic
 }
 
 func (tFunc[A, R]) ExprType() R {
@@ -60,6 +66,10 @@ func F2[A1, A2, T any](name string, arg1 Expr[A1], arg2 Expr[A2]) Expr[T] {
 	return tFunc2[A1, A2, T]{Name: name, Arg1: arg1, Arg2: arg2}
 }
 
+func (tFunc2[A1, A2, R]) Priority() priority.Priority {
+	return priority.Atomic
+}
+
 func (tFunc2[A1, A2, R]) ExprType() R {
 	return *new(R)
 }
@@ -91,6 +101,10 @@ func M[T any](val constraints.Option[T]) Expr[T] {
 	return tCol[T]{val: val}
 }
 
+func (tCol[T]) Priority() priority.Priority {
+	return priority.Atomic
+}
+
 func (tCol[T]) ExprType() T {
 	return *new(T)
 }
@@ -107,6 +121,10 @@ type tVal[T any] struct {
 // V is a literal value.
 func V[T any](val T) Expr[T] {
 	return tVal[T]{val: val}
+}
+
+func (tVal[T]) Priority() priority.Priority {
+	return priority.Atomic
 }
 
 func (tVal[T]) ExprType() T {
