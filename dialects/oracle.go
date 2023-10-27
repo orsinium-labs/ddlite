@@ -1,12 +1,14 @@
 package dialects
 
+import "strconv"
+
 var Oracle Dialect = oracle{}
 
 type oracle struct{}
 
 // Placeholder implements [Dialect].
-func (oracle) Placeholder() Placeholder {
-	return Colon
+func (oracle) Placeholder(pos int) string {
+	return ":" + strconv.Itoa(pos+1)
 }
 
 // Precedence implements [Dialect].

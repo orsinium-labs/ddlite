@@ -5,8 +5,8 @@ var MySQL Dialect = mysql{}
 type mysql struct{}
 
 // Placeholder implements [Dialect].
-func (mysql) Placeholder() Placeholder {
-	return Question
+func (mysql) Placeholder(pos int) string {
+	return "?"
 }
 
 // Precedence implements [Dialect].

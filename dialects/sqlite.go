@@ -5,8 +5,8 @@ var SQLite Dialect = sqlite{}
 type sqlite struct{}
 
 // Placeholder implements [Dialect].
-func (sqlite) Placeholder() Placeholder {
-	return Question
+func (sqlite) Placeholder(int) string {
+	return "?"
 }
 
 // Precedence implements [Dialect].

@@ -1,12 +1,14 @@
 package dialects
 
+import "strconv"
+
 var PostgreSQL Dialect = psql{}
 
 type psql struct{}
 
 // Placeholder implements [Dialect].
-func (psql) Placeholder() Placeholder {
-	return Dollar
+func (psql) Placeholder(pos int) string {
+	return "$" + strconv.Itoa(pos+1)
 }
 
 // Precedence implements [Dialect].

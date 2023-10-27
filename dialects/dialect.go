@@ -16,7 +16,7 @@ type Dialect interface {
 	Precedence(string) uint8
 
 	// Placeholder style for variable binding.
-	Placeholder() Placeholder
+	Placeholder(pos int) string
 }
 
 // const (

@@ -1,12 +1,14 @@
 package dialects
 
+import "strconv"
+
 var SQLServer Dialect = sqlserver{}
 
 type sqlserver struct{}
 
 // Placeholder implements [Dialect].
-func (sqlserver) Placeholder() Placeholder {
-	return AtP
+func (sqlserver) Placeholder(pos int) string {
+	return "@p" + strconv.Itoa(pos+1)
 }
 
 // Precedence implements [Dialect].

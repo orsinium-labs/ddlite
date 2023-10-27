@@ -1,12 +1,14 @@
 package dialects
 
+import "strconv"
+
 var CocroachDB Dialect = cocroach{}
 
 type cocroach struct{}
 
 // Placeholder implements [Dialect].
-func (cocroach) Placeholder() Placeholder {
-	return Dollar
+func (cocroach) Placeholder(pos int) string {
+	return "$" + strconv.Itoa(pos+1)
 }
 
 // Precedence implements [Dialect].
