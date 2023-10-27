@@ -28,8 +28,8 @@ func (c colType0) SQL(conf dbconf.Config) string {
 		return c.cocroach
 	case dialects.MySQL:
 		return c.mysql
-	// case dialects.OracleDB:
-	// 	return c.oracle
+	case dialects.Oracle:
+		return c.oracle
 	case dialects.PostgreSQL:
 		return c.postgres
 	case dialects.SQLite:
