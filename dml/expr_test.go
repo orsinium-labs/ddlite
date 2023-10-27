@@ -73,8 +73,13 @@ func TestExpr_SQL(t *testing.T) {
 			args:  []any{18, 19},
 		},
 		{
-			given: dml.And(age18, age19, dml.E(&u.name, "A")),
+			given: dml.And(dml.And(age18, age19), dml.E(&u.name, "A")),
 			sql:   "age = ? AND age = ? AND name = ?",
+			args:  []any{18, 19, "A"},
+		},
+		{
+			given: dml.And(age18, dml.And(age19, dml.E(&u.name, "A"))),
+			sql:   "age = ? AND (age = ? AND name = ?)",
 			args:  []any{18, 19, "A"},
 		},
 		{
@@ -82,11 +87,11 @@ func TestExpr_SQL(t *testing.T) {
 			sql:   "age = ? AND age = ? OR age = ? AND age = ?",
 			args:  []any{18, 18, 19, 19},
 		},
-		// {
-		// 	given: dml.And(dml.Or(age18, age18), dml.Or(age19, age19)),
-		// 	sql:   "(age = ? OR age = ?) AND (age = ? OR age = ?)",
-		// 	args:  []any{18, 18, 19, 19},
-		// },
+		{
+			given: dml.And(dml.Or(age18, age18), dml.Or(age19, age19)),
+			sql:   "(age = ? OR age = ?) AND (age = ? OR age = ?)",
+			args:  []any{18, 18, 19, 19},
+		},
 		{
 			given: dml.Not(age18),
 			sql:   "NOT age = ?",
