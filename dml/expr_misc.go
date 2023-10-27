@@ -4,22 +4,20 @@ import (
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/internal/priority"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type exprChain struct {
 	items []Expr[bool]
 	infix string
-	prio  priority.Priority
 }
 
 func (exprChain) ExprType() bool {
 	return false
 }
 
-func (expr exprChain) Priority() priority.Priority {
-	return expr.prio
+func (expr exprChain) Precedence(c dbconf.Config) uint8 {
+	return c.Dialect.Precedence(expr.infix)
 }
 
 func (expr exprChain) Tokens(c dbconf.Config) tokens.Tokens {
@@ -43,24 +41,24 @@ func (expr exprChain) Tokens(c dbconf.Config) tokens.Tokens {
 
 func IsNull[T any](val Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Is,
 		left:     val,
-		token:    tokens.Keyword("IS NULL"),
+		wrapper:  tokens.Keyword,
+		operator: "IS NULL",
 	}
 }
 
 func IsNotNull[T any](val Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Is,
 		left:     val,
-		token:    tokens.Keyword("IS NOT NULL"),
+		wrapper:  tokens.Keyword,
+		operator: "IS NOT NULL",
 	}
 }
 
 func Not(val Expr[bool]) Expr[bool] {
 	return exprOperator[bool, bool]{
-		priority: priority.Not,
-		token:    tokens.Keyword("NOT"),
+		wrapper:  tokens.Keyword,
+		operator: "NOT",
 		left:     val,
 		prefix:   true,
 	}
@@ -73,7 +71,7 @@ func Not(val Expr[bool]) Expr[bool] {
 //	dml.And(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin AND name = "admin"
 func And(items ...Expr[bool]) Expr[bool] {
-	return exprChain{items, "AND", priority.And}
+	return exprChain{items, "AND"}
 }
 
 // Or checks any of the expressions is true.
@@ -83,5 +81,5 @@ func And(items ...Expr[bool]) Expr[bool] {
 //	dml.Or(dml.C(&u.is_admin), dml.E(&u.name, "admin"))
 //	// SQL: is_admin OR name = "admin"
 func Or(items ...Expr[bool]) Expr[bool] {
-	return exprChain{items, "OR", priority.Or}
+	return exprChain{items, "OR"}
 }

@@ -180,6 +180,6 @@ func (token tBind) sql(conf dbconf.Config, pos int) (string, []any, error) {
 	if pos < 0 {
 		panic("negative position")
 	}
-	ph := conf.Dialect.Placeholder().Make(pos)
+	ph := conf.Dialect.Placeholder(pos)
 	return ph, []any{token.val}, nil
 }

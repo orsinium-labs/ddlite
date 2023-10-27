@@ -1,7 +1,6 @@
 package dml
 
 import (
-	"github.com/orsinium-labs/sequel/internal/priority"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
@@ -25,8 +24,8 @@ func E[T comparable](column *T, value T) Expr[bool] {
 //	dml.Gt(dml.C(&u.age), dml.V(18)) // SQL: age > 18
 func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Comparison,
-		token:    tokens.Operator(">"),
+		wrapper:  tokens.Operator,
+		operator: ">",
 		left:     left,
 		right:    right,
 	}
@@ -39,8 +38,8 @@ func Gt[T comparable](left, right Expr[T]) Expr[bool] {
 //	dml.Gte(dml.C(&u.age), dml.V(18)) // SQL: age >= 18
 func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Comparison,
-		token:    tokens.Operator(">="),
+		wrapper:  tokens.Operator,
+		operator: ">=",
 		left:     left,
 		right:    right,
 	}
@@ -53,8 +52,8 @@ func Gte[T comparable](left, right Expr[T]) Expr[bool] {
 //	dml.Lt(dml.C(&u.age), dml.V(18)) // SQL: age < 18
 func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Comparison,
-		token:    tokens.Operator("<"),
+		wrapper:  tokens.Operator,
+		operator: "<",
 		left:     left,
 		right:    right,
 	}
@@ -67,8 +66,8 @@ func Lt[T comparable](left, right Expr[T]) Expr[bool] {
 //	dml.Lte(dml.C(&u.age), dml.V(18)) // SQL: age <= 18
 func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Comparison,
-		token:    tokens.Operator("<="),
+		wrapper:  tokens.Operator,
+		operator: "<=",
 		left:     left,
 		right:    right,
 	}
@@ -81,8 +80,8 @@ func Lte[T comparable](left, right Expr[T]) Expr[bool] {
 //	dml.Eq(&u.created_at, &u.updated_at) // SQL: created_at = updated_at
 func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Comparison,
-		token:    tokens.Operator("="),
+		wrapper:  tokens.Operator,
+		operator: "=",
 		left:     left,
 		right:    right,
 	}
@@ -95,8 +94,8 @@ func Eq[T comparable](left, right Expr[T]) Expr[bool] {
 //	dml.Neq(dml.C(&u.age), dml.V(18)) // SQL: age != 18
 func Neq[T comparable](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Comparison,
-		token:    tokens.Operator("<>"),
+		wrapper:  tokens.Operator,
+		operator: "<>",
 		left:     left,
 		right:    right,
 	}
@@ -104,8 +103,8 @@ func Neq[T comparable](left, right Expr[T]) Expr[bool] {
 
 func Like(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("LIKE"),
+		wrapper:  tokens.Keyword,
+		operator: "LIKE",
 		left:     left,
 		right:    right,
 		//
@@ -114,8 +113,8 @@ func Like(left, right Expr[string]) Expr[bool] {
 
 func NotLike(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("NOT LIKE"),
+		wrapper:  tokens.Keyword,
+		operator: "NOT LIKE",
 		left:     left,
 		right:    right,
 	}
@@ -123,8 +122,8 @@ func NotLike(left, right Expr[string]) Expr[bool] {
 
 func Glob(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("GLOB"),
+		wrapper:  tokens.Keyword,
+		operator: "GLOB",
 		left:     left,
 		right:    right,
 	}
@@ -132,8 +131,8 @@ func Glob(left, right Expr[string]) Expr[bool] {
 
 func NotGlob(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("NOT GLOB"),
+		wrapper:  tokens.Keyword,
+		operator: "NOT GLOB",
 		left:     left,
 		right:    right,
 	}
@@ -141,8 +140,8 @@ func NotGlob(left, right Expr[string]) Expr[bool] {
 
 func RegExp(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("REGEXP"),
+		wrapper:  tokens.Keyword,
+		operator: "REGEXP",
 		left:     left,
 		right:    right,
 	}
@@ -150,8 +149,8 @@ func RegExp(left, right Expr[string]) Expr[bool] {
 
 func NotRegExp(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("NOT REGEXP"),
+		wrapper:  tokens.Keyword,
+		operator: "NOT REGEXP",
 		left:     left,
 		right:    right,
 	}
@@ -159,8 +158,8 @@ func NotRegExp(left, right Expr[string]) Expr[bool] {
 
 func Match(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("MATCH"),
+		wrapper:  tokens.Keyword,
+		operator: "MATCH",
 		left:     left,
 		right:    right,
 	}
@@ -168,8 +167,8 @@ func Match(left, right Expr[string]) Expr[bool] {
 
 func NotMatch(left, right Expr[string]) Expr[bool] {
 	return exprOperator[string, bool]{
-		priority: priority.Like,
-		token:    tokens.Keyword("NOT MATCH"),
+		wrapper:  tokens.Keyword,
+		operator: "NOT MATCH",
 		left:     left,
 		right:    right,
 	}
@@ -177,8 +176,8 @@ func NotMatch(left, right Expr[string]) Expr[bool] {
 
 func IsDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Is,
-		token:    tokens.Keyword("IS DISTINCT FROM"),
+		wrapper:  tokens.Keyword,
+		operator: "IS DISTINCT FROM",
 		left:     left,
 		right:    right,
 	}
@@ -187,8 +186,8 @@ func IsDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 // Is equal to value or both are nulls (missing data) (`IS NOT DISTINCT FROM`)
 func IsNotDistinctFrom[T any](left, right Expr[T]) Expr[bool] {
 	return exprOperator[T, bool]{
-		priority: priority.Is,
-		token:    tokens.Keyword("IS NOT DISTINCT FROM"),
+		wrapper:  tokens.Keyword,
+		operator: "IS NOT DISTINCT FROM",
 		left:     left,
 		right:    right,
 	}

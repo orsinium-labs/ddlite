@@ -2,7 +2,6 @@ package dml
 
 import (
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/internal/priority"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
@@ -32,8 +31,8 @@ func (s SwitchBuilder[T, R]) Else(res Expr[R]) SwitchBuilder[T, R] {
 	return s
 }
 
-func (SwitchBuilder[T, R]) Priority() priority.Priority {
-	return priority.Atomic
+func (SwitchBuilder[T, R]) Precedence(c dbconf.Config) uint8 {
+	return c.Dialect.Precedence("CASE")
 }
 
 func (SwitchBuilder[T, R]) ExprType() R {
