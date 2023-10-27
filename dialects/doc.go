@@ -2,17 +2,12 @@
 //
 // Built-in dialects:
 //
-//   - [CocroachDB]
-//   - [MySQL]
-//   - [PostgreSQL]
-//   - [SQLite]
+//   - 🪳 [CocroachDB]
+//   - 🐬 [MySQL]
+//   - 👁 [Oracle]
+//   - 🐘 [PostgreSQL]
+//   - 🪶 [SQLite]
+//   - 🪟 [SQLServer]
 //
 // Implement the [Dialect] interface to add a new dialect.
-//
-// Placeholder styles:
-//
-//   - [Question] (PostgreSQL, CocroachDB)
-//   - [Dollar] (MySQL, SQLite)
-//   - [Colon] (Oracle)
-//   - [AtP] (Microsoft SQL Server)
 package dialects

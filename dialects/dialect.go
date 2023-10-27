@@ -15,15 +15,6 @@ type Dialect interface {
 	// in parenthesis.
 	Precedence(string) uint8
 
-	// Placeholder style for variable binding.
+	// Placeholder for variable binding.
 	Placeholder(pos int) string
 }
-
-// const (
-// 	CockroachDB Dialect = '🪳'
-// 	MySQL       Dialect = '🐬'
-// 	OracleDB    Dialect = '👁'
-// 	PostgreSQL  Dialect = '🐘'
-// 	SQLite      Dialect = '🪶'
-// 	SQLServer   Dialect = '🪟'
-// )
