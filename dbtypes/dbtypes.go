@@ -34,8 +34,8 @@ func (c colType0) SQL(conf dbconf.Config) string {
 		return c.postgres
 	case dialects.SQLite:
 		return c.sqlite
-	// case dialects.SQLServer:
-	// 	return c.sqlserver
+	case dialects.SQLServer:
+		return c.sqlserver
 	default:
 		return c.sqlite
 	}
