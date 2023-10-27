@@ -10,9 +10,8 @@ func (psql) Placeholder() Placeholder {
 }
 
 // Precedence implements [Dialect].
-func (psql) Precedence(op string) (uint8, bool) {
-	prec, ok := psqlPrec[op]
-	return prec, ok
+func (psql) Precedence(op string) uint8 {
+	return psqlPrec[op]
 }
 
 func (psql) String() string {

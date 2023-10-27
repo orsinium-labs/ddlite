@@ -10,9 +10,8 @@ func (cocroach) Placeholder() Placeholder {
 }
 
 // Precedence implements [Dialect].
-func (cocroach) Precedence(op string) (uint8, bool) {
-	prec, ok := psqlPrec[op]
-	return prec, ok
+func (cocroach) Precedence(op string) uint8 {
+	return psqlPrec[op]
 }
 
 func (cocroach) String() string {

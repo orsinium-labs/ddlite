@@ -10,9 +10,8 @@ func (mysql) Placeholder() Placeholder {
 }
 
 // Precedence implements [Dialect].
-func (mysql) Precedence(op string) (uint8, bool) {
-	prec, ok := mysqlPrec[op]
-	return prec, ok
+func (mysql) Precedence(op string) uint8 {
+	return mysqlPrec[op]
 }
 
 func (mysql) String() string {

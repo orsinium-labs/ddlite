@@ -10,9 +10,8 @@ func (sqlserver) Placeholder() Placeholder {
 }
 
 // Precedence implements [Dialect].
-func (sqlserver) Precedence(op string) (uint8, bool) {
-	prec, ok := sqlserverPrec[op]
-	return prec, ok
+func (sqlserver) Precedence(op string) uint8 {
+	return sqlserverPrec[op]
 }
 
 func (sqlserver) String() string {

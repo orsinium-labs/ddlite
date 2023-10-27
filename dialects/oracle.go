@@ -10,9 +10,8 @@ func (oracle) Placeholder() Placeholder {
 }
 
 // Precedence implements [Dialect].
-func (oracle) Precedence(op string) (uint8, bool) {
-	prec, ok := oraclePrec[op]
-	return prec, ok
+func (oracle) Precedence(op string) uint8 {
+	return oraclePrec[op]
 }
 
 func (oracle) String() string {

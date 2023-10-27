@@ -10,9 +10,8 @@ func (sqlite) Placeholder() Placeholder {
 }
 
 // Precedence implements [Dialect].
-func (sqlite) Precedence(op string) (uint8, bool) {
-	prec, ok := sqlitePrec[op]
-	return prec, ok
+func (sqlite) Precedence(op string) uint8 {
+	return sqlitePrec[op]
 }
 
 func (sqlite) String() string {
