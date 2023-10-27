@@ -16,9 +16,9 @@ func Set[T any](field *T, value Expr[T]) tChange {
 }
 
 type tUpdate[T internal.Model] struct {
+	whereClause
 	model   *T
 	changes []tChange
-	conds   []Expr[bool]
 }
 
 func Update[T internal.Model](model *T, changes ...tChange) tUpdate[T] {
@@ -28,8 +28,8 @@ func Update[T internal.Model](model *T, changes ...tChange) tUpdate[T] {
 	}
 }
 
-func (u tUpdate[T]) Where(conds ...Expr[bool]) tUpdate[T] {
-	u.conds = append(u.conds, conds...)
+func (u tUpdate[T]) Where(predicates ...Expr[bool]) tUpdate[T] {
+	u.predicates = append(u.predicates, predicates...)
 	return u
 }
 
@@ -54,15 +54,6 @@ func (u tUpdate[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 	}
 
 	// generate WHERE clause
-	if len(u.conds) != 0 {
-		ts.Add(tokens.Keyword("WHERE"))
-		for i, pred := range u.conds {
-			if i > 0 {
-				ts.Add(tokens.Keyword("AND"))
-			}
-			ts.Extend(pred.Tokens(conf))
-		}
-	}
-
+	ts.Extend(u.buildWhere(conf))
 	return ts
 }

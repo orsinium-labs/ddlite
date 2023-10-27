@@ -12,8 +12,8 @@ import (
 type Scanner[T internal.Model] func(*sql.Rows) error
 
 type tSelectModel[T internal.Model] struct {
+	whereClause
 	fields []any
-	conds  []Expr[bool]
 	model  *T
 }
 
@@ -21,8 +21,8 @@ func Select[T internal.Model](model *T, fields ...any) tSelectModel[T] {
 	return tSelectModel[T]{model: model, fields: fields}
 }
 
-func (s tSelectModel[T]) Where(conds ...Expr[bool]) tSelectModel[T] {
-	s.conds = append(s.conds, conds...)
+func (s tSelectModel[T]) Where(predicates ...Expr[bool]) tSelectModel[T] {
+	s.predicates = append(s.predicates, predicates...)
 	return s
 }
 
@@ -44,17 +44,7 @@ func (s tSelectModel[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 		tokens.Keyword("FROM"),
 		internal.GetTableName(conf, s.model),
 	)
-
-	if len(s.conds) != 0 {
-		ts.Add(tokens.Keyword("WHERE"))
-		for i, pred := range s.conds {
-			if i > 0 {
-				ts.Add(tokens.Keyword("AND"))
-			}
-			ts.Extend(pred.Tokens(conf))
-		}
-	}
-
+	ts.Extend(s.buildWhere(conf))
 	return ts
 }
 

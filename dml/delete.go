@@ -7,16 +7,16 @@ import (
 )
 
 type tDelete[T internal.Model] struct {
+	whereClause
 	model *T
-	conds []Expr[bool]
 }
 
 func Delete[T internal.Model](model *T) tDelete[T] {
 	return tDelete[T]{model: model}
 }
 
-func (d tDelete[T]) Where(conds ...Expr[bool]) tDelete[T] {
-	d.conds = append(d.conds, conds...)
+func (d tDelete[T]) Where(predicates ...Expr[bool]) tDelete[T] {
+	d.predicates = append(d.predicates, predicates...)
 	return d
 }
 
@@ -31,16 +31,6 @@ func (d tDelete[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 		tokens.Keyword("DELETE FROM"),
 		internal.GetTableName(conf, d.model),
 	)
-
-	if len(d.conds) != 0 {
-		ts.Add(tokens.Keyword("WHERE"))
-		for i, pred := range d.conds {
-			if i > 0 {
-				ts.Add(tokens.Keyword("AND"))
-			}
-			ts.Extend(pred.Tokens(conf))
-		}
-	}
-
+	ts.Extend(d.buildWhere(conf))
 	return ts
 }
