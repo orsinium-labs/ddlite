@@ -32,3 +32,22 @@ func (c whereClause) buildWhere(conf dbconf.Config) tokens.Tokens {
 	}
 	return ts
 }
+
+type limitClause struct {
+	limit  Expr[int]
+	offset Expr[int]
+}
+
+func (c limitClause) buildLimit(conf dbconf.Config) tokens.Tokens {
+	ts := tokens.New()
+	if c.limit != nil {
+		ts.Add(tokens.Keyword("LIMIT"))
+		ts.Extend(c.limit.Tokens(conf))
+	}
+	if c.offset != nil {
+		ts.Add(tokens.Keyword("OFFSET"))
+		ts.Extend(c.offset.Tokens(conf))
+	}
+	return ts
+
+}

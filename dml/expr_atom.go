@@ -112,7 +112,9 @@ type tVal[T any] struct {
 	val T
 }
 
-// V is a literal value.
+// V is a value.
+//
+// In the generated SQL, it will be represented as a bind parameter.
 func V[T any](val T) Expr[T] {
 	return tVal[T]{val: val}
 }
@@ -145,6 +147,13 @@ func (expr cast[From, To]) Tokens(c dbconf.Config) tokens.Tokens {
 	return expr.orig.Tokens(c)
 }
 
+// Cast changes the type of the expression.
+//
+// It doesn't affect the generated SQL expression. It's an escape hatch
+// from type safety when enforced types stand on your way.
+// For example, when a function expects Expr[int] because it's an INTEGER
+// in the database but you use a custom Decimal type to represent that number,
+// you can use Cast to convert Expr[Decimal] into Expr[int].
 func Cast[To, From any](expr Expr[From]) Expr[To] {
 	return cast[From, To]{expr}
 }
