@@ -4,7 +4,7 @@
 //
 // Basic expression constructors:
 //
-//   - [V] is a literal value
+//   - [V] is a value from a variable
 //   - [C] is a column
 //   - [M] is a column that can be NULL
 //   - [F] is a function call (all arguments have the same type)
@@ -40,6 +40,8 @@
 //   - [NotMatch] is "NOT MATCH"
 //   - [IsDistinctFrom] is "IS DISTINCT FROM"
 //   - [IsNotDistinctFrom] is "IS NOT DISTINCT FROM"
+//
+// [Cast] is a helper function to change the type of an expression.
 //
 // And lastly, [Switch] and [SwitchBy] are "CASE", the SQL equivalent
 // of the "switch" statement from Go.

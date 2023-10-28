@@ -53,7 +53,7 @@ func (c limit) build(conf dbconf.Config) tokens.Tokens {
 }
 
 type order struct {
-	ords []iOrdering
+	ords []OrderingBuilder
 }
 
 func (c order) build(conf dbconf.Config) tokens.Tokens {

@@ -36,7 +36,7 @@ func (s tSelectModel[T]) Where(predicates ...Expr[bool]) tSelectModel[T] {
 // OrderBy adds ORDER BY clause to the SELECT statement.
 //
 // The arguments must be constructed using the [Ordering] function.
-func (s tSelectModel[T]) OrderBy(ords ...iOrdering) tSelectModel[T] {
+func (s tSelectModel[T]) OrderBy(ords ...OrderingBuilder) tSelectModel[T] {
 	s.order.ords = ords
 	return s
 }
