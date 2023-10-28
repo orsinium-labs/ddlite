@@ -128,3 +128,23 @@ func (tVal[T]) ExprType() T {
 func (val tVal[T]) Tokens(dbconf.Config) tokens.Tokens {
 	return tokens.New(tokens.Bind(val.val))
 }
+
+type cast[From, To any] struct {
+	orig Expr[From]
+}
+
+func (expr cast[From, To]) Precedence(c dbconf.Config) uint8 {
+	return expr.orig.Precedence(c)
+}
+
+func (cast[From, To]) ExprType() To {
+	return *new(To)
+}
+
+func (expr cast[From, To]) Tokens(c dbconf.Config) tokens.Tokens {
+	return expr.orig.Tokens(c)
+}
+
+func Cast[To, From any](expr Expr[From]) Expr[To] {
+	return cast[From, To]{expr}
+}
