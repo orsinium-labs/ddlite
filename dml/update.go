@@ -16,9 +16,9 @@ func Set[T any](field *T, value Expr[T]) tChange {
 }
 
 type tUpdate[T internal.Model] struct {
-	whereClause
-	model   *T
-	changes []tChange
+	where             // WHERE clause
+	model   *T        // the target table
+	changes []tChange // update operations (SET clause)
 }
 
 func Update[T internal.Model](model *T, changes ...tChange) tUpdate[T] {
@@ -54,6 +54,6 @@ func (u tUpdate[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 	}
 
 	// generate WHERE clause
-	ts.Extend(u.buildWhere(conf))
+	ts.Extend(u.where.build(conf))
 	return ts
 }

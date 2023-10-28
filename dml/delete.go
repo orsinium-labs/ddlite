@@ -7,8 +7,8 @@ import (
 )
 
 type tDelete[T internal.Model] struct {
-	whereClause
-	model *T
+	where    // WHERE clause
+	model *T // the target table
 }
 
 func Delete[T internal.Model](model *T) tDelete[T] {
@@ -31,6 +31,6 @@ func (d tDelete[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 		tokens.Keyword("DELETE FROM"),
 		internal.GetTableName(conf, d.model),
 	)
-	ts.Extend(d.buildWhere(conf))
+	ts.Extend(d.where.build(conf))
 	return ts
 }

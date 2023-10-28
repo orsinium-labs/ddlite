@@ -5,11 +5,11 @@ import (
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
-type whereClause struct {
+type where struct {
 	predicates []Expr[bool]
 }
 
-func (c whereClause) buildWhere(conf dbconf.Config) tokens.Tokens {
+func (c where) build(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
 	if len(c.predicates) == 0 {
 		return ts
@@ -33,12 +33,12 @@ func (c whereClause) buildWhere(conf dbconf.Config) tokens.Tokens {
 	return ts
 }
 
-type limitClause struct {
+type limit struct {
 	limit  Expr[int]
 	offset Expr[int]
 }
 
-func (c limitClause) buildLimit(conf dbconf.Config) tokens.Tokens {
+func (c limit) build(conf dbconf.Config) tokens.Tokens {
 	ts := tokens.New()
 	if c.limit != nil {
 		ts.Add(tokens.Keyword("LIMIT"))

@@ -12,10 +12,10 @@ import (
 type Scanner[T internal.Model] func(*sql.Rows) error
 
 type tSelectModel[T internal.Model] struct {
-	whereClause
-	limitClause
-	fields []any
-	model  *T
+	where        // WHERE clause
+	limit        // LIMIT and OFFSET clauses
+	fields []any // columns to select
+	model  *T    // the table to select from (FROM clause)
 }
 
 func Select[T internal.Model](model *T, fields ...any) tSelectModel[T] {
@@ -28,12 +28,12 @@ func (s tSelectModel[T]) Where(predicates ...Expr[bool]) tSelectModel[T] {
 }
 
 func (s tSelectModel[T]) Limit(expr Expr[int]) tSelectModel[T] {
-	s.limit = expr
+	s.limit.limit = expr
 	return s
 }
 
 func (s tSelectModel[T]) Offset(expr Expr[int]) tSelectModel[T] {
-	s.offset = expr
+	s.limit.offset = expr
 	return s
 }
 
@@ -55,8 +55,8 @@ func (s tSelectModel[T]) Tokens(conf dbconf.Config) tokens.Tokens {
 		tokens.Keyword("FROM"),
 		internal.GetTableName(conf, s.model),
 	)
-	ts.Extend(s.buildWhere(conf))
-	ts.Extend(s.buildLimit(conf))
+	ts.Extend(s.where.build(conf))
+	ts.Extend(s.limit.build(conf))
 	return ts
 }
 
