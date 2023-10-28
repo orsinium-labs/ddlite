@@ -51,3 +51,23 @@ func (c limit) build(conf dbconf.Config) tokens.Tokens {
 	return ts
 
 }
+
+type order struct {
+	ords []iOrdering
+}
+
+func (c order) build(conf dbconf.Config) tokens.Tokens {
+	ts := tokens.New()
+	if len(c.ords) == 0 {
+		return ts
+	}
+	ts.Add(tokens.Keyword("ORDER BY"))
+	for i, ord := range c.ords {
+		if i > 0 {
+			ts.Add(tokens.Comma())
+		}
+		ts.Extend(ord.Tokens(conf))
+	}
+	return ts
+
+}

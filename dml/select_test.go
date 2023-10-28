@@ -11,7 +11,7 @@ import (
 	"github.com/orsinium-labs/sequel/dml"
 )
 
-func TestSelectString(t *testing.T) {
+func TestSelect_SQL(t *testing.T) {
 	is := is.New(t)
 
 	type User struct {
