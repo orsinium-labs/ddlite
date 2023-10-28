@@ -1,7 +1,9 @@
 package dml
 
 import (
-	"github.com/orsinium-labs/sequel/constraints"
+	"strconv"
+
+	c "github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
 	"github.com/orsinium-labs/sequel/internal/tokens"
@@ -91,7 +93,7 @@ func C[T any](val *T) Expr[T] {
 }
 
 // M is a column wrapped into Option/Optional/Maybe monad.
-func M[T any](val constraints.Option[T]) Expr[T] {
+func M[T any](val c.Option[T]) Expr[T] {
 	return tCol[T]{val: val}
 }
 
@@ -112,7 +114,7 @@ type tVal[T any] struct {
 	val T
 }
 
-// V is a value.
+// V is a variable value.
 //
 // In the generated SQL, it will be represented as a bind parameter.
 func V[T any](val T) Expr[T] {
@@ -129,6 +131,32 @@ func (tVal[T]) ExprType() T {
 
 func (val tVal[T]) Tokens(dbconf.Config) tokens.Tokens {
 	return tokens.New(tokens.Bind(val.val))
+}
+
+type intLiteral int
+
+// LI is a literal (constant) int value.
+//
+// Unlike [V], it will be added right into the SQL expression, without bind placeholders.
+func LI(val intLiteral) Expr[int] {
+	return tIntLit{val: int(val)}
+}
+
+type tIntLit struct {
+	val int
+}
+
+func (tIntLit) Precedence(dbconf.Config) uint8 {
+	return precedenceAtomic
+}
+
+func (tIntLit) ExprType() int {
+	return 0
+}
+
+func (val tIntLit) Tokens(dbconf.Config) tokens.Tokens {
+	repr := strconv.Itoa(val.val)
+	return tokens.New(tokens.Raw(repr))
 }
 
 type cast[From, To any] struct {

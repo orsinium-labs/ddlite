@@ -127,6 +127,11 @@ func TestExpr_SQL(t *testing.T) {
 			sql:   "(NOT age = ?) IS NULL",
 			args:  []any{18},
 		},
+		{
+			given: dml.Eq(dml.C(&u.age), dml.LI(13)),
+			sql:   "age = 13",
+			args:  []any{},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.sql, func(t *testing.T) {
