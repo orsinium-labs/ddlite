@@ -4,7 +4,8 @@
 //
 // Basic expression constructors:
 //
-//   - [V] is a value from a variable
+//   - [V] is an unsafe value from a variable
+//   - [L] is a safe value from a literal or constant
 //   - [C] is a column
 //   - [M] is a column that can be NULL
 //   - [F] is a function call (all arguments have the same type)

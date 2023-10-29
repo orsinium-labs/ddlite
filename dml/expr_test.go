@@ -128,7 +128,7 @@ func TestExpr_SQL(t *testing.T) {
 			args:  []any{18},
 		},
 		{
-			given: dml.Eq(dml.C(&u.age), dml.LI(13)),
+			given: dml.Eq(dml.C(&u.age), dml.L(13)),
 			sql:   "age = 13",
 			args:  []any{},
 		},

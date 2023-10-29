@@ -2,6 +2,7 @@ package tokens
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 
 	"github.com/orsinium-labs/sequel/dbconf"
@@ -182,4 +183,49 @@ func (token tBind) sql(conf dbconf.Config, pos int) (string, []any, error) {
 	}
 	ph := conf.Dialect.Placeholder(pos)
 	return ph, []any{token.val}, nil
+}
+
+func Literal(val any) Token {
+	return tLiteral{val}
+}
+
+type tLiteral struct{ val any }
+
+func (token tLiteral) sql(conf dbconf.Config, pos int) (string, []any, error) {
+	var repr string
+	switch v := token.val.(type) {
+	case int:
+		repr = strconv.FormatInt(int64(v), 10)
+	case int8:
+		repr = strconv.FormatInt(int64(v), 10)
+	case int16:
+		repr = strconv.FormatInt(int64(v), 10)
+	case int32:
+		repr = strconv.FormatInt(int64(v), 10)
+	case int64:
+		repr = strconv.FormatInt(v, 10)
+	case uintptr:
+		repr = strconv.FormatUint(uint64(v), 10)
+	case uint:
+		repr = strconv.FormatUint(uint64(v), 10)
+	case uint8:
+		repr = strconv.FormatUint(uint64(v), 10)
+	case uint16:
+		repr = strconv.FormatUint(uint64(v), 10)
+	case uint32:
+		repr = strconv.FormatUint(uint64(v), 10)
+	case uint64:
+		repr = strconv.FormatUint(v, 10)
+	case float32:
+		repr = strconv.FormatFloat(float64(v), 'f', -1, 32)
+	case float64:
+		repr = strconv.FormatFloat(v, 'f', -1, 64)
+	case bool:
+		if v {
+			repr = "TRUE"
+		} else {
+			repr = "FALSE"
+		}
+	}
+	return repr, nil, nil
 }

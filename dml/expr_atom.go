@@ -1,8 +1,6 @@
 package dml
 
 import (
-	"strconv"
-
 	c "github.com/orsinium-labs/sequel/constraints"
 	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/internal"
@@ -133,30 +131,27 @@ func (val tVal[T]) Tokens(dbconf.Config) tokens.Tokens {
 	return tokens.New(tokens.Bind(val.val))
 }
 
-type intLiteral int
-
-// LI is a literal (constant) int value.
+// L is a literal (constant) value.
 //
 // Unlike [V], it will be added right into the SQL expression, without bind placeholders.
-func LI(val intLiteral) Expr[int] {
-	return tIntLit{val: int(val)}
+func L[T c.Number | bool](val T) Expr[T] {
+	return tLiteral[T]{val: val}
 }
 
-type tIntLit struct {
-	val int
+type tLiteral[T any] struct {
+	val any
 }
 
-func (tIntLit) Precedence(dbconf.Config) uint8 {
+func (tLiteral[T]) Precedence(dbconf.Config) uint8 {
 	return precedenceAtomic
 }
 
-func (tIntLit) ExprType() int {
-	return 0
+func (tLiteral[T]) ExprType() T {
+	return *new(T)
 }
 
-func (val tIntLit) Tokens(dbconf.Config) tokens.Tokens {
-	repr := strconv.Itoa(val.val)
-	return tokens.New(tokens.Raw(repr))
+func (expr tLiteral[T]) Tokens(dbconf.Config) tokens.Tokens {
+	return tokens.New(tokens.Literal(expr.val))
 }
 
 type cast[From, To any] struct {
@@ -185,3 +180,9 @@ func (expr cast[From, To]) Tokens(c dbconf.Config) tokens.Tokens {
 func Cast[To, From any](expr Expr[From]) Expr[To] {
 	return cast[From, To]{expr}
 }
+
+type Safe string
+
+// func Raw[T any](raw Safe) Expr[T] {
+// 	// ...
+// }
