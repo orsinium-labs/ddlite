@@ -154,19 +154,19 @@ func (expr tLiteral[T]) Tokens(dbconf.Config) tokens.Tokens {
 	return tokens.New(tokens.Literal(expr.val))
 }
 
-type cast[From, To any] struct {
+type tCast[From, To any] struct {
 	orig Expr[From]
 }
 
-func (expr cast[From, To]) Precedence(c dbconf.Config) uint8 {
+func (expr tCast[From, To]) Precedence(c dbconf.Config) uint8 {
 	return expr.orig.Precedence(c)
 }
 
-func (cast[From, To]) ExprType() To {
+func (tCast[From, To]) ExprType() To {
 	return *new(To)
 }
 
-func (expr cast[From, To]) Tokens(c dbconf.Config) tokens.Tokens {
+func (expr tCast[From, To]) Tokens(c dbconf.Config) tokens.Tokens {
 	return expr.orig.Tokens(c)
 }
 
@@ -178,11 +178,25 @@ func (expr cast[From, To]) Tokens(c dbconf.Config) tokens.Tokens {
 // in the database but you use a custom Decimal type to represent that number,
 // you can use Cast to convert Expr[Decimal] into Expr[int].
 func Cast[To, From any](expr Expr[From]) Expr[To] {
-	return cast[From, To]{expr}
+	return tCast[From, To]{expr}
 }
 
 type Safe string
 
-// func Raw[T any](raw Safe) Expr[T] {
-// 	// ...
-// }
+func Raw[T any](raw Safe) Expr[T] {
+	return tRaw[T]{raw}
+}
+
+type tRaw[T any] struct{ val Safe }
+
+func (expr tRaw[T]) Precedence(c dbconf.Config) uint8 {
+	return 0
+}
+
+func (tRaw[T]) ExprType() T {
+	return *new(T)
+}
+
+func (expr tRaw[T]) Tokens(c dbconf.Config) tokens.Tokens {
+	return tokens.New(tokens.Raw(expr.val))
+}
