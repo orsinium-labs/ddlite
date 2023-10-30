@@ -44,6 +44,10 @@ func (mysql) Int(bits uint8) string {
 	return ""
 }
 
+func (mysql) UInt(bits uint8) string {
+	return MySQL.Int(bits) + " UNSIGNED"
+}
+
 func (mysql) String() string {
 	return "MySQL"
 }

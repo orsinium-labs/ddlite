@@ -36,4 +36,6 @@ type Dialect interface {
 	//
 	// The Go type int8 is equivalent to the DB type Int(8), int16 to Int(16), etc.
 	Int(bits uint8) string
+
+	UInt(bits uint8) string
 }

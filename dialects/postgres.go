@@ -38,6 +38,9 @@ func (psql) Int(bits uint8) string {
 	return "BIGINT"
 }
 
+func (psql) UInt(bits uint8) string {
+	return PostgreSQL.Int(bits + 1)
+}
 func (psql) String() string {
 	return "PostgreSQL"
 }

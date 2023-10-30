@@ -40,6 +40,10 @@ func (cocroach) Int(bits uint8) string {
 	return ""
 }
 
+func (cocroach) UInt(bits uint8) string {
+	return CocroachDB.Int(bits + 1)
+}
+
 func (cocroach) String() string {
 	return "CocroachDB"
 }

@@ -30,6 +30,10 @@ func (sqlite) Int(bits uint8) string {
 	return "INTEGER"
 }
 
+func (sqlite) UInt(bits uint8) string {
+	return "INTEGER"
+}
+
 func (sqlite) String() string {
 	return "SQLite"
 }

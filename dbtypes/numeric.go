@@ -14,6 +14,13 @@ func Int(bits uint8) ColumnType {
 	return colType{callback}
 }
 
+func UInt(bits uint8) ColumnType {
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.UInt(bits)
+	}
+	return colType{callback}
+}
+
 // Decimal is an arbitrary fixed-precision decimal number type.
 func Decimal[I1, I2 c.Integer](precision I1, scale I2) ColumnType {
 	return colType0{
@@ -60,62 +67,5 @@ func Float[I c.Integer](precision I) ColumnType {
 		postgres:  call("FLOAT", precision),
 		sqlite:    "FLOAT",
 		sqlserver: call("FLOAT", precision),
-	}
-}
-
-// UInt8 is an unsigned (non-negative) integer number from 0 to 255.
-//
-// If the database doesn't support unsigned numbers, the equivalent of [Int16] is used.
-func UInt8() ColumnType {
-	return colType0{
-		cocroach:  "INT2",
-		mysql:     "INT UNSIGNED",
-		oracle:    "NUMBER(3,0)",
-		postgres:  "SMALLINT",
-		sqlite:    "INTEGER",
-		sqlserver: "SMALLINT",
-	}
-}
-
-// UInt16 is an unsigned (non-negative) integer number from 0 to 65_535.
-//
-// If the database doesn't support unsigned numbers, the equivalent of [Int32] is used.
-func UInt16() ColumnType {
-	return colType0{
-		cocroach:  "INT",
-		mysql:     "SMALLINT UNSIGNED",
-		oracle:    "NUMBER(6,0)",
-		postgres:  "INTEGER",
-		sqlite:    "INTEGER",
-		sqlserver: "INT",
-	}
-}
-
-// UInt32 is an unsigned (non-negative) integer number from 0 to 4_294_967_295.
-//
-// If the database doesn't support unsigned numbers, the equivalent of [Int64] is used.
-func UInt32() ColumnType {
-	return colType0{
-		cocroach:  "OID",
-		mysql:     "INT UNSIGNED",
-		oracle:    "NUMBER(10,0)",
-		postgres:  "BIGINT",
-		sqlite:    "INTEGER",
-		sqlserver: "BIGINT",
-	}
-}
-
-// UInt64 is an unsigned (non-negative) integer number from 0 to 2⁶⁴-1.
-//
-// Many databses don't support unsigned numbers. So, if that last bit isn't important,
-// prefer using [Int64] instead.
-func UInt64() ColumnType {
-	return colType0{
-		cocroach:  "INT",
-		mysql:     "BIGINT UNSIGNED",
-		oracle:    "NUMBER(20,0)",
-		postgres:  "",
-		sqlite:    "INTEGER",
-		sqlserver: "",
 	}
 }

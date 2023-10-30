@@ -34,6 +34,10 @@ func (oracle) Int(bits uint8) string {
 	return fmt.Sprintf("NUMBER(%d)", digits)
 }
 
+func (oracle) UInt(bits uint8) string {
+	return Oracle.Int(bits + 1)
+}
+
 func (oracle) String() string {
 	return "Oracle"
 }

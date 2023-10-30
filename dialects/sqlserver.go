@@ -41,6 +41,10 @@ func (sqlserver) Int(bits uint8) string {
 	return ""
 }
 
+func (sqlserver) UInt(bits uint8) string {
+	return SQLServer.Int(bits + 1)
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }
