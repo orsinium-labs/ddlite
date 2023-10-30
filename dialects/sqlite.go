@@ -24,6 +24,12 @@ func (sqlite) False() string {
 	return "0"
 }
 
+func (sqlite) Int(bits uint8) string {
+	// https://www.sqlite.org/datatype3.html#boolean_datatype
+	// INTEGER fits up to 8 bytes.
+	return "INTEGER"
+}
+
 func (sqlite) String() string {
 	return "SQLite"
 }

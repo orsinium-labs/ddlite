@@ -1,6 +1,10 @@
 package dialects
 
-import "strconv"
+import (
+	"fmt"
+	"math"
+	"strconv"
+)
 
 var Oracle Dialect = oracle{}
 
@@ -22,6 +26,12 @@ func (oracle) True() string {
 
 func (oracle) False() string {
 	return "0"
+}
+
+func (oracle) Int(bits uint8) string {
+	// https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html
+	digits := int(math.Log10(math.Pow(2, float64(bits))))
+	return fmt.Sprintf("NUMBER(%d)", digits)
 }
 
 func (oracle) String() string {

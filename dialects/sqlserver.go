@@ -24,6 +24,23 @@ func (sqlserver) False() string {
 	return "0"
 }
 
+func (sqlserver) Int(bits uint8) string {
+	// https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
+	if bits <= 8 {
+		return "TINYINT"
+	}
+	if bits <= 16 {
+		return "SMALLINT"
+	}
+	if bits <= 32 {
+		return "INT"
+	}
+	if bits <= 64 {
+		return "BIGINT"
+	}
+	return ""
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }

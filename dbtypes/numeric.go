@@ -2,9 +2,17 @@ package dbtypes
 
 import (
 	c "github.com/orsinium-labs/sequel/constraints"
+	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 // TODO: Serial
+
+func Int(bits uint8) ColumnType {
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.Int(bits)
+	}
+	return colType{callback}
+}
 
 // Decimal is an arbitrary fixed-precision decimal number type.
 func Decimal[I1, I2 c.Integer](precision I1, scale I2) ColumnType {
@@ -52,58 +60,6 @@ func Float[I c.Integer](precision I) ColumnType {
 		postgres:  call("FLOAT", precision),
 		sqlite:    "FLOAT",
 		sqlserver: call("FLOAT", precision),
-	}
-}
-
-// Int8 is an integer number from -128 to 127.
-func Int8() ColumnType {
-	return colType0{
-		cocroach:  "INT2",
-		mysql:     "TINYINT",
-		oracle:    "NUMBER(3,0)",
-		postgres:  "SMALLINT",
-		sqlite:    "INTEGER",
-		sqlserver: "TINYINT",
-	}
-}
-
-// Int16 is an integer number from -32_768 to 32_767.
-func Int16() ColumnType {
-	return colType0{
-		cocroach:  "INT2",
-		mysql:     "SMALLINT",
-		oracle:    "NUMBER(5,0)",
-		postgres:  "SMALLINT",
-		sqlite:    "INTEGER",
-		sqlserver: "SMALLINT",
-	}
-}
-
-// Int32 is an integer number from -2_147_483_648 to 2_147_483_647.
-//
-// Typically represented as INT in the database.
-func Int32() ColumnType {
-	return colType0{
-		cocroach:  "INT4",
-		mysql:     "INT",
-		oracle:    "NUMBER(10,0)",
-		postgres:  "INTEGER",
-		sqlite:    "INTEGER",
-		sqlserver: "INT",
-	}
-}
-
-// Int64 is an integer number from -2⁶³ to 2⁶³-1.
-//
-// Typically represented as BIGINT in the database.
-func Int64() ColumnType {
-	return colType0{
-		cocroach:  "INT",
-		mysql:     "BIGINT",
-		oracle:    "NUMBER(20,0)",
-		postgres:  "BIGINT",
-		sqlite:    "INTEGER",
-		sqlserver: "BIGINT",
 	}
 }
 

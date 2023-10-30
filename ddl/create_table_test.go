@@ -21,7 +21,7 @@ func TestCreateTable(t *testing.T) {
 	conf := dbconf.New(dialects.PostgreSQL)
 	q := ddl.CreateTable("user",
 		ddl.Column("name", dbtypes.Text()),
-		ddl.Column("age", dbtypes.Int8()),
+		ddl.Column("age", dbtypes.Int(8)),
 	)
 	sql, _, err := sequel.SQL(conf, q)
 	is.NoErr(err)
@@ -39,23 +39,23 @@ func TestColumnDef(t *testing.T) {
 			sql: "name TEXT",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int32()),
+			def: ddl.Column("age", dbtypes.Int(32)),
 			sql: "age INTEGER",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int32()).Unique(),
+			def: ddl.Column("age", dbtypes.Int(32)).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int32()).Null(),
+			def: ddl.Column("age", dbtypes.Int(32)).Null(),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int32()).NotNull(),
+			def: ddl.Column("age", dbtypes.Int(32)).NotNull(),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int32()).PrimaryKey(),
+			def: ddl.Column("age", dbtypes.Int(32)).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{

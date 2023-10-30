@@ -41,6 +41,14 @@ func (c colType0) SQL(conf dbconf.Config) string {
 	}
 }
 
+type colType struct {
+	callback func(dbconf.Config) string
+}
+
+func (c colType) SQL(conf dbconf.Config) string {
+	return c.callback(conf)
+}
+
 func call[I c.Integer](prefix string, size I) string {
 	return fmt.Sprintf("%s(%d)", prefix, size)
 }

@@ -26,6 +26,20 @@ func (cocroach) False() string {
 	return "false"
 }
 
+func (cocroach) Int(bits uint8) string {
+	// https://www.cockroachlabs.com/docs/v23.1/int
+	if bits <= 16 {
+		return "INT2"
+	}
+	if bits <= 32 {
+		return "INT4"
+	}
+	if bits <= 64 {
+		return "INT8"
+	}
+	return ""
+}
+
 func (cocroach) String() string {
 	return "CocroachDB"
 }

@@ -26,6 +26,18 @@ func (psql) False() string {
 	return "FALSE"
 }
 
+func (psql) Int(bits uint8) string {
+	// https://www.postgresql.org/docs/current/datatype-numeric.html
+	if bits <= 16 {
+		return "SMALLINT"
+	}
+	if bits <= 32 {
+		return "INTEGER"
+	}
+	// BIGINT fits anything up to 2^8=256 which is +1 from what `bits` (uint8) can fit.
+	return "BIGINT"
+}
+
 func (psql) String() string {
 	return "PostgreSQL"
 }

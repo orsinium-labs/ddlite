@@ -31,7 +31,7 @@ func TestFetchOne(t *testing.T) {
 		"place",
 		ddl.Column("country", dbtypes.Text()),
 		ddl.Column("city", dbtypes.Text()).Null(),
-		ddl.Column("tel_code", dbtypes.Int32()),
+		ddl.Column("tel_code", dbtypes.Int(32)),
 	)
 	conf := dbconf.New(dialects.SQLite)
 	_, err = sequel.Exec(conf, db, schema)

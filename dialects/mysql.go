@@ -24,6 +24,26 @@ func (mysql) False() string {
 	return "FALSE"
 }
 
+func (mysql) Int(bits uint8) string {
+	// https://dev.mysql.com/doc/refman/8.2/en/integer-types.html
+	if bits <= 8 {
+		return "TINYINT"
+	}
+	if bits <= 16 {
+		return "SMALLINT"
+	}
+	if bits <= 24 {
+		return "MEDIUMINT"
+	}
+	if bits <= 32 {
+		return "INT"
+	}
+	if bits <= 64 {
+		return "BIGINT"
+	}
+	return ""
+}
+
 func (mysql) String() string {
 	return "MySQL"
 }
