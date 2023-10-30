@@ -13,12 +13,12 @@
 //
 // Comparison operators:
 //
-//   - [E] is "equal" (=) for a column ([C]) and a value ([V])
-//   - [Eq] is "equal" (=)
+//   - [E]   is "equal" (=) for a column ([C]) and a value ([V])
+//   - [Eq]  is "equal" (=)
 //   - [Neq] is "not equal" (<>)
-//   - [Gt] is "greater than" (>)
+//   - [Gt]  is "greater than" (>)
 //   - [Gte] is "greater than or equal" (>=)
-//   - [Lt] is "less than" (<)
+//   - [Lt]  is "less than" (<)
 //   - [Lte] is "less than or equal" (<=)
 //
 // Boolean logic operators:
@@ -31,16 +31,11 @@
 //
 // Other infix operators:
 //
-//   - [Like] is "LIKE"
-//   - [NotLike] is "NOT LIKE"
-//   - [Glob] is "GLOB"
-//   - [NotGlob] is "NOT GLOB"
-//   - [RegExp] is "REGEXP"
-//   - [NotRegExp] is "NOT REGEXP"
-//   - [Match] is "MATCH"
-//   - [NotMatch] is "NOT MATCH"
-//   - [IsDistinctFrom] is "IS DISTINCT FROM"
-//   - [IsNotDistinctFrom] is "IS NOT DISTINCT FROM"
+//   - [Like] and [NotLike] is "[NOT] LIKE"
+//   - [Glob] and [NotGlob] is "[NOT] GLOB"
+//   - [RegExp] and [NotRegExp] is "[NOT] REGEXP"
+//   - [Match] and [NotMatch] is "[NOT] MATCH"
+//   - [IsDistinctFrom] and [IsNotDistinctFrom] is "IS [NOT] DISTINCT FROM"
 //
 // [Cast] is a helper function to change the type of an expression.
 //

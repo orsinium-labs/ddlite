@@ -14,6 +14,16 @@ func (sqlite) Precedence(op string) uint8 {
 	return sqlitePrec[op]
 }
 
+func (sqlite) True() string {
+	// https://www.sqlite.org/datatype3.html#boolean_datatype
+	return "1"
+}
+
+func (sqlite) False() string {
+	// https://www.sqlite.org/datatype3.html#boolean_datatype
+	return "0"
+}
+
 func (sqlite) String() string {
 	return "SQLite"
 }

@@ -16,6 +16,14 @@ func (sqlserver) Precedence(op string) uint8 {
 	return sqlserverPrec[op]
 }
 
+func (sqlserver) True() string {
+	return "1"
+}
+
+func (sqlserver) False() string {
+	return "0"
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }

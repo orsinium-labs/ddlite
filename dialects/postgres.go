@@ -16,6 +16,16 @@ func (psql) Precedence(op string) uint8 {
 	return psqlPrec[op]
 }
 
+func (psql) True() string {
+	// https://www.postgresql.org/docs/current/datatype-boolean.html
+	return "TRUE"
+}
+
+func (psql) False() string {
+	// https://www.postgresql.org/docs/current/datatype-boolean.html
+	return "FALSE"
+}
+
 func (psql) String() string {
 	return "PostgreSQL"
 }

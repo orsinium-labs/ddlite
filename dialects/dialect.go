@@ -17,4 +17,7 @@ type Dialect interface {
 
 	// Placeholder for variable binding.
 	Placeholder(pos int) string
+
+	True() string
+	False() string
 }

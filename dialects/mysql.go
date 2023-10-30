@@ -14,6 +14,16 @@ func (mysql) Precedence(op string) uint8 {
 	return mysqlPrec[op]
 }
 
+func (mysql) True() string {
+	// https://dev.mysql.com/doc/refman/8.2/en/numeric-type-syntax.html
+	return "TRUE"
+}
+
+func (mysql) False() string {
+	// https://dev.mysql.com/doc/refman/8.2/en/numeric-type-syntax.html
+	return "FALSE"
+}
+
 func (mysql) String() string {
 	return "MySQL"
 }

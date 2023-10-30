@@ -16,6 +16,16 @@ func (cocroach) Precedence(op string) uint8 {
 	return psqlPrec[op]
 }
 
+func (cocroach) True() string {
+	// https://www.cockroachlabs.com/docs/v23.1/bool
+	return "true"
+}
+
+func (cocroach) False() string {
+	// https://www.cockroachlabs.com/docs/v23.1/bool
+	return "false"
+}
+
 func (cocroach) String() string {
 	return "CocroachDB"
 }

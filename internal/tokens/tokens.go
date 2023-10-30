@@ -222,9 +222,9 @@ func (token tLiteral) sql(conf dbconf.Config, pos int) (string, []any, error) {
 		repr = strconv.FormatFloat(v, 'f', -1, 64)
 	case bool:
 		if v {
-			repr = "TRUE"
+			repr = conf.Dialect.True()
 		} else {
-			repr = "FALSE"
+			repr = conf.Dialect.False()
 		}
 	}
 	return repr, nil, nil

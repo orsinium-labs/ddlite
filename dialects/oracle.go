@@ -16,6 +16,14 @@ func (oracle) Precedence(op string) uint8 {
 	return oraclePrec[op]
 }
 
+func (oracle) True() string {
+	return "1"
+}
+
+func (oracle) False() string {
+	return "0"
+}
+
 func (oracle) String() string {
 	return "Oracle"
 }
