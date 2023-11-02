@@ -4,14 +4,10 @@ import "github.com/orsinium-labs/sequel/dbconf"
 
 // Date without time.
 func Date() ColumnType {
-	return colType0{
-		cocroach:  "DATE",
-		mysql:     "DATE",
-		oracle:    "DATE",
-		postgres:  "DATE",
-		sqlite:    "INTEGER",
-		sqlserver: "DATE",
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.Date()
 	}
+	return colType{callback}
 }
 
 // DateTime is date and time.

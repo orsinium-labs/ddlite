@@ -42,6 +42,10 @@ func (oracle) Interval() string {
 	return "INTERVAL"
 }
 
+func (oracle) Date() string {
+	return "DATE"
+}
+
 func (oracle) String() string {
 	return "Oracle"
 }

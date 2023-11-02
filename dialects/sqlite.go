@@ -38,6 +38,10 @@ func (sqlite) Interval() string {
 	return "INTEGER"
 }
 
+func (sqlite) Date() string {
+	return "INTEGER"
+}
+
 func (sqlite) String() string {
 	return "SQLite"
 }

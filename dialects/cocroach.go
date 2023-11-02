@@ -48,6 +48,10 @@ func (cocroach) Interval() string {
 	return "INTERVAL"
 }
 
+func (cocroach) Date() string {
+	return "DATE"
+}
+
 func (cocroach) String() string {
 	return "CocroachDB"
 }

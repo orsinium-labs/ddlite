@@ -46,6 +46,10 @@ func (psql) Interval() string {
 	return "INTERVAL"
 }
 
+func (psql) Date() string {
+	return "DATE"
+}
+
 func (psql) String() string {
 	return "PostgreSQL"
 }

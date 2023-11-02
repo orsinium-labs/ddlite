@@ -40,4 +40,6 @@ type Dialect interface {
 	UInt(bits uint8) string
 
 	Interval() string
+
+	Date() string
 }

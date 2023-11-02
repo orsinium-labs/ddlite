@@ -49,6 +49,10 @@ func (sqlserver) Interval() string {
 	return "DATETIMEOFFSET"
 }
 
+func (sqlserver) Date() string {
+	return "DATE"
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }

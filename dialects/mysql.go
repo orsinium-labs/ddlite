@@ -52,6 +52,10 @@ func (mysql) Interval() string {
 	return "INTEGER"
 }
 
+func (mysql) Date() string {
+	return "DATE"
+}
+
 func (mysql) String() string {
 	return "MySQL"
 }
