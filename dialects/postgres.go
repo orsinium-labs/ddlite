@@ -41,6 +41,11 @@ func (psql) Int(bits uint8) string {
 func (psql) UInt(bits uint8) string {
 	return PostgreSQL.Int(bits + 1)
 }
+
+func (psql) Interval() string {
+	return "INTERVAL"
+}
+
 func (psql) String() string {
 	return "PostgreSQL"
 }

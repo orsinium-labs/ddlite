@@ -38,6 +38,10 @@ func (oracle) UInt(bits uint8) string {
 	return Oracle.Int(bits + 1)
 }
 
+func (oracle) Interval() string {
+	return "INTERVAL"
+}
+
 func (oracle) String() string {
 	return "Oracle"
 }

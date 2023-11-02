@@ -34,6 +34,10 @@ func (sqlite) UInt(bits uint8) string {
 	return "INTEGER"
 }
 
+func (sqlite) Interval() string {
+	return "INTEGER"
+}
+
 func (sqlite) String() string {
 	return "SQLite"
 }

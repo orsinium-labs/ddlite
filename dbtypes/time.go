@@ -1,5 +1,7 @@
 package dbtypes
 
+import "github.com/orsinium-labs/sequel/dbconf"
+
 // Date without time.
 func Date() ColumnType {
 	return colType0{
@@ -26,14 +28,10 @@ func DateTime() ColumnType {
 
 // Interval is a difference between two datetimes.
 func Interval() ColumnType {
-	return colType0{
-		cocroach:  "INTERVAL",
-		mysql:     "",
-		oracle:    "INTERVAL",
-		postgres:  "INTERVAL",
-		sqlite:    "INTEGER",
-		sqlserver: "DATETIMEOFFSET",
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.Interval()
 	}
+	return colType{callback}
 }
 
 // Time of the day, without date.

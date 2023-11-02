@@ -45,6 +45,10 @@ func (sqlserver) UInt(bits uint8) string {
 	return SQLServer.Int(bits + 1)
 }
 
+func (sqlserver) Interval() string {
+	return "DATETIMEOFFSET"
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }
