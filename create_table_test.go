@@ -4,9 +4,8 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/sequel"
+	ddl "github.com/orsinium-labs/sequel"
 	"github.com/orsinium-labs/sequel/dbtypes"
-	"github.com/orsinium-labs/sequel/ddl"
 	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
@@ -21,7 +20,7 @@ func TestCreateTable(t *testing.T) {
 		ddl.Column("name", dbtypes.Text()),
 		ddl.Column("age", dbtypes.Int(8)),
 	)
-	sql, err := sequel.SQL(dialects.PostgreSQL, q)
+	sql, err := ddl.SQL(dialects.PostgreSQL, q)
 	is.NoErr(err)
 	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT)")
 }
@@ -71,7 +70,7 @@ func TestColumnDef(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.sql, func(t *testing.T) {
 			is := is.New(t)
-			sql, err := sequel.SQL(dialects.PostgreSQL, testCase.def)
+			sql, err := ddl.SQL(dialects.PostgreSQL, testCase.def)
 			is.NoErr(err)
 			is.Equal(sql, testCase.sql)
 		})

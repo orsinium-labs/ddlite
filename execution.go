@@ -1,4 +1,4 @@
-package sequel
+package ddl
 
 import (
 	"database/sql"
