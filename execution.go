@@ -12,8 +12,7 @@ type query interface {
 	Tokens(dialects.Dialect) tokens.Tokens
 }
 
-type dbOrTx interface {
-	Query(query string, args ...any) (*sql.Rows, error)
+type executor interface {
 	Exec(query string, args ...any) (sql.Result, error)
 }
 
@@ -37,11 +36,7 @@ func SQL(dialect dialects.Dialect, query query) (string, error) {
 	return sql, nil
 }
 
-func Exec(
-	dialect dialects.Dialect,
-	db dbOrTx,
-	q query,
-) (sql.Result, error) {
+func Exec(dialect dialects.Dialect, db executor, q query) (sql.Result, error) {
 	sqlQ, err := SQL(dialect, q)
 	if err != nil {
 		return nil, fmt.Errorf("generate SQL query: %w", err)

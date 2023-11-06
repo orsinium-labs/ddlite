@@ -1,4 +1,27 @@
-// The package ddl defines column data types used for CREATE TABLE queries.
+// The package ddl is DDL (Data-Definition Language) SQL queries builder.
+//
+// DDL includes queries like CREATE TABLE, ALTER TABLE, and DROP TABLE.
+//
+// # Queries
+//
+//   - [AddColumn] is "ALTER TABLE t ADD COLUMN c"
+//   - [CreateTable] is "CREATE TABLE t"
+//   - [DropColumn] is "ALTER TABLE t DROP COLUMN c"
+//   - [DropTable] is "DROP TABLE t"
+//   - [RenameColumn] is "ALTER TABLE t RENAME COLUMN c"
+//   - [RenameTable] is "ALTER TABLE t RENAME TO x"
+//   - [TruncateTable] is "TRUNCATE TABLE t" (or "DELETE FROM t")
+//
+// # Data types
+//
+// Supported column types:
+//
+//   - Text: [Char], [NChar], [NVarChar], [VarChar], [Text], [Enum].
+//   - Binary: [Blob], [UUID].
+//   - Integer: [Int], [UInt].
+//   - Other numeric: [Decimal], [Float32], [Float64], [Float].
+//   - Time: [Date], [DateTime], [Interval], [Time].
+//   - [Bool].
 //
 // References used to define the data types translation for each dialect:
 //
@@ -8,16 +31,6 @@
 //   - [MySQL]
 //   - [PostgreSQL]
 //   - [Microsoft SQL Server]
-//
-// Supported column types:
-//
-//   - Text: [Char], [NChar], [NVarChar], [VarChar], [Text], [Enum].
-//   - Binary: [Blob], [UUID].
-//   - Signed integer: [Int8], [Int16], [Int32], [Int64].
-//   - Unsigned integer: [UInt8], [UInt16], [UInt32], [UInt64].
-//   - Other numeric: [Decimal], [Float32], [Float64], [Float].
-//   - Time: [Date], [DateTime], [Interval], [Time].
-//   - [Bool].
 //
 // [SQLite]: https://www.sqlite.org/datatype3.html
 // [Oracle Database]: https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html
