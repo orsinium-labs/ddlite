@@ -21,7 +21,7 @@ func (q tDropTable) IfExists() tDropTable {
 	return q
 }
 
-func (q tDropTable) Tokens(dialects.Dialect) tokens.Tokens {
+func (q tDropTable) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("DROP TABLE"))
 	if q.ifExists {
 		ts.Add(tokens.Keyword("IF EXISTS"))

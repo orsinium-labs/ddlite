@@ -8,8 +8,8 @@ import (
 	"github.com/orsinium-labs/ddl/internal/tokens"
 )
 
-type query interface {
-	Tokens(dialects.Dialect) tokens.Tokens
+type Statement interface {
+	tokens(dialects.Dialect) tokens.Tokens
 }
 
 type executor interface {
@@ -25,8 +25,8 @@ func Must[T any](val T, err error) T {
 }
 
 // SQL generates SQL string for the given sequel query.
-func SQL(dialect dialects.Dialect, query query) (string, error) {
-	sql, err := query.Tokens(dialect).SQL()
+func SQL(dialect dialects.Dialect, stmt Statement) (string, error) {
+	sql, err := stmt.tokens(dialect).SQL()
 	if err != nil {
 		return "", fmt.Errorf("convert tokens to SQL: %w", err)
 	}
@@ -36,8 +36,8 @@ func SQL(dialect dialects.Dialect, query query) (string, error) {
 	return sql, nil
 }
 
-func Exec(dialect dialects.Dialect, db executor, q query) (sql.Result, error) {
-	sqlQ, err := SQL(dialect, q)
+func Exec(dialect dialects.Dialect, db executor, stmt Statement) (sql.Result, error) {
+	sqlQ, err := SQL(dialect, stmt)
 	if err != nil {
 		return nil, fmt.Errorf("generate SQL query: %w", err)
 	}

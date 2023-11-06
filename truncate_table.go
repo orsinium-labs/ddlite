@@ -16,7 +16,7 @@ func TruncateTable(table Safe) tTruncateTable {
 	}
 }
 
-func (q tTruncateTable) Tokens(dialect dialects.Dialect) tokens.Tokens {
+func (q tTruncateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New()
 	if dialect == dialects.SQLite {
 		// https://www.sqlite.org/lang_delete.html

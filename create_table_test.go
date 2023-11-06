@@ -6,12 +6,7 @@ import (
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/ddl"
 	"github.com/orsinium-labs/ddl/dialects"
-	"github.com/orsinium-labs/ddl/internal/tokens"
 )
-
-type tokener interface {
-	Tokens(dialects.Dialect) tokens.Tokens
-}
 
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
@@ -26,7 +21,7 @@ func TestCreateTable(t *testing.T) {
 
 func TestColumnDef(t *testing.T) {
 	testCases := []struct {
-		def tokener
+		def ddl.Statement
 		sql string
 	}{
 		{

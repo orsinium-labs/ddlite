@@ -12,7 +12,7 @@ import (
 //
 // Can be constructed with [Column] and [Unique].
 type iColumn interface {
-	Tokens(dialects.Dialect) tokens.Tokens
+	tokens(dialects.Dialect) tokens.Tokens
 }
 
 type tColumn struct {
@@ -54,7 +54,7 @@ func (def tColumn) Collate(collationName string) tColumn {
 	return def
 }
 
-func (def tColumn) Tokens(dialect dialects.Dialect) tokens.Tokens {
+func (def tColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType.SQL(dialect)
 	ts := tokens.New(
@@ -75,7 +75,7 @@ func Unique(names ...Safe) iColumn {
 	return tUnique{names: names}
 }
 
-func (def tUnique) Tokens(dialects.Dialect) tokens.Tokens {
+func (def tUnique) tokens(dialects.Dialect) tokens.Tokens {
 	if len(def.names) == 0 {
 		err := errors.New("unique index must have at least one column specified")
 		return tokens.New(tokens.Err(err))

@@ -14,7 +14,7 @@ func RenameTable(old, new Safe) tRenameTable {
 	return tRenameTable{old: old, new: new}
 }
 
-func (q tRenameTable) Tokens(dialects.Dialect) tokens.Tokens {
+func (q tRenameTable) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.old),
