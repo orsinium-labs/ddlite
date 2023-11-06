@@ -26,15 +26,15 @@ func Must[T any](val T, err error) T {
 }
 
 // SQL generates SQL string for the given sequel query.
-func SQL(conf dbconf.Config, query query) (string, []any, error) {
-	sql, args, err := query.Tokens(conf).SQL(conf)
+func SQL(conf dbconf.Config, query query) (string, error) {
+	sql, err := query.Tokens(conf).SQL()
 	if err != nil {
-		return "", nil, fmt.Errorf("convert tokens to SQL: %w", err)
+		return "", fmt.Errorf("convert tokens to SQL: %w", err)
 	}
 	if err != nil {
-		return "", nil, fmt.Errorf("convert placeholders: %w", err)
+		return "", fmt.Errorf("convert placeholders: %w", err)
 	}
-	return sql, args, nil
+	return sql, nil
 }
 
 func Exec(
@@ -42,11 +42,11 @@ func Exec(
 	db dbOrTx,
 	q query,
 ) (sql.Result, error) {
-	sqlQ, args, err := SQL(conf, q)
+	sqlQ, err := SQL(conf, q)
 	if err != nil {
 		return nil, fmt.Errorf("generate SQL query: %w", err)
 	}
-	r, err := db.Exec(sqlQ, args...)
+	r, err := db.Exec(sqlQ)
 	if err != nil {
 		return nil, fmt.Errorf("execute SQL query: %w", err)
 	}

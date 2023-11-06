@@ -23,7 +23,7 @@ func TestCreateTable(t *testing.T) {
 		ddl.Column("name", dbtypes.Text()),
 		ddl.Column("age", dbtypes.Int(8)),
 	)
-	sql, _, err := sequel.SQL(conf, q)
+	sql, err := sequel.SQL(conf, q)
 	is.NoErr(err)
 	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT)")
 }
@@ -74,7 +74,7 @@ func TestColumnDef(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.sql, func(t *testing.T) {
 			is := is.New(t)
-			sql, _, err := sequel.SQL(conf, testCase.def)
+			sql, err := sequel.SQL(conf, testCase.def)
 			is.NoErr(err)
 			is.Equal(sql, testCase.sql)
 		})

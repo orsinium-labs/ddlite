@@ -2,14 +2,11 @@ package tokens
 
 import (
 	"errors"
-	"strconv"
 	"strings"
-
-	"github.com/orsinium-labs/sequel/dbconf"
 )
 
 type Token interface {
-	sql(conf dbconf.Config, pos int) (string, []any, error)
+	sql() (string, error)
 }
 
 func New(ts ...Token) Tokens {
@@ -28,29 +25,25 @@ func (tokens *Tokens) Extend(ts Tokens) {
 	tokens.tokens = append(tokens.tokens, ts.tokens...)
 }
 
-func (tokens Tokens) SQL(conf dbconf.Config) (string, []any, error) {
+func (tokens Tokens) SQL() (string, error) {
 	result := strings.Builder{}
-	args := make([]any, 0)
 	for i, token := range tokens.tokens {
-		sql, subArgs, err := token.sql(conf, len(args))
+		sql, err := token.sql()
 		if err != nil {
-			return "", nil, err
+			return "", err
 		}
 		result.WriteString(sql)
 		if tokens.needsSpace(i) {
 			result.WriteString(" ")
 		}
-		args = append(args, subArgs...)
 	}
-	return result.String(), args, nil
+	return result.String(), nil
 }
 
 // needsSpace checks if space should be added after the token with the given index.
 func (tokens Tokens) needsSpace(i int) bool {
 	curr := tokens.tokens[i]
 	switch curr.(type) {
-	case tFuncName:
-		return false
 	case tLParen:
 		return false
 	}
@@ -74,8 +67,8 @@ func Err(err error) Token {
 
 type tErr struct{ err error }
 
-func (token tErr) sql(dbconf.Config, int) (string, []any, error) {
-	return "", nil, token.err
+func (token tErr) sql() (string, error) {
+	return "", token.err
 }
 
 // Raw SQL string
@@ -97,19 +90,6 @@ func ColumnName[T ~string](s T) Token {
 	return tRaw(s)
 }
 
-func FuncName[T ~string](s T) Token {
-	if s == "" {
-		return tErr{errors.New("function name must not be empty")}
-	}
-	return tFuncName(s)
-}
-
-type tFuncName string
-
-func (token tFuncName) sql(dbconf.Config, int) (string, []any, error) {
-	return string(token), nil, nil
-}
-
 func Keyword(s string) Token {
 	return tRaw(s)
 }
@@ -125,8 +105,8 @@ func LParen() Token {
 
 type tLParen struct{}
 
-func (token tLParen) sql(dbconf.Config, int) (string, []any, error) {
-	return "(", nil, nil
+func (token tLParen) sql() (string, error) {
+	return "(", nil
 }
 
 // Right parenthesis
@@ -136,8 +116,8 @@ func RParen() Token {
 
 type tRParen struct{}
 
-func (token tRParen) sql(dbconf.Config, int) (string, []any, error) {
-	return ")", nil, nil
+func (token tRParen) sql() (string, error) {
+	return ")", nil
 }
 
 func Comma() Token {
@@ -146,14 +126,14 @@ func Comma() Token {
 
 type tComma struct{}
 
-func (token tComma) sql(dbconf.Config, int) (string, []any, error) {
-	return ",", nil, nil
+func (token tComma) sql() (string, error) {
+	return ",", nil
 }
 
 type tRaw string
 
-func (token tRaw) sql(dbconf.Config, int) (string, []any, error) {
-	return string(token), nil, nil
+func (token tRaw) sql() (string, error) {
+	return string(token), nil
 }
 
 // List of raw SQL values
@@ -167,65 +147,6 @@ func Raws[T ~string](ss ...T) Token {
 
 type tList []string
 
-func (token tList) sql(dbconf.Config, int) (string, []any, error) {
-	return strings.Join(token, ", "), nil, nil
-}
-
-func Bind(val any) Token {
-	return tBind{val}
-}
-
-type tBind struct{ val any }
-
-func (token tBind) sql(conf dbconf.Config, pos int) (string, []any, error) {
-	if pos < 0 {
-		panic("negative position")
-	}
-	ph := conf.Dialect.Placeholder(pos)
-	return ph, []any{token.val}, nil
-}
-
-func Literal(val any) Token {
-	return tLiteral{val}
-}
-
-type tLiteral struct{ val any }
-
-func (token tLiteral) sql(conf dbconf.Config, pos int) (string, []any, error) {
-	var repr string
-	switch v := token.val.(type) {
-	case int:
-		repr = strconv.FormatInt(int64(v), 10)
-	case int8:
-		repr = strconv.FormatInt(int64(v), 10)
-	case int16:
-		repr = strconv.FormatInt(int64(v), 10)
-	case int32:
-		repr = strconv.FormatInt(int64(v), 10)
-	case int64:
-		repr = strconv.FormatInt(v, 10)
-	case uintptr:
-		repr = strconv.FormatUint(uint64(v), 10)
-	case uint:
-		repr = strconv.FormatUint(uint64(v), 10)
-	case uint8:
-		repr = strconv.FormatUint(uint64(v), 10)
-	case uint16:
-		repr = strconv.FormatUint(uint64(v), 10)
-	case uint32:
-		repr = strconv.FormatUint(uint64(v), 10)
-	case uint64:
-		repr = strconv.FormatUint(v, 10)
-	case float32:
-		repr = strconv.FormatFloat(float64(v), 'f', -1, 32)
-	case float64:
-		repr = strconv.FormatFloat(v, 'f', -1, 64)
-	case bool:
-		if v {
-			repr = conf.Dialect.True()
-		} else {
-			repr = conf.Dialect.False()
-		}
-	}
-	return repr, nil, nil
+func (token tList) sql() (string, error) {
+	return strings.Join(token, ", "), nil
 }
