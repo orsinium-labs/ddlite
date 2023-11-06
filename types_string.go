@@ -2,12 +2,10 @@ package ddl
 
 import (
 	"strings"
-
-	c "github.com/orsinium-labs/ddl/constraints"
 )
 
 // Char can store an ASCII string of the given size in bytes.
-func Char[I c.Integer](size I) ColumnType {
+func Char(size uint32) ColumnType {
 	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("CHAR", size),
@@ -19,7 +17,7 @@ func Char[I c.Integer](size I) ColumnType {
 }
 
 // Enum is a string type with a pre-defined list of members.
-func Enum[I c.Integer](size I, members ...string) ColumnType {
+func Enum(size uint32, members ...string) ColumnType {
 	ms := make([]string, len(members))
 	for _, m := range members {
 		ms = append(ms, "'"+string(m)+"'")
@@ -36,7 +34,7 @@ func Enum[I c.Integer](size I, members ...string) ColumnType {
 }
 
 // Char can store a Unicode string of the given size in byte-pairs.
-func NChar[I c.Integer](size I) ColumnType {
+func NChar(size uint32) ColumnType {
 	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("NCHAR", size),
@@ -48,7 +46,7 @@ func NChar[I c.Integer](size I) ColumnType {
 }
 
 // NVarChar can store a Unicode string of any length up to the given size in byte-pairs.
-func NVarChar[I c.Integer](size I) ColumnType {
+func NVarChar(size uint32) ColumnType {
 	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("NVARCHAR", size),
@@ -60,7 +58,7 @@ func NVarChar[I c.Integer](size I) ColumnType {
 }
 
 // VarChar can store an ASCII string of any length up to the given size in bytes.
-func VarChar[I c.Integer](size I) ColumnType {
+func VarChar(size uint32) ColumnType {
 	return colType0{
 		cocroach:  "STRING",
 		mysql:     call("VARCHAR", size),

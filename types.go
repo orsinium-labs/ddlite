@@ -3,7 +3,6 @@ package ddl
 import (
 	"fmt"
 
-	c "github.com/orsinium-labs/ddl/constraints"
 	"github.com/orsinium-labs/ddl/dialects"
 )
 
@@ -48,11 +47,11 @@ func (c colType) SQL(dialect dialects.Dialect) string {
 	return c.callback(dialect)
 }
 
-func call[I c.Integer](prefix string, size I) string {
+func call[I uint32 | uint8](prefix string, size I) string {
 	return fmt.Sprintf("%s(%d)", prefix, size)
 }
 
-func call2[I1, I2 c.Integer](prefix string, a I1, b I2) string {
+func call2[I1, I2 uint32 | uint8](prefix string, a I1, b I2) string {
 	return fmt.Sprintf("%s(%d, %d)", prefix, a, b)
 }
 

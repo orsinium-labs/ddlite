@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	c "github.com/orsinium-labs/ddl/constraints"
 	"github.com/orsinium-labs/ddl/dialects"
 )
 
@@ -22,7 +21,7 @@ func UInt(bits uint8) ColumnType {
 }
 
 // Decimal is an arbitrary fixed-precision decimal number type.
-func Decimal[I1, I2 c.Integer](precision I1, scale I2) ColumnType {
+func Decimal(precision uint8, scale uint8) ColumnType {
 	return colType0{
 		cocroach:  call2("DECIMAL", precision, scale),
 		mysql:     call2("DECIMAL", precision, scale),
