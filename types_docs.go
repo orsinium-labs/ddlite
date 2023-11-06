@@ -1,4 +1,4 @@
-// The package dbtypes defines column data types used for CREATE TABLE queries.
+// The package ddl defines column data types used for CREATE TABLE queries.
 //
 // References used to define the data types translation for each dialect:
 //
@@ -25,4 +25,4 @@
 // [MySQL]: https://dev.mysql.com/doc/refman/8.0/en/data-types.html
 // [PostgreSQL]: https://www.postgresql.org/docs/current/datatype.html
 // [Microsoft SQL Server]: https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-ver16
-package dbtypes
+package ddl

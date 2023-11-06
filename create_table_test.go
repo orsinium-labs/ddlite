@@ -5,7 +5,6 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/ddl"
-	"github.com/orsinium-labs/ddl/dbtypes"
 	"github.com/orsinium-labs/ddl/dialects"
 	"github.com/orsinium-labs/ddl/internal/tokens"
 )
@@ -17,8 +16,8 @@ type tokener interface {
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
 	q := ddl.CreateTable("user",
-		ddl.Column("name", dbtypes.Text()),
-		ddl.Column("age", dbtypes.Int(8)),
+		ddl.Column("name", ddl.Text()),
+		ddl.Column("age", ddl.Int(8)),
 	)
 	sql, err := ddl.SQL(dialects.PostgreSQL, q)
 	is.NoErr(err)
@@ -31,31 +30,31 @@ func TestColumnDef(t *testing.T) {
 		sql string
 	}{
 		{
-			def: ddl.Column("name", dbtypes.Text()),
+			def: ddl.Column("name", ddl.Text()),
 			sql: "name TEXT",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int(32)),
+			def: ddl.Column("age", ddl.Int(32)),
 			sql: "age INTEGER",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int(32)).Unique(),
+			def: ddl.Column("age", ddl.Int(32)).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int(32)).Null(),
+			def: ddl.Column("age", ddl.Int(32)).Null(),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int(32)).NotNull(),
+			def: ddl.Column("age", ddl.Int(32)).NotNull(),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: ddl.Column("age", dbtypes.Int(32)).PrimaryKey(),
+			def: ddl.Column("age", ddl.Int(32)).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
-			def: ddl.Column("name", dbtypes.VarChar(20)).Collate("NOCASE"),
+			def: ddl.Column("name", ddl.VarChar(20)).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{

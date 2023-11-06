@@ -1,4 +1,4 @@
-package dbtypes
+package ddl
 
 import (
 	c "github.com/orsinium-labs/ddl/constraints"

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/orsinium-labs/ddl/dbtypes"
 	"github.com/orsinium-labs/ddl/dialects"
 	"github.com/orsinium-labs/ddl/internal/tokens"
 )
@@ -18,11 +17,11 @@ type iColumn interface {
 
 type tColumn struct {
 	name        Safe
-	colType     dbtypes.ColumnType
+	colType     ColumnType
 	constraints []string
 }
 
-func Column(name Safe, ctype dbtypes.ColumnType) tColumn {
+func Column(name Safe, ctype ColumnType) tColumn {
 	return tColumn{
 		name:        name,
 		colType:     ctype,

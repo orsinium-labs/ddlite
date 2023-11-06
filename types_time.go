@@ -1,4 +1,4 @@
-package dbtypes
+package ddl
 
 import "github.com/orsinium-labs/ddl/dialects"
 

@@ -7,7 +7,6 @@ import (
 	"github.com/matryer/is"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/orsinium-labs/ddl"
-	"github.com/orsinium-labs/ddl/dbtypes"
 	"github.com/orsinium-labs/ddl/dialects"
 )
 
@@ -19,9 +18,9 @@ func TestFetchOne(t *testing.T) {
 	// CREATE TABLE
 	schema := ddl.CreateTable(
 		"place",
-		ddl.Column("country", dbtypes.Text()),
-		ddl.Column("city", dbtypes.Text()).Null(),
-		ddl.Column("tel_code", dbtypes.Int(32)),
+		ddl.Column("country", ddl.Text()),
+		ddl.Column("city", ddl.Text()).Null(),
+		ddl.Column("tel_code", ddl.Int(32)),
 	)
 	_, err = ddl.Exec(dialects.SQLite, db, schema)
 	is.NoErr(err)
