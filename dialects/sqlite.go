@@ -34,6 +34,13 @@ func (sqlite) UInt(bits uint8) string {
 	return "INTEGER"
 }
 
+func (sqlite) Float(precision uint8) string {
+	if precision <= 53 {
+		return "REAL"
+	}
+	return ""
+}
+
 func (sqlite) Interval() string {
 	return "INTEGER"
 }

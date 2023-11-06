@@ -44,6 +44,17 @@ func (cocroach) UInt(bits uint8) string {
 	return CocroachDB.Int(bits + 1)
 }
 
+func (cocroach) Float(precision uint8) string {
+	// https://www.cockroachlabs.com/docs/v23.1/float
+	if precision <= 24 {
+		return "REAL"
+	}
+	if precision <= 53 {
+		return "DOUBLE PRECISION"
+	}
+	return ""
+}
+
 func (cocroach) Interval() string {
 	return "INTERVAL"
 }

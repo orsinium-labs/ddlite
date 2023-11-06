@@ -38,6 +38,19 @@ func (oracle) UInt(bits uint8) string {
 	return Oracle.Int(bits + 1)
 }
 
+func (oracle) Float(precision uint8) string {
+	if precision > 53 {
+		return ""
+	}
+	if precision == 24 {
+		return "FLOAT(63)"
+	}
+	if precision == 53 {
+		return "FLOAT"
+	}
+	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
+}
+
 func (oracle) Interval() string {
 	return "INTERVAL"
 }

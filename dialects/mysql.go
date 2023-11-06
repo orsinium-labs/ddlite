@@ -1,5 +1,7 @@
 package dialects
 
+import "strconv"
+
 var MySQL Dialect = mysql{}
 
 type mysql struct{}
@@ -46,6 +48,19 @@ func (mysql) Int(bits uint8) string {
 
 func (mysql) UInt(bits uint8) string {
 	return MySQL.Int(bits) + " UNSIGNED"
+}
+
+func (mysql) Float(precision uint8) string {
+	if precision > 53 {
+		return ""
+	}
+	if precision == 24 {
+		return "FLOAT"
+	}
+	if precision == 53 {
+		return "DOUBLE"
+	}
+	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
 }
 
 func (mysql) Interval() string {

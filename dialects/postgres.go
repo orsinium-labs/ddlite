@@ -42,6 +42,20 @@ func (psql) UInt(bits uint8) string {
 	return PostgreSQL.Int(bits + 1)
 }
 
+func (psql) Float(precision uint8) string {
+	// https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT
+	if precision > 53 {
+		return ""
+	}
+	if precision == 24 {
+		return "REAL"
+	}
+	if precision == 53 {
+		return "DOUBLE PRECISION"
+	}
+	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
+}
+
 func (psql) Interval() string {
 	return "INTERVAL"
 }

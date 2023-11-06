@@ -45,6 +45,19 @@ func (sqlserver) UInt(bits uint8) string {
 	return SQLServer.Int(bits + 1)
 }
 
+func (sqlserver) Float(precision uint8) string {
+	if precision > 53 {
+		return ""
+	}
+	if precision == 24 {
+		return "REAL"
+	}
+	if precision == 53 {
+		return "FLOAT"
+	}
+	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
+}
+
 func (sqlserver) Interval() string {
 	return "DATETIMEOFFSET"
 }

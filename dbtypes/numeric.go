@@ -35,37 +35,24 @@ func Decimal[I1, I2 c.Integer](precision I1, scale I2) ColumnType {
 
 // Float32 is an inexact floating-point variable-precision number type equivalent to float32.
 func Float32() ColumnType {
-	return colType0{
-		cocroach:  "REAL",
-		mysql:     "FLOAT",
-		oracle:    "FLOAT(63)",
-		postgres:  "REAL",
-		sqlite:    "REAL",
-		sqlserver: "REAL",
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.Float(24)
 	}
+	return colType{callback}
 }
 
 // Float64 is an inexact floating-point variable-precision number type equivalent to float64.
 func Float64() ColumnType {
-	return colType0{
-		cocroach:  "DOUBLE PRECISION",
-		mysql:     "DOUBLE",
-		oracle:    "FLOAT",
-		postgres:  "DOUBLE PRECISION",
-		sqlite:    "REAL",
-		sqlserver: "FLOAT",
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.Float(53)
 	}
+	return colType{callback}
 }
 
 // Float32 is an inexact floating-point variable-precision number type of arbitrary precision.
-func Float[I c.Integer](precision I) ColumnType {
-	// precision <= 53
-	return colType0{
-		cocroach:  "FLOAT",
-		mysql:     call("FLOAT", precision),
-		oracle:    call("FLOAT", precision),
-		postgres:  call("FLOAT", precision),
-		sqlite:    "FLOAT",
-		sqlserver: call("FLOAT", precision),
+func Float(precision uint8) ColumnType {
+	callback := func(c dbconf.Config) string {
+		return c.Dialect.Float(precision)
 	}
+	return colType{callback}
 }
