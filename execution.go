@@ -5,18 +5,11 @@ import (
 	"fmt"
 
 	"github.com/orsinium-labs/sequel/dbconf"
-	"github.com/orsinium-labs/sequel/dml"
-	"github.com/orsinium-labs/sequel/internal"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type query interface {
 	Tokens(dbconf.Config) tokens.Tokens
-}
-
-type scannableQuery[T internal.Model] interface {
-	query
-	Scanner(dbconf.Config, *T) (dml.Scanner[T], error)
 }
 
 type dbOrTx interface {
@@ -58,52 +51,4 @@ func Exec(
 		return nil, fmt.Errorf("execute SQL query: %w", err)
 	}
 	return r, nil
-}
-
-// FetchOne runs the query and the result as a struct.
-//
-// The query is expected to return exactly one record.
-func FetchOne[T internal.Model](
-	conf dbconf.Config,
-	db dbOrTx,
-	q scannableQuery[T],
-) (T, error) {
-	var result T
-	err := FetchOneInto(conf, db, q, &result)
-	return result, err
-}
-
-// FetchOneInto runs the query and places the result into the given struct.
-//
-// The query is expected to return exactly one record.
-func FetchOneInto[T internal.Model](
-	conf dbconf.Config,
-	db dbOrTx,
-	q scannableQuery[T],
-	target *T,
-) error {
-	sqlQ, args, err := SQL(conf, q)
-	if err != nil {
-		return fmt.Errorf("generate SQL query: %w", err)
-	}
-	scanner, err := q.Scanner(conf, target)
-	if err != nil {
-		return fmt.Errorf("make scanner for the query: %w", err)
-	}
-
-	rows, err := db.Query(sqlQ, args...)
-	if err != nil {
-		return fmt.Errorf("run query: %w", err)
-	}
-	defer rows.Close()
-
-	ok := rows.Next()
-	if !ok {
-		return fmt.Errorf("query returned no results")
-	}
-	err = scanner(rows)
-	if err != nil {
-		return fmt.Errorf("run scanner: %w", err)
-	}
-	return nil
 }
