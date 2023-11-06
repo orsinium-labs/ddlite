@@ -12,7 +12,7 @@ type tCreateTable struct {
 	cols  []iColumn
 }
 
-func CreateTable(table Safe, cols ...iColumn) tCreateTable {
+func CreateTable(table Safe, cols ...iColumn) Statement {
 	return tCreateTable{
 		table: table,
 		cols:  cols,

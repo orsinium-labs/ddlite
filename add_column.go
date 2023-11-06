@@ -11,7 +11,7 @@ type tAddColumn struct {
 }
 
 // AddColumn builds query that adds a new column to the table.
-func AddColumn(table Safe, col tColumn) tAddColumn {
+func AddColumn(table Safe, col tColumn) Statement {
 	return tAddColumn{table: table, col: col}
 }
 

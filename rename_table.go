@@ -10,7 +10,7 @@ type tRenameTable struct {
 	new Safe
 }
 
-func RenameTable(old, new Safe) tRenameTable {
+func RenameTable(old, new Safe) Statement {
 	return tRenameTable{old: old, new: new}
 }
 

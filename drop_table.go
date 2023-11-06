@@ -10,15 +10,18 @@ type tDropTable struct {
 	ifExists bool
 }
 
-func DropTable(table Safe) tDropTable {
+func DropTable(table Safe) Statement {
 	return tDropTable{
-		table: table,
+		table:    table,
+		ifExists: false,
 	}
 }
 
-func (q tDropTable) IfExists() tDropTable {
-	q.ifExists = true
-	return q
+func DropTableIfExists(table Safe) Statement {
+	return tDropTable{
+		table:    table,
+		ifExists: true,
+	}
 }
 
 func (q tDropTable) tokens(dialects.Dialect) tokens.Tokens {

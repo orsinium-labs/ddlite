@@ -10,7 +10,7 @@ type tDropColumn struct {
 	col   Safe
 }
 
-func DropColumn(table Safe, col Safe) tDropColumn {
+func DropColumn(table Safe, col Safe) Statement {
 	return tDropColumn{table: table, col: col}
 }
 

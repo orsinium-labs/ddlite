@@ -10,7 +10,7 @@ type tTruncateTable struct {
 }
 
 // TruncateTable builds TRUNCATE TABLE query that removes all data from the table.
-func TruncateTable(table Safe) tTruncateTable {
+func TruncateTable(table Safe) Statement {
 	return tTruncateTable{
 		table: table,
 	}
