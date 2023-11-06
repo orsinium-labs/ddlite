@@ -5,7 +5,6 @@ import (
 
 	"github.com/matryer/is"
 	"github.com/orsinium-labs/sequel"
-	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
 	"github.com/orsinium-labs/sequel/ddl"
 	"github.com/orsinium-labs/sequel/dialects"
@@ -13,23 +12,21 @@ import (
 )
 
 type tokener interface {
-	Tokens(dbconf.Config) tokens.Tokens
+	Tokens(dialects.Dialect) tokens.Tokens
 }
 
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
-	conf := dbconf.New(dialects.PostgreSQL)
 	q := ddl.CreateTable("user",
 		ddl.Column("name", dbtypes.Text()),
 		ddl.Column("age", dbtypes.Int(8)),
 	)
-	sql, err := sequel.SQL(conf, q)
+	sql, err := sequel.SQL(dialects.PostgreSQL, q)
 	is.NoErr(err)
 	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT)")
 }
 
 func TestColumnDef(t *testing.T) {
-	conf := dbconf.New(dialects.PostgreSQL)
 	testCases := []struct {
 		def tokener
 		sql string
@@ -74,7 +71,7 @@ func TestColumnDef(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.sql, func(t *testing.T) {
 			is := is.New(t)
-			sql, err := sequel.SQL(conf, testCase.def)
+			sql, err := sequel.SQL(dialects.PostgreSQL, testCase.def)
 			is.NoErr(err)
 			is.Equal(sql, testCase.sql)
 		})

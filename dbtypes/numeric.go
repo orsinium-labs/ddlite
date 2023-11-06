@@ -2,21 +2,21 @@ package dbtypes
 
 import (
 	c "github.com/orsinium-labs/sequel/constraints"
-	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 )
 
 // TODO: Serial
 
 func Int(bits uint8) ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.Int(bits)
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Int(bits)
 	}
 	return colType{callback}
 }
 
 func UInt(bits uint8) ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.UInt(bits)
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.UInt(bits)
 	}
 	return colType{callback}
 }
@@ -35,24 +35,24 @@ func Decimal[I1, I2 c.Integer](precision I1, scale I2) ColumnType {
 
 // Float32 is an inexact floating-point variable-precision number type equivalent to float32.
 func Float32() ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.Float(24)
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Float(24)
 	}
 	return colType{callback}
 }
 
 // Float64 is an inexact floating-point variable-precision number type equivalent to float64.
 func Float64() ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.Float(53)
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Float(53)
 	}
 	return colType{callback}
 }
 
 // Float32 is an inexact floating-point variable-precision number type of arbitrary precision.
 func Float(precision uint8) ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.Float(precision)
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Float(precision)
 	}
 	return colType{callback}
 }

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dbtypes"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
@@ -13,7 +13,7 @@ import (
 //
 // Can be constructed with [Column] and [Unique].
 type iColumn interface {
-	Tokens(dbconf.Config) tokens.Tokens
+	Tokens(dialects.Dialect) tokens.Tokens
 }
 
 type tColumn struct {
@@ -55,9 +55,9 @@ func (def tColumn) Collate(collationName string) tColumn {
 	return def
 }
 
-func (def tColumn) Tokens(conf dbconf.Config) tokens.Tokens {
+func (def tColumn) Tokens(dialect dialects.Dialect) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
-	colSQL := def.colType.SQL(conf)
+	colSQL := def.colType.SQL(dialect)
 	ts := tokens.New(
 		tokens.ColumnName(def.name),
 		tokens.Raw(colSQL),
@@ -76,7 +76,7 @@ func Unique(names ...Safe) iColumn {
 	return tUnique{names: names}
 }
 
-func (def tUnique) Tokens(conf dbconf.Config) tokens.Tokens {
+func (def tUnique) Tokens(dialects.Dialect) tokens.Tokens {
 	if len(def.names) == 0 {
 		err := errors.New("unique index must have at least one column specified")
 		return tokens.New(tokens.Err(err))

@@ -3,7 +3,7 @@ package ddl
 import (
 	"errors"
 
-	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
@@ -19,7 +19,7 @@ func CreateTable(table Safe, cols ...iColumn) tCreateTable {
 	}
 }
 
-func (q tCreateTable) Tokens(conf dbconf.Config) tokens.Tokens {
+func (q tCreateTable) Tokens(dialect dialects.Dialect) tokens.Tokens {
 	if len(q.cols) == 0 {
 		err := errors.New("new table must have columns defined")
 		return tokens.New(tokens.Err(err))
@@ -33,7 +33,7 @@ func (q tCreateTable) Tokens(conf dbconf.Config) tokens.Tokens {
 		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
-		ts.Extend(col.Tokens(conf))
+		ts.Extend(col.Tokens(dialect))
 	}
 	ts.Add(tokens.RParen())
 	return ts

@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	c "github.com/orsinium-labs/sequel/constraints"
-	"github.com/orsinium-labs/sequel/dbconf"
 	"github.com/orsinium-labs/sequel/dialects"
 )
 
 type ColumnType interface {
-	SQL(dbconf.Config) string
+	SQL(dialects.Dialect) string
 }
 
 // colType0 is a column type without parametrization.
@@ -22,8 +21,8 @@ type colType0 struct {
 	sqlserver string
 }
 
-func (c colType0) SQL(conf dbconf.Config) string {
-	switch conf.Dialect {
+func (c colType0) SQL(dialect dialects.Dialect) string {
+	switch dialect {
 	case dialects.CocroachDB:
 		return c.cocroach
 	case dialects.MySQL:
@@ -42,11 +41,11 @@ func (c colType0) SQL(conf dbconf.Config) string {
 }
 
 type colType struct {
-	callback func(dbconf.Config) string
+	callback func(dialects.Dialect) string
 }
 
-func (c colType) SQL(conf dbconf.Config) string {
-	return c.callback(conf)
+func (c colType) SQL(dialect dialects.Dialect) string {
+	return c.callback(dialect)
 }
 
 func call[I c.Integer](prefix string, size I) string {

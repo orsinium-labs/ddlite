@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/orsinium-labs/sequel/dbconf"
+	"github.com/orsinium-labs/sequel/dialects"
 	"github.com/orsinium-labs/sequel/internal/tokens"
 )
 
 type query interface {
-	Tokens(dbconf.Config) tokens.Tokens
+	Tokens(dialects.Dialect) tokens.Tokens
 }
 
 type dbOrTx interface {
@@ -26,8 +26,8 @@ func Must[T any](val T, err error) T {
 }
 
 // SQL generates SQL string for the given sequel query.
-func SQL(conf dbconf.Config, query query) (string, error) {
-	sql, err := query.Tokens(conf).SQL()
+func SQL(dialect dialects.Dialect, query query) (string, error) {
+	sql, err := query.Tokens(dialect).SQL()
 	if err != nil {
 		return "", fmt.Errorf("convert tokens to SQL: %w", err)
 	}
@@ -38,11 +38,11 @@ func SQL(conf dbconf.Config, query query) (string, error) {
 }
 
 func Exec(
-	conf dbconf.Config,
+	dialect dialects.Dialect,
 	db dbOrTx,
 	q query,
 ) (sql.Result, error) {
-	sqlQ, err := SQL(conf, q)
+	sqlQ, err := SQL(dialect, q)
 	if err != nil {
 		return nil, fmt.Errorf("generate SQL query: %w", err)
 	}

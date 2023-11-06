@@ -1,11 +1,11 @@
 package dbtypes
 
-import "github.com/orsinium-labs/sequel/dbconf"
+import "github.com/orsinium-labs/sequel/dialects"
 
 // Date without time.
 func Date() ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.Date()
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Date()
 	}
 	return colType{callback}
 }
@@ -24,8 +24,8 @@ func DateTime() ColumnType {
 
 // Interval is a difference between two datetimes.
 func Interval() ColumnType {
-	callback := func(c dbconf.Config) string {
-		return c.Dialect.Interval()
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Interval()
 	}
 	return colType{callback}
 }
