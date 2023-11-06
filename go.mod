@@ -1,4 +1,4 @@
-module github.com/orsinium-labs/sequel
+module github.com/orsinium-labs/ddl
 
 go 1.18
 

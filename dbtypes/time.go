@@ -1,6 +1,6 @@
 package dbtypes
 
-import "github.com/orsinium-labs/sequel/dialects"
+import "github.com/orsinium-labs/ddl/dialects"
 
 // Date without time.
 func Date() ColumnType {

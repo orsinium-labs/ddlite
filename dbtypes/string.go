@@ -3,7 +3,7 @@ package dbtypes
 import (
 	"strings"
 
-	c "github.com/orsinium-labs/sequel/constraints"
+	c "github.com/orsinium-labs/ddl/constraints"
 )
 
 // Char can store an ASCII string of the given size in bytes.

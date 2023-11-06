@@ -1,8 +1,8 @@
 package dbtypes
 
 import (
-	c "github.com/orsinium-labs/sequel/constraints"
-	"github.com/orsinium-labs/sequel/dialects"
+	c "github.com/orsinium-labs/ddl/constraints"
+	"github.com/orsinium-labs/ddl/dialects"
 )
 
 // TODO: Serial

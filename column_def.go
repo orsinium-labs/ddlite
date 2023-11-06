@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/orsinium-labs/sequel/dbtypes"
-	"github.com/orsinium-labs/sequel/dialects"
-	"github.com/orsinium-labs/sequel/internal/tokens"
+	"github.com/orsinium-labs/ddl/dbtypes"
+	"github.com/orsinium-labs/ddl/dialects"
+	"github.com/orsinium-labs/ddl/internal/tokens"
 )
 
 // A private type to represent column definitions and table constraints.

@@ -1,8 +1,8 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel/dialects"
-	"github.com/orsinium-labs/sequel/internal/tokens"
+	"github.com/orsinium-labs/ddl/dialects"
+	"github.com/orsinium-labs/ddl/internal/tokens"
 )
 
 type tRenameTable struct {

@@ -3,8 +3,8 @@ package dbtypes
 import (
 	"fmt"
 
-	c "github.com/orsinium-labs/sequel/constraints"
-	"github.com/orsinium-labs/sequel/dialects"
+	c "github.com/orsinium-labs/ddl/constraints"
+	"github.com/orsinium-labs/ddl/dialects"
 )
 
 type ColumnType interface {
