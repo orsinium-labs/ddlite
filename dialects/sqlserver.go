@@ -40,6 +40,10 @@ func (sqlserver) Float(precision uint8) string {
 	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
 }
 
+func (sqlserver) Decimal(precision uint8, scale uint8) string {
+	return call2("DECIMAL", precision, scale)
+}
+
 func (sqlserver) Interval() string {
 	return "DATETIMEOFFSET"
 }

@@ -1,24 +1,22 @@
 package dialects
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Dialect interface {
 	fmt.Stringer
-
-	// Int is data type that can fit an integer value of the given maximum size in bits.
-	//
-	// Bits indicate not the maximum allowed value but the maximum size in bits needed
-	// to store it. One bit is always used to store the sign.
-	// That is, Int(8) fits numbers only up to 2^7-1=127.
-	//
-	// The Go type int8 is equivalent to the DB type Int(8), int16 to Int(16), etc.
 	Int(bits uint8) string
-
 	UInt(bits uint8) string
-
 	Float(precision uint8) string
-
+	Decimal(precision uint8, scale uint8) string
 	Interval() string
-
 	Date() string
+}
+
+func call2(prefix string, a, b uint8) string {
+	as := strconv.FormatInt(int64(a), 10)
+	bs := strconv.FormatInt(int64(b), 10)
+	return prefix + "(" + as + ", " + bs + ")"
 }

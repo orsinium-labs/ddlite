@@ -33,6 +33,10 @@ func (oracle) Float(precision uint8) string {
 	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
 }
 
+func (oracle) Decimal(precision uint8, scale uint8) string {
+	return call2("NUMBER", precision, scale)
+}
+
 func (oracle) Interval() string {
 	return "INTERVAL"
 }

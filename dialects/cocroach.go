@@ -33,6 +33,10 @@ func (cocroach) Float(precision uint8) string {
 	return ""
 }
 
+func (cocroach) Decimal(precision uint8, scale uint8) string {
+	return call2("DECIMAL", precision, scale)
+}
+
 func (cocroach) Interval() string {
 	return "INTERVAL"
 }

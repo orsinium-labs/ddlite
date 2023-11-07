@@ -36,6 +36,10 @@ func (psql) Float(precision uint8) string {
 	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
 }
 
+func (psql) Decimal(precision uint8, scale uint8) string {
+	return call2("NUMERIC", precision, scale)
+}
+
 func (psql) Interval() string {
 	return "INTERVAL"
 }

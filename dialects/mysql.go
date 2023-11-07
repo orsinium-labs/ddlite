@@ -43,6 +43,10 @@ func (mysql) Float(precision uint8) string {
 	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
 }
 
+func (mysql) Decimal(precision uint8, scale uint8) string {
+	return call2("DECIMAL", precision, scale)
+}
+
 func (mysql) Interval() string {
 	return "INTEGER"
 }
