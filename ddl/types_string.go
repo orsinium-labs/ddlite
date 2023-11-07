@@ -1,9 +1,5 @@
 package ddl
 
-import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
-)
-
 // TODO: NChar, NVarChar
 
 // FixedChar can store an string of the fixed size.
@@ -21,10 +17,7 @@ import (
 // If the list of possible values is known in advance and doesn't change too often,
 // prefer using [Enum] instead (assuming that your database engine supports it).
 func FixedChar(size uint32) ColumnType {
-	callback := func(dialect dialects.Dialect) dialects.DataType {
-		return dialect.FixedChar(size)
-	}
-	return colType{callback}
+	return func(dialect dl) dt { return dialect.FixedChar(size) }
 }
 
 // VarChar can store a string of any length up to the given size.
@@ -40,10 +33,7 @@ func FixedChar(size uint32) ColumnType {
 //
 // If the maximum length is not known in advance or too big, use [Text] instead.
 func VarChar(size uint32) ColumnType {
-	callback := func(dialect dialects.Dialect) dialects.DataType {
-		return dialect.VarChar(size)
-	}
-	return colType{callback}
+	return func(dialect dl) dt { return dialect.VarChar(size) }
 }
 
 // Text can store a string of any length.
@@ -53,10 +43,7 @@ func VarChar(size uint32) ColumnType {
 //
 // [write amplification]: https://en.wikipedia.org/wiki/Write_amplification
 func Text() ColumnType {
-	callback := func(dialect dialects.Dialect) dialects.DataType {
-		return dialect.Text()
-	}
-	return colType{callback}
+	return func(dialect dl) dt { return dialect.Text() }
 }
 
 // Enum is a string type with a pre-defined list of members.
@@ -64,16 +51,10 @@ func Text() ColumnType {
 // Only some database engines support it. If compatibility is important,
 // use [FixedChar] or [VarChar] as a fallback.
 func Enum(members ...string) ColumnType {
-	callback := func(dialect dialects.Dialect) dialects.DataType {
-		return dialect.Enum(members)
-	}
-	return colType{callback}
+	return func(dialect dl) dt { return dialect.Enum(members) }
 }
 
 // Blob is a raw binary data type or variable length.
 func Blob() ColumnType {
-	callback := func(dialect dialects.Dialect) dialects.DataType {
-		return dialect.Blob()
-	}
-	return colType{callback}
+	return func(dialect dl) dt { return dialect.Blob() }
 }

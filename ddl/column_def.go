@@ -56,7 +56,7 @@ func (def tColumn) Collate(collationName string) tColumn {
 
 func (def tColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
-	colSQL := def.colType.SQL(dialect)
+	colSQL := def.colType(dialect)
 	ts := tokens.New(
 		tokens.ColumnName(def.name),
 		tokens.Raw(colSQL),
