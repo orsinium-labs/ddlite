@@ -44,6 +44,10 @@ func (sqlserver) Decimal(precision uint8, scale uint8) string {
 	return call2("DECIMAL", precision, scale)
 }
 
+func (sqlserver) Text() string {
+	return "TEXT"
+}
+
 func (sqlserver) Interval() string {
 	return "DATETIMEOFFSET"
 }

@@ -47,6 +47,10 @@ func (mysql) Decimal(precision uint8, scale uint8) string {
 	return call2("DECIMAL", precision, scale)
 }
 
+func (mysql) Text() string {
+	return "TEXT"
+}
+
 func (mysql) Interval() string {
 	return "INTEGER"
 }

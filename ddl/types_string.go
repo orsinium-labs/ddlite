@@ -2,6 +2,8 @@ package ddl
 
 import (
 	"strings"
+
+	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
 // Char can store an ASCII string of the given size in bytes.
@@ -71,14 +73,10 @@ func VarChar(size uint32) ColumnType {
 
 // Text can store a string of any length.
 func Text() ColumnType {
-	return colType0{
-		cocroach:  "STRING",
-		mysql:     "TEXT",
-		oracle:    "",
-		postgres:  "TEXT",
-		sqlite:    "TEXT",
-		sqlserver: "TEXT", // Should be NTEXT?
+	callback := func(dialect dialects.Dialect) string {
+		return dialect.Text()
 	}
+	return colType{callback}
 }
 
 // UUID is a random and unique 16-bytes identifier (RFC 4122).

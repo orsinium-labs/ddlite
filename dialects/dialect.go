@@ -13,6 +13,7 @@ type Dialect interface {
 	Decimal(precision uint8, scale uint8) string
 	Interval() string
 	Date() string
+	Text() string
 }
 
 func call2(prefix string, a, b uint8) string {

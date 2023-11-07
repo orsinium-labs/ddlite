@@ -40,6 +40,10 @@ func (psql) Decimal(precision uint8, scale uint8) string {
 	return call2("NUMERIC", precision, scale)
 }
 
+func (psql) Text() string {
+	return "TEXT"
+}
+
 func (psql) Interval() string {
 	return "INTERVAL"
 }

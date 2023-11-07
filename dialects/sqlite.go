@@ -25,6 +25,10 @@ func (sqlite) Decimal(precision uint8, scale uint8) string {
 	return "NUMERIC"
 }
 
+func (sqlite) Text() string {
+	return "TEXT"
+}
+
 func (sqlite) Interval() string {
 	return "INTEGER"
 }

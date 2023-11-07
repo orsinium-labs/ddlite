@@ -51,10 +51,6 @@ func call[I uint32 | uint8](prefix string, size I) string {
 	return fmt.Sprintf("%s(%d)", prefix, size)
 }
 
-func call2[I1, I2 uint32 | uint8](prefix string, a I1, b I2) string {
-	return fmt.Sprintf("%s(%d, %d)", prefix, a, b)
-}
-
 // Bool is a boolean type.
 //
 // If the database doesn't support BOOL natively,

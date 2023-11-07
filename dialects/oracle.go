@@ -37,6 +37,10 @@ func (oracle) Decimal(precision uint8, scale uint8) string {
 	return call2("NUMBER", precision, scale)
 }
 
+func (oracle) Text() string {
+	return ""
+}
+
 func (oracle) Interval() string {
 	return "INTERVAL"
 }
