@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/matryer/is"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/orsinium-labs/ddl"
+	"github.com/orsinium-labs/ddl/ddl"
 	"github.com/orsinium-labs/ddl/dialects"
 )
 

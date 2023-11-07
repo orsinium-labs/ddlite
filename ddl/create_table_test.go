@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/ddl"
+	"github.com/orsinium-labs/ddl/ddl"
 	"github.com/orsinium-labs/ddl/dialects"
 )
 

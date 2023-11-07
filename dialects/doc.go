@@ -1,4 +1,4 @@
-// Dialects define DB-specific SQL syntax.
+// Dialects define DB-specific data types and SQL syntax.
 //
 // Built-in dialects:
 //
