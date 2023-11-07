@@ -6,7 +6,7 @@ import (
 
 // TODO: Serial
 
-// Int is data type that can fit an integer value of the given maximum size in bits.
+// Int is a numeric type that can fit an integer value of the given maximum size in bits.
 //
 // Bits indicate not the maximum allowed value but the maximum size in bits needed
 // to store it. One bit is always used to store the sign.
@@ -20,6 +20,10 @@ func Int(bits uint8) ColumnType {
 	return colType{callback}
 }
 
+// UInt is a numeric type that can fit an unsigned (non-negative) integer value of the given maximum size in bits.
+//
+// From all the built-in dialects, only MySQL supports UInt. Well, and SQLite because SQLite
+// doesn't care much about types. So, you should always specify as a fallback an [Int].
 func UInt(bits uint8) ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.UInt(bits)
@@ -51,7 +55,9 @@ func Float64() ColumnType {
 	return colType{callback}
 }
 
-// Float32 is an inexact floating-point variable-precision number type of arbitrary precision.
+// Float is an inexact floating-point variable-precision number type of arbitrary precision.
+//
+// Precision 24 is equivalent to [Float32] and precision 53 is equivalent to [Float64].
 func Float(precision uint8) ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Float(precision)

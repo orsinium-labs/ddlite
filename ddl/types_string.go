@@ -6,7 +6,20 @@ import (
 
 // TODO: NChar, NVarChar
 
-// Char can store an ASCII string of the given size in bytes.
+// FixedChar can store an string of the fixed size.
+//
+// Use it when all possible values have the same fixed length. For example:
+//
+//   - country codes ("UK", 2 chars)
+//   - language codes ("en-UK", 4 chars if you remove "-")
+//   - IATA airport codes ("AMS", 3 chars)
+//
+// The size is usually in UTF-8 code points but can also mean bytes,
+// especially in older database engines. If compatibility is important,
+// use this column type only for ASCII values.
+//
+// If the list of possible values is known in advance and doesn't change too often,
+// prefer using [Enum] instead (assuming that your database engine supports it).
 func FixedChar(size uint32) ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.FixedChar(size)
@@ -14,7 +27,18 @@ func FixedChar(size uint32) ColumnType {
 	return colType{callback}
 }
 
-// VarChar can store an ASCII string of any length up to the given size in bytes.
+// VarChar can store a string of any length up to the given size.
+//
+// The size is usually in UTF-8 code points but can also mean bytes,
+// especially in older database engines. If compatibility is important,
+// use this column type only for ASCII values.
+//
+// If the list of possible values is known in advance and doesn't change too often,
+// prefer using [Enum] instead (assuming that your database engine supports it).
+//
+// If all possible values have the same length, prefer using [FixedChar] instead.
+//
+// If the maximum length is not known in advance or too big, use [Text] instead.
 func VarChar(size uint32) ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.VarChar(size)
@@ -23,6 +47,11 @@ func VarChar(size uint32) ColumnType {
 }
 
 // Text can store a string of any length.
+//
+// In some database engines, it's better to use [VarChar] instead whenever possible
+// to prevent [write amplification].
+//
+// [write amplification]: https://en.wikipedia.org/wiki/Write_amplification
 func Text() ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Text()
@@ -31,21 +60,12 @@ func Text() ColumnType {
 }
 
 // Enum is a string type with a pre-defined list of members.
+//
+// Only some database engines support it. If compatibility is important,
+// use [FixedChar] or [VarChar] as a fallback.
 func Enum(members ...string) ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Enum(members)
 	}
 	return colType{callback}
-}
-
-// UUID is a random and unique 16-bytes identifier (RFC 4122).
-func UUID() ColumnType {
-	return colType0{
-		cocroach:  "UUID",
-		mysql:     "BINARY(16)",
-		oracle:    "RAW(16)",
-		postgres:  "UUID",
-		sqlite:    "BLOB",
-		sqlserver: "BINARY(16)",
-	}
 }

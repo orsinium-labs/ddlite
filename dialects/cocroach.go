@@ -19,7 +19,7 @@ func (cocroach) Int(bits uint8) DataType {
 }
 
 func (cocroach) UInt(bits uint8) DataType {
-	return CocroachDB.Int(bits + 1)
+	return ""
 }
 
 func (cocroach) Float(precision uint8) DataType {

@@ -17,7 +17,7 @@ func (psql) Int(bits uint8) DataType {
 }
 
 func (psql) UInt(bits uint8) DataType {
-	return PostgreSQL.Int(bits + 1)
+	return ""
 }
 
 func (psql) Float(precision uint8) DataType {

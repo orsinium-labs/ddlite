@@ -11,6 +11,9 @@ func Date() ColumnType {
 }
 
 // DateTime is date and time.
+//
+// The datetime is always stored in the database without the timezone.
+// In most of the engines, in UTC. If the timezone is important, store it separately.
 func DateTime() ColumnType {
 	return colType0{
 		cocroach:  "TIMESTAMP",

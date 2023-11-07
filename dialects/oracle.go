@@ -10,7 +10,7 @@ func (oracle) Int(bits uint8) DataType {
 }
 
 func (oracle) UInt(bits uint8) DataType {
-	return Oracle.Int(bits + 1)
+	return ""
 }
 
 func (oracle) Float(precision uint8) DataType {

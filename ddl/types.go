@@ -1,8 +1,6 @@
 package ddl
 
 import (
-	"fmt"
-
 	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
@@ -45,10 +43,6 @@ type colType struct {
 
 func (c colType) SQL(dialect dialects.Dialect) dialects.DataType {
 	return c.callback(dialect)
-}
-
-func call[I uint32 | uint8](prefix string, size I) dialects.DataType {
-	return dialects.DataType(fmt.Sprintf("%s(%d)", prefix, size))
 }
 
 // Bool is a boolean type.

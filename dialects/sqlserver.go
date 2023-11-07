@@ -22,7 +22,7 @@ func (sqlserver) Int(bits uint8) DataType {
 }
 
 func (sqlserver) UInt(bits uint8) DataType {
-	return SQLServer.Int(bits + 1)
+	return ""
 }
 
 func (sqlserver) Float(precision uint8) DataType {
