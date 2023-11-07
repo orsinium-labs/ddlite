@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/matryer/is"
-	"github.com/orsinium-labs/ddl/ddl"
-	"github.com/orsinium-labs/ddl/dialects"
+	"github.com/orsinium-labs/sequel-ddl/ddl"
+	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
 func TestCreateTable(t *testing.T) {

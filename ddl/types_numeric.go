@@ -1,7 +1,7 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/ddl/dialects"
+	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
 // TODO: Serial

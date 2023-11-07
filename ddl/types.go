@@ -3,7 +3,7 @@ package ddl
 import (
 	"fmt"
 
-	"github.com/orsinium-labs/ddl/dialects"
+	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
 type ColumnType interface {

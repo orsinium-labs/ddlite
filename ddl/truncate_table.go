@@ -1,8 +1,8 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/ddl/dialects"
-	"github.com/orsinium-labs/ddl/internal/tokens"
+	"github.com/orsinium-labs/sequel-ddl/dialects"
+	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
 type tTruncateTable struct {

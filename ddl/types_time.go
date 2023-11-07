@@ -1,6 +1,6 @@
 package ddl
 
-import "github.com/orsinium-labs/ddl/dialects"
+import "github.com/orsinium-labs/sequel-ddl/dialects"
 
 // Date without time.
 func Date() ColumnType {

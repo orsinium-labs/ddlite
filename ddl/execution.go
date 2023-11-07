@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/orsinium-labs/ddl/dialects"
-	"github.com/orsinium-labs/ddl/internal/tokens"
+	"github.com/orsinium-labs/sequel-ddl/dialects"
+	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
 type Statement interface {

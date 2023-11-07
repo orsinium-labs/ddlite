@@ -6,8 +6,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/matryer/is"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/orsinium-labs/ddl/ddl"
-	"github.com/orsinium-labs/ddl/dialects"
+	"github.com/orsinium-labs/sequel-ddl/ddl"
+	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
 func TestFetchOne(t *testing.T) {
