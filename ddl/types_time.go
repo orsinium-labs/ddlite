@@ -4,7 +4,7 @@ import "github.com/orsinium-labs/sequel-ddl/dialects"
 
 // Date without time.
 func Date() ColumnType {
-	callback := func(dialect dialects.Dialect) string {
+	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Date()
 	}
 	return colType{callback}
@@ -24,7 +24,7 @@ func DateTime() ColumnType {
 
 // Interval is a difference between two datetimes.
 func Interval() ColumnType {
-	callback := func(dialect dialects.Dialect) string {
+	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Interval()
 	}
 	return colType{callback}

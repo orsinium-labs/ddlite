@@ -26,10 +26,10 @@ func Enum(size uint32, members ...string) ColumnType {
 	}
 	suffix := "(" + strings.Join(ms, ",") + ")"
 	return colType0{
-		cocroach:  "ENUM" + suffix,
-		mysql:     "ENUM" + suffix,
+		cocroach:  dialects.DataType("ENUM" + suffix),
+		mysql:     dialects.DataType("ENUM" + suffix),
 		oracle:    call("VARCHAR2", size),
-		postgres:  "ENUM" + suffix,
+		postgres:  dialects.DataType("ENUM" + suffix),
 		sqlite:    "TEXT",
 		sqlserver: "TEXT",
 	}
@@ -73,7 +73,7 @@ func VarChar(size uint32) ColumnType {
 
 // Text can store a string of any length.
 func Text() ColumnType {
-	callback := func(dialect dialects.Dialect) string {
+	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Text()
 	}
 	return colType{callback}

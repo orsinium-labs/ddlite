@@ -1,12 +1,10 @@
 package dialects
 
-import "strconv"
-
 var PostgreSQL Dialect = psql{}
 
 type psql struct{}
 
-func (psql) Int(bits uint8) string {
+func (psql) Int(bits uint8) DataType {
 	// https://www.postgresql.org/docs/current/datatype-numeric.html
 	if bits <= 16 {
 		return "SMALLINT"
@@ -18,11 +16,11 @@ func (psql) Int(bits uint8) string {
 	return "BIGINT"
 }
 
-func (psql) UInt(bits uint8) string {
+func (psql) UInt(bits uint8) DataType {
 	return PostgreSQL.Int(bits + 1)
 }
 
-func (psql) Float(precision uint8) string {
+func (psql) Float(precision uint8) DataType {
 	// https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT
 	if precision > 53 {
 		return ""
@@ -33,22 +31,22 @@ func (psql) Float(precision uint8) string {
 	if precision == 53 {
 		return "DOUBLE PRECISION"
 	}
-	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
+	return call("FLOAT", precision)
 }
 
-func (psql) Decimal(precision uint8, scale uint8) string {
+func (psql) Decimal(precision uint8, scale uint8) DataType {
 	return call2("NUMERIC", precision, scale)
 }
 
-func (psql) Text() string {
+func (psql) Text() DataType {
 	return "TEXT"
 }
 
-func (psql) Interval() string {
+func (psql) Interval() DataType {
 	return "INTERVAL"
 }
 
-func (psql) Date() string {
+func (psql) Date() DataType {
 	return "DATE"
 }
 

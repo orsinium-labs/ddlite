@@ -4,7 +4,7 @@ var CocroachDB Dialect = cocroach{}
 
 type cocroach struct{}
 
-func (cocroach) Int(bits uint8) string {
+func (cocroach) Int(bits uint8) DataType {
 	// https://www.cockroachlabs.com/docs/v23.1/int
 	if bits <= 16 {
 		return "INT2"
@@ -18,11 +18,11 @@ func (cocroach) Int(bits uint8) string {
 	return ""
 }
 
-func (cocroach) UInt(bits uint8) string {
+func (cocroach) UInt(bits uint8) DataType {
 	return CocroachDB.Int(bits + 1)
 }
 
-func (cocroach) Float(precision uint8) string {
+func (cocroach) Float(precision uint8) DataType {
 	// https://www.cockroachlabs.com/docs/v23.1/float
 	if precision <= 24 {
 		return "REAL"
@@ -33,19 +33,19 @@ func (cocroach) Float(precision uint8) string {
 	return ""
 }
 
-func (cocroach) Decimal(precision uint8, scale uint8) string {
+func (cocroach) Decimal(precision uint8, scale uint8) DataType {
 	return call2("DECIMAL", precision, scale)
 }
 
-func (cocroach) Text() string {
+func (cocroach) Text() DataType {
 	return "STRING"
 }
 
-func (cocroach) Interval() string {
+func (cocroach) Interval() DataType {
 	return "INTERVAL"
 }
 
-func (cocroach) Date() string {
+func (cocroach) Date() DataType {
 	return "DATE"
 }
 

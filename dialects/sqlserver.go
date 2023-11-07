@@ -1,12 +1,10 @@
 package dialects
 
-import "strconv"
-
 var SQLServer Dialect = sqlserver{}
 
 type sqlserver struct{}
 
-func (sqlserver) Int(bits uint8) string {
+func (sqlserver) Int(bits uint8) DataType {
 	// https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
 	if bits <= 8 {
 		return "TINYINT"
@@ -23,11 +21,11 @@ func (sqlserver) Int(bits uint8) string {
 	return ""
 }
 
-func (sqlserver) UInt(bits uint8) string {
+func (sqlserver) UInt(bits uint8) DataType {
 	return SQLServer.Int(bits + 1)
 }
 
-func (sqlserver) Float(precision uint8) string {
+func (sqlserver) Float(precision uint8) DataType {
 	if precision > 53 {
 		return ""
 	}
@@ -37,22 +35,22 @@ func (sqlserver) Float(precision uint8) string {
 	if precision == 53 {
 		return "FLOAT"
 	}
-	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
+	return call("FLOAT", precision)
 }
 
-func (sqlserver) Decimal(precision uint8, scale uint8) string {
+func (sqlserver) Decimal(precision uint8, scale uint8) DataType {
 	return call2("DECIMAL", precision, scale)
 }
 
-func (sqlserver) Text() string {
+func (sqlserver) Text() DataType {
 	return "TEXT"
 }
 
-func (sqlserver) Interval() string {
+func (sqlserver) Interval() DataType {
 	return "DATETIMEOFFSET"
 }
 
-func (sqlserver) Date() string {
+func (sqlserver) Date() DataType {
 	return "DATE"
 }
 

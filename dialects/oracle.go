@@ -1,26 +1,19 @@
 package dialects
 
-import (
-	"fmt"
-	"math"
-	"strconv"
-)
-
 var Oracle Dialect = oracle{}
 
 type oracle struct{}
 
-func (oracle) Int(bits uint8) string {
+func (oracle) Int(bits uint8) DataType {
 	// https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html
-	digits := int(math.Log10(math.Pow(2, float64(bits))))
-	return fmt.Sprintf("NUMBER(%d)", digits)
+	return call("NUMBER", bits)
 }
 
-func (oracle) UInt(bits uint8) string {
+func (oracle) UInt(bits uint8) DataType {
 	return Oracle.Int(bits + 1)
 }
 
-func (oracle) Float(precision uint8) string {
+func (oracle) Float(precision uint8) DataType {
 	if precision > 53 {
 		return ""
 	}
@@ -30,22 +23,22 @@ func (oracle) Float(precision uint8) string {
 	if precision == 53 {
 		return "FLOAT"
 	}
-	return "FLOAT(" + strconv.FormatInt(int64(precision), 10) + ")"
+	return call("FLOAT", precision)
 }
 
-func (oracle) Decimal(precision uint8, scale uint8) string {
+func (oracle) Decimal(precision uint8, scale uint8) DataType {
 	return call2("NUMBER", precision, scale)
 }
 
-func (oracle) Text() string {
+func (oracle) Text() DataType {
 	return ""
 }
 
-func (oracle) Interval() string {
+func (oracle) Interval() DataType {
 	return "INTERVAL"
 }
 
-func (oracle) Date() string {
+func (oracle) Date() DataType {
 	return "DATE"
 }
 

@@ -7,20 +7,20 @@ import (
 )
 
 type ColumnType interface {
-	SQL(dialects.Dialect) string
+	SQL(dialects.Dialect) dialects.DataType
 }
 
 // colType0 is a column type without parametrization.
 type colType0 struct {
-	cocroach  string
-	mysql     string
-	oracle    string
-	postgres  string
-	sqlite    string
-	sqlserver string
+	cocroach  dialects.DataType
+	mysql     dialects.DataType
+	oracle    dialects.DataType
+	postgres  dialects.DataType
+	sqlite    dialects.DataType
+	sqlserver dialects.DataType
 }
 
-func (c colType0) SQL(dialect dialects.Dialect) string {
+func (c colType0) SQL(dialect dialects.Dialect) dialects.DataType {
 	switch dialect {
 	case dialects.CocroachDB:
 		return c.cocroach
@@ -40,15 +40,15 @@ func (c colType0) SQL(dialect dialects.Dialect) string {
 }
 
 type colType struct {
-	callback func(dialects.Dialect) string
+	callback func(dialects.Dialect) dialects.DataType
 }
 
-func (c colType) SQL(dialect dialects.Dialect) string {
+func (c colType) SQL(dialect dialects.Dialect) dialects.DataType {
 	return c.callback(dialect)
 }
 
-func call[I uint32 | uint8](prefix string, size I) string {
-	return fmt.Sprintf("%s(%d)", prefix, size)
+func call[I uint32 | uint8](prefix string, size I) dialects.DataType {
+	return dialects.DataType(fmt.Sprintf("%s(%d)", prefix, size))
 }
 
 // Bool is a boolean type.
