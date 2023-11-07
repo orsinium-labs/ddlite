@@ -27,6 +27,9 @@ type Dialect interface {
 	VarChar(size uint32) DataType
 	Enum(members []string) DataType
 	Blob() DataType
+
+	// misc types
+	Bool() DataType
 }
 
 type DataType string

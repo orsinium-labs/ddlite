@@ -78,6 +78,10 @@ func (sqlserver) Time() DataType {
 	return "TIME"
 }
 
+func (sqlserver) Bool() DataType {
+	return "TINYINT"
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }

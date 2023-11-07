@@ -61,6 +61,10 @@ func (sqlite) Time() DataType {
 	return "TIME"
 }
 
+func (sqlite) Bool() DataType {
+	return "INTEGER"
+}
+
 func (sqlite) String() string {
 	return "SQLite"
 }

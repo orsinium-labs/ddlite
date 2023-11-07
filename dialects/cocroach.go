@@ -73,6 +73,10 @@ func (cocroach) Time() DataType {
 	return "TIME"
 }
 
+func (cocroach) Bool() DataType {
+	return "BOOL"
+}
+
 func (cocroach) String() string {
 	return "CocroachDB"
 }

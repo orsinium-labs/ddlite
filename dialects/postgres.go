@@ -74,6 +74,10 @@ func (psql) Time() DataType {
 	return "TIME"
 }
 
+func (psql) Bool() DataType {
+	return "BOOLEAN"
+}
+
 func (psql) String() string {
 	return "PostgreSQL"
 }

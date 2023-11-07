@@ -89,6 +89,10 @@ func (mysql) Time() DataType {
 	return "TIME"
 }
 
+func (mysql) Bool() DataType {
+	return "TINYINT(1)"
+}
+
 func (mysql) String() string {
 	return "MySQL"
 }

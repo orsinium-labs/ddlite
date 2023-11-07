@@ -66,6 +66,10 @@ func (oracle) Time() DataType {
 	return "INTERVAL"
 }
 
+func (oracle) Bool() DataType {
+	return "NUMBER(1)"
+}
+
 func (oracle) String() string {
 	return "Oracle"
 }
