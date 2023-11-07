@@ -1,8 +1,6 @@
 package ddl
 
 import (
-	"strings"
-
 	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
@@ -19,20 +17,11 @@ func Char(size uint32) ColumnType {
 }
 
 // Enum is a string type with a pre-defined list of members.
-func Enum(size uint32, members ...string) ColumnType {
-	ms := make([]string, len(members))
-	for _, m := range members {
-		ms = append(ms, "'"+string(m)+"'")
+func Enum(members ...string) ColumnType {
+	callback := func(dialect dialects.Dialect) dialects.DataType {
+		return dialect.Enum(members)
 	}
-	suffix := "(" + strings.Join(ms, ",") + ")"
-	return colType0{
-		cocroach:  dialects.DataType("ENUM" + suffix),
-		mysql:     dialects.DataType("ENUM" + suffix),
-		oracle:    call("VARCHAR2", size),
-		postgres:  dialects.DataType("ENUM" + suffix),
-		sqlite:    "TEXT",
-		sqlserver: "TEXT",
-	}
+	return colType{callback}
 }
 
 // Char can store a Unicode string of the given size in byte-pairs.

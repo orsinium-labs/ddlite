@@ -3,6 +3,7 @@ package dialects
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type Dialect interface {
@@ -14,6 +15,7 @@ type Dialect interface {
 	Interval() DataType
 	Date() DataType
 	Text() DataType
+	Enum(members []string) DataType
 }
 
 type DataType string
@@ -27,4 +29,9 @@ func call2(prefix string, a, b uint8) DataType {
 	as := strconv.FormatInt(int64(a), 10)
 	bs := strconv.FormatInt(int64(b), 10)
 	return DataType(prefix + "(" + as + ", " + bs + ")")
+}
+
+func callVar(prefix string, args []string) DataType {
+	suffix := strings.Join(args, ", ")
+	return DataType(prefix + "(" + suffix + ")")
 }

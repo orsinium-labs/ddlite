@@ -34,6 +34,10 @@ func (oracle) Text() DataType {
 	return ""
 }
 
+func (oracle) Enum(members []string) DataType {
+	return ""
+}
+
 func (oracle) Interval() DataType {
 	return "INTERVAL"
 }

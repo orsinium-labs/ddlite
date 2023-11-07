@@ -29,6 +29,10 @@ func (sqlite) Text() DataType {
 	return "TEXT"
 }
 
+func (sqlite) Enum(members []string) DataType {
+	return "TEXT"
+}
+
 func (sqlite) Interval() DataType {
 	return "INTEGER"
 }

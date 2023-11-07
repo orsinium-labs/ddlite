@@ -42,6 +42,10 @@ func (psql) Text() DataType {
 	return "TEXT"
 }
 
+func (psql) Enum(members []string) DataType {
+	return callVar("ENUM", members)
+}
+
 func (psql) Interval() DataType {
 	return "INTERVAL"
 }

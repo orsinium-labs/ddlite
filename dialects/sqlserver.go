@@ -46,6 +46,10 @@ func (sqlserver) Text() DataType {
 	return "TEXT"
 }
 
+func (sqlserver) Enum(members []string) DataType {
+	return ""
+}
+
 func (sqlserver) Interval() DataType {
 	return "DATETIMEOFFSET"
 }

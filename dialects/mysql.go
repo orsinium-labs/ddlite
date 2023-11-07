@@ -49,6 +49,10 @@ func (mysql) Text() DataType {
 	return "TEXT"
 }
 
+func (mysql) Enum(members []string) DataType {
+	return callVar("ENUM", members)
+}
+
 func (mysql) Interval() DataType {
 	return "INTEGER"
 }

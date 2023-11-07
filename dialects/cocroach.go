@@ -41,6 +41,10 @@ func (cocroach) Text() DataType {
 	return "STRING"
 }
 
+func (cocroach) Enum(members []string) DataType {
+	return callVar("ENUM", members)
+}
+
 func (cocroach) Interval() DataType {
 	return "INTERVAL"
 }
