@@ -15,14 +15,10 @@ func Date() ColumnType {
 // The datetime is always stored in the database without the timezone.
 // In most of the engines, in UTC. If the timezone is important, store it separately.
 func DateTime() ColumnType {
-	return colType0{
-		cocroach:  "TIMESTAMP",
-		mysql:     "DATETIME",
-		oracle:    "TIMESTAMP",
-		postgres:  "TIMESTAMP",
-		sqlite:    "INTEGER",
-		sqlserver: "DATETIME",
+	callback := func(dialect dialects.Dialect) dialects.DataType {
+		return dialect.DateTime()
 	}
+	return colType{callback}
 }
 
 // Interval is a difference between two datetimes.
@@ -35,12 +31,8 @@ func Interval() ColumnType {
 
 // Time of the day, without date.
 func Time() ColumnType {
-	return colType0{
-		cocroach:  "TIME",
-		mysql:     "TIME",
-		oracle:    "INTERVAL",
-		postgres:  "TIME",
-		sqlite:    "INTEGER",
-		sqlserver: "TIME",
+	callback := func(dialect dialects.Dialect) dialects.DataType {
+		return dialect.Time()
 	}
+	return colType{callback}
 }

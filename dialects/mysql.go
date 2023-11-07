@@ -81,6 +81,14 @@ func (mysql) Date() DataType {
 	return "DATE"
 }
 
+func (mysql) DateTime() DataType {
+	return "DATETIME"
+}
+
+func (mysql) Time() DataType {
+	return "TIME"
+}
+
 func (mysql) String() string {
 	return "MySQL"
 }

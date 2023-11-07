@@ -46,11 +46,19 @@ func (sqlite) Blob() DataType {
 }
 
 func (sqlite) Interval() DataType {
-	return "INTEGER"
+	return ""
 }
 
 func (sqlite) Date() DataType {
-	return "INTEGER"
+	return ""
+}
+
+func (sqlite) DateTime() DataType {
+	return ""
+}
+
+func (sqlite) Time() DataType {
+	return "TIME"
 }
 
 func (sqlite) String() string {

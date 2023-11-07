@@ -66,6 +66,14 @@ func (psql) Date() DataType {
 	return "DATE"
 }
 
+func (psql) DateTime() DataType {
+	return "TIMESTAMP"
+}
+
+func (psql) Time() DataType {
+	return "TIME"
+}
+
 func (psql) String() string {
 	return "PostgreSQL"
 }

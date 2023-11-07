@@ -70,6 +70,14 @@ func (sqlserver) Date() DataType {
 	return "DATE"
 }
 
+func (sqlserver) DateTime() DataType {
+	return "DATETIME"
+}
+
+func (sqlserver) Time() DataType {
+	return "TIME"
+}
+
 func (sqlserver) String() string {
 	return "SQLServer"
 }

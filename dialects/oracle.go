@@ -58,6 +58,14 @@ func (oracle) Date() DataType {
 	return "DATE"
 }
 
+func (oracle) DateTime() DataType {
+	return "TIMESTAMP"
+}
+
+func (oracle) Time() DataType {
+	return "INTERVAL"
+}
+
 func (oracle) String() string {
 	return "Oracle"
 }

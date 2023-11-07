@@ -18,6 +18,8 @@ type Dialect interface {
 	// time types
 	Interval() DataType
 	Date() DataType
+	DateTime() DataType
+	Time() DataType
 
 	// string types
 	Text() DataType

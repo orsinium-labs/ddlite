@@ -65,6 +65,14 @@ func (cocroach) Date() DataType {
 	return "DATE"
 }
 
+func (cocroach) DateTime() DataType {
+	return "TIMESTAMP"
+}
+
+func (cocroach) Time() DataType {
+	return "TIME"
+}
+
 func (cocroach) String() string {
 	return "CocroachDB"
 }
