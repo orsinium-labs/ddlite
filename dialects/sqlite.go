@@ -29,6 +29,14 @@ func (sqlite) Text() DataType {
 	return "TEXT"
 }
 
+func (sqlite) FixedChar(size uint32) DataType {
+	return "TEXT"
+}
+
+func (sqlite) VarChar(size uint32) DataType {
+	return "TEXT"
+}
+
 func (sqlite) Enum(members []string) DataType {
 	return "TEXT"
 }

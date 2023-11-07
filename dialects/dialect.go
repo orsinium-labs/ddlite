@@ -15,19 +15,21 @@ type Dialect interface {
 	Interval() DataType
 	Date() DataType
 	Text() DataType
+	FixedChar(size uint32) DataType
+	VarChar(size uint32) DataType
 	Enum(members []string) DataType
 }
 
 type DataType string
 
-func call(prefix string, x uint8) DataType {
-	s := strconv.FormatInt(int64(x), 10)
+func call[T uint8 | uint32](prefix string, x T) DataType {
+	s := strconv.FormatUint(uint64(x), 10)
 	return DataType(prefix + "(" + s + ")")
 }
 
 func call2(prefix string, a, b uint8) DataType {
-	as := strconv.FormatInt(int64(a), 10)
-	bs := strconv.FormatInt(int64(b), 10)
+	as := strconv.FormatUint(uint64(a), 10)
+	bs := strconv.FormatUint(uint64(b), 10)
 	return DataType(prefix + "(" + as + ", " + bs + ")")
 }
 

@@ -34,6 +34,14 @@ func (oracle) Text() DataType {
 	return ""
 }
 
+func (oracle) FixedChar(size uint32) DataType {
+	return call("CHAR", size)
+}
+
+func (oracle) VarChar(size uint32) DataType {
+	return call("VARCHAR2", size)
+}
+
 func (oracle) Enum(members []string) DataType {
 	return ""
 }

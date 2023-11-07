@@ -49,6 +49,22 @@ func (mysql) Text() DataType {
 	return "TEXT"
 }
 
+func (mysql) FixedChar(size uint32) DataType {
+	// https://dev.mysql.com/doc/refman/8.2/en/char.html
+	if size > 255 {
+		return ""
+	}
+	return call("CHAR", size)
+}
+
+func (mysql) VarChar(size uint32) DataType {
+	// https://dev.mysql.com/doc/refman/8.2/en/char.html
+	if size > 65_535 {
+		return ""
+	}
+	return call("VARCHAR", size)
+}
+
 func (mysql) Enum(members []string) DataType {
 	return callVar("ENUM", members)
 }

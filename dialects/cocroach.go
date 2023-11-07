@@ -41,6 +41,14 @@ func (cocroach) Text() DataType {
 	return "STRING"
 }
 
+func (cocroach) FixedChar(size uint32) DataType {
+	return call("STRING", size)
+}
+
+func (cocroach) VarChar(size uint32) DataType {
+	return call("STRING", size)
+}
+
 func (cocroach) Enum(members []string) DataType {
 	return callVar("ENUM", members)
 }

@@ -46,6 +46,14 @@ func (sqlserver) Text() DataType {
 	return "TEXT"
 }
 
+func (sqlserver) FixedChar(size uint32) DataType {
+	return call("CHAR", size)
+}
+
+func (sqlserver) VarChar(size uint32) DataType {
+	return call("VARCHAR", size)
+}
+
 func (sqlserver) Enum(members []string) DataType {
 	return ""
 }

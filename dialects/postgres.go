@@ -42,6 +42,14 @@ func (psql) Text() DataType {
 	return "TEXT"
 }
 
+func (psql) FixedChar(size uint32) DataType {
+	return call("CHAR", size)
+}
+
+func (psql) VarChar(size uint32) DataType {
+	return call("VARCHAR", size)
+}
+
 func (psql) Enum(members []string) DataType {
 	return callVar("ENUM", members)
 }

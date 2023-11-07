@@ -4,66 +4,36 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
-// Char can store an ASCII string of the given size in bytes.
-func Char(size uint32) ColumnType {
-	return colType0{
-		cocroach:  "STRING",
-		mysql:     call("CHAR", size),
-		oracle:    call("CHAR", size),
-		postgres:  call("CHAR", size),
-		sqlite:    "TEXT",
-		sqlserver: call("CHAR", size),
-	}
-}
+// TODO: NChar, NVarChar
 
-// Enum is a string type with a pre-defined list of members.
-func Enum(members ...string) ColumnType {
+// Char can store an ASCII string of the given size in bytes.
+func FixedChar(size uint32) ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
-		return dialect.Enum(members)
+		return dialect.FixedChar(size)
 	}
 	return colType{callback}
 }
 
-// Char can store a Unicode string of the given size in byte-pairs.
-func NChar(size uint32) ColumnType {
-	return colType0{
-		cocroach:  "STRING",
-		mysql:     call("NCHAR", size),
-		oracle:    call("NCHAR", size),
-		postgres:  call("CHAR", size),
-		sqlite:    "TEXT",
-		sqlserver: call("NCHAR", size),
-	}
-}
-
-// NVarChar can store a Unicode string of any length up to the given size in byte-pairs.
-func NVarChar(size uint32) ColumnType {
-	return colType0{
-		cocroach:  "STRING",
-		mysql:     call("NVARCHAR", size),
-		oracle:    call("NVARCHAR2", size),
-		postgres:  call("VARCHAR", size),
-		sqlite:    "TEXT",
-		sqlserver: call("NVARCHAR", size),
-	}
-}
-
 // VarChar can store an ASCII string of any length up to the given size in bytes.
 func VarChar(size uint32) ColumnType {
-	return colType0{
-		cocroach:  "STRING",
-		mysql:     call("VARCHAR", size),
-		oracle:    call("VARCHAR2", size),
-		postgres:  call("VARCHAR", size),
-		sqlite:    "TEXT",
-		sqlserver: call("VARCHAR", size),
+	callback := func(dialect dialects.Dialect) dialects.DataType {
+		return dialect.VarChar(size)
 	}
+	return colType{callback}
 }
 
 // Text can store a string of any length.
 func Text() ColumnType {
 	callback := func(dialect dialects.Dialect) dialects.DataType {
 		return dialect.Text()
+	}
+	return colType{callback}
+}
+
+// Enum is a string type with a pre-defined list of members.
+func Enum(members ...string) ColumnType {
+	callback := func(dialect dialects.Dialect) dialects.DataType {
+		return dialect.Enum(members)
 	}
 	return colType{callback}
 }
