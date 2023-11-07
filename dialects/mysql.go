@@ -69,6 +69,10 @@ func (mysql) Enum(members []string) DataType {
 	return callVar("ENUM", members)
 }
 
+func (mysql) Blob() DataType {
+	return "BLOB"
+}
+
 func (mysql) Interval() DataType {
 	return "INTEGER"
 }

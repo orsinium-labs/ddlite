@@ -34,6 +34,10 @@ func (oracle) Text() DataType {
 	return ""
 }
 
+func (oracle) Blob() DataType {
+	return "BLOB"
+}
+
 func (oracle) FixedChar(size uint32) DataType {
 	return call("CHAR", size)
 }

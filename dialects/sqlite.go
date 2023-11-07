@@ -41,6 +41,10 @@ func (sqlite) Enum(members []string) DataType {
 	return "TEXT"
 }
 
+func (sqlite) Blob() DataType {
+	return "BLOB"
+}
+
 func (sqlite) Interval() DataType {
 	return "INTEGER"
 }

@@ -8,16 +8,23 @@ import (
 
 type Dialect interface {
 	fmt.Stringer
+
+	// numeric types
 	Int(bits uint8) DataType
 	UInt(bits uint8) DataType
 	Float(precision uint8) DataType
 	Decimal(precision uint8, scale uint8) DataType
+
+	// time types
 	Interval() DataType
 	Date() DataType
+
+	// string types
 	Text() DataType
 	FixedChar(size uint32) DataType
 	VarChar(size uint32) DataType
 	Enum(members []string) DataType
+	Blob() DataType
 }
 
 type DataType string

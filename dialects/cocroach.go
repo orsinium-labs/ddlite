@@ -53,6 +53,10 @@ func (cocroach) Enum(members []string) DataType {
 	return callVar("ENUM", members)
 }
 
+func (cocroach) Blob() DataType {
+	return "BYTES"
+}
+
 func (cocroach) Interval() DataType {
 	return "INTERVAL"
 }

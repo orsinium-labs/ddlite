@@ -69,3 +69,11 @@ func Enum(members ...string) ColumnType {
 	}
 	return colType{callback}
 }
+
+// Blob is a raw binary data type or variable length.
+func Blob() ColumnType {
+	callback := func(dialect dialects.Dialect) dialects.DataType {
+		return dialect.Blob()
+	}
+	return colType{callback}
+}

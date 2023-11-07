@@ -54,6 +54,10 @@ func (psql) Enum(members []string) DataType {
 	return callVar("ENUM", members)
 }
 
+func (psql) Blob() DataType {
+	return "BYTEA"
+}
+
 func (psql) Interval() DataType {
 	return "INTERVAL"
 }

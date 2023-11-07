@@ -47,8 +47,7 @@ func (c colType) SQL(dialect dialects.Dialect) dialects.DataType {
 
 // Bool is a boolean type.
 //
-// If the database doesn't support BOOL natively,
-// the smallest integer type is used.
+// If the database doesn't support BOOL natively, the smallest integer type is used.
 func Bool() ColumnType {
 	return colType0{
 		cocroach:  "BOOL",
@@ -57,17 +56,5 @@ func Bool() ColumnType {
 		postgres:  "BOOLEAN",
 		sqlite:    "INTEGER",
 		sqlserver: "TINYINT",
-	}
-}
-
-// Blob is raw binary data.
-func Blob() ColumnType {
-	return colType0{
-		cocroach:  "BYTES",
-		mysql:     "BLOB",
-		oracle:    "BLOB",
-		postgres:  "BYTEA",
-		sqlite:    "BLOB",
-		sqlserver: "VARBINARY",
 	}
 }

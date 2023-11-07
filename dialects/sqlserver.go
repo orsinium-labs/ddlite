@@ -58,6 +58,10 @@ func (sqlserver) Enum(members []string) DataType {
 	return ""
 }
 
+func (sqlserver) Blob() DataType {
+	return "VARBINARY"
+}
+
 func (sqlserver) Interval() DataType {
 	return "DATETIMEOFFSET"
 }
