@@ -4,6 +4,13 @@ var SQLServer Dialect = sqlserver{}
 
 type sqlserver struct{}
 
+func (sqlserver) Features() Features {
+	return Features{
+		// https://learn.microsoft.com/en-us/sql/t-sql/statements/truncate-table-transact-sql
+		TruncateTable: true,
+	}
+}
+
 func (sqlserver) Int(bits uint8) DataType {
 	// https://learn.microsoft.com/en-us/sql/t-sql/data-types/int-bigint-smallint-and-tinyint-transact-sql
 	if bits <= 8 {

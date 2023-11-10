@@ -4,6 +4,13 @@ var SQLite Dialect = sqlite{}
 
 type sqlite struct{}
 
+func (sqlite) Features() Features {
+	return Features{
+		// https://www.sqlite.org/lang_delete.html#the_truncate_optimization
+		TruncateTable: false,
+	}
+}
+
 func (sqlite) Int(bits uint8) DataType {
 	// https://www.sqlite.org/datatype3.html#boolean_datatype
 	// INTEGER fits up to 8 bytes.

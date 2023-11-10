@@ -8,6 +8,7 @@ import (
 
 type Dialect interface {
 	fmt.Stringer
+	Features() Features
 
 	// numeric types
 	Int(bits uint8) DataType
@@ -26,9 +27,9 @@ type Dialect interface {
 	FixedChar(size uint32) DataType
 	VarChar(size uint32) DataType
 	Enum(members []string) DataType
-	Blob() DataType
 
 	// misc types
+	Blob() DataType
 	Bool() DataType
 }
 

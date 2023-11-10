@@ -4,6 +4,13 @@ var CocroachDB Dialect = cocroach{}
 
 type cocroach struct{}
 
+func (cocroach) Features() Features {
+	return Features{
+		// https://www.cockroachlabs.com/docs/stable/truncate
+		TruncateTable: true,
+	}
+}
+
 func (cocroach) Int(bits uint8) DataType {
 	// https://www.cockroachlabs.com/docs/v23.1/int
 	if bits <= 16 {

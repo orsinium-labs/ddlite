@@ -4,6 +4,13 @@ var PostgreSQL Dialect = psql{}
 
 type psql struct{}
 
+func (psql) Features() Features {
+	return Features{
+		// https://www.postgresql.org/docs/current/sql-truncate.html
+		TruncateTable: true,
+	}
+}
+
 func (psql) Int(bits uint8) DataType {
 	// https://www.postgresql.org/docs/current/datatype-numeric.html
 	if bits <= 16 {

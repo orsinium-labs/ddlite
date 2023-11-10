@@ -4,6 +4,13 @@ var MySQL Dialect = mysql{}
 
 type mysql struct{}
 
+func (mysql) Features() Features {
+	return Features{
+		// https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html
+		TruncateTable: true,
+	}
+}
+
 func (mysql) Int(bits uint8) DataType {
 	// https://dev.mysql.com/doc/refman/8.2/en/integer-types.html
 	if bits <= 8 {

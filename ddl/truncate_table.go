@@ -18,12 +18,10 @@ func TruncateTable(table Safe) Statement {
 
 func (q tTruncateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New()
-	if dialect == dialects.SQLite {
-		// https://www.sqlite.org/lang_delete.html
-		ts.Add(tokens.Keyword("DELETE FROM"))
-	} else {
-		// https://en.wikipedia.org/wiki/Data_definition_language#TRUNCATE_statement
+	if dialect.Features().TruncateTable {
 		ts.Add(tokens.Keyword("TRUNCATE TABLE"))
+	} else {
+		ts.Add(tokens.Keyword("DELETE FROM"))
 	}
 	ts.Add(tokens.ColumnName(q.table))
 	return ts

@@ -4,6 +4,13 @@ var Oracle Dialect = oracle{}
 
 type oracle struct{}
 
+func (oracle) Features() Features {
+	return Features{
+		// https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/TRUNCATE-TABLE.html
+		TruncateTable: true,
+	}
+}
+
 func (oracle) Int(bits uint8) DataType {
 	// https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html
 	return call("NUMBER", bits)
