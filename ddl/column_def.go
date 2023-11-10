@@ -30,6 +30,7 @@ func Column(name Safe, ctype ColumnType, null Nullable) tColumn {
 		name:        name,
 		colType:     ctype,
 		constraints: make([]string, 0),
+		null:        null,
 	}
 }
 

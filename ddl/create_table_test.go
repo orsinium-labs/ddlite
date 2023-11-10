@@ -38,7 +38,7 @@ func TestColumnDef(t *testing.T) {
 		},
 		{
 			def: ddl.Column("age", ddl.Int(32), ddl.Null),
-			sql: "age INTEGER NULL",
+			sql: "age INTEGER",
 		},
 		{
 			def: ddl.Column("age", ddl.Int(32), ddl.NotNull),
