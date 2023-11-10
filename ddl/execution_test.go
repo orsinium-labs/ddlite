@@ -18,9 +18,9 @@ func TestFetchOne(t *testing.T) {
 	// CREATE TABLE
 	schema := ddl.CreateTable(
 		"place",
-		ddl.Column("country", ddl.Text()),
-		ddl.Column("city", ddl.Text()).Null(),
-		ddl.Column("tel_code", ddl.Int(32)),
+		ddl.Column("country", ddl.Text(), ddl.NotNull),
+		ddl.Column("city", ddl.Text(), ddl.Null),
+		ddl.Column("tel_code", ddl.Int(32), ddl.NotNull),
 	)
 	_, err = ddl.Exec(dialects.SQLite, db, schema)
 	is.NoErr(err)

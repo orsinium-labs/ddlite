@@ -11,8 +11,8 @@ import (
 func TestCreateTable(t *testing.T) {
 	is := is.New(t)
 	q := ddl.CreateTable("user",
-		ddl.Column("name", ddl.Text()),
-		ddl.Column("age", ddl.Int(8)),
+		ddl.Column("name", ddl.Text(), ddl.Null),
+		ddl.Column("age", ddl.Int(8), ddl.Null),
 	)
 	sql, err := ddl.SQL(dialects.PostgreSQL, q)
 	is.NoErr(err)
@@ -25,31 +25,31 @@ func TestColumnDef(t *testing.T) {
 		sql string
 	}{
 		{
-			def: ddl.Column("name", ddl.Text()),
+			def: ddl.Column("name", ddl.Text(), ddl.Null),
 			sql: "name TEXT",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32)),
+			def: ddl.Column("age", ddl.Int(32), ddl.Null),
 			sql: "age INTEGER",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32)).Unique(),
+			def: ddl.Column("age", ddl.Int(32), ddl.Null).Unique(),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32)).Null(),
+			def: ddl.Column("age", ddl.Int(32), ddl.Null),
 			sql: "age INTEGER NULL",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32)).NotNull(),
+			def: ddl.Column("age", ddl.Int(32), ddl.NotNull),
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32)).PrimaryKey(),
+			def: ddl.Column("age", ddl.Int(32), ddl.Null).PrimaryKey(),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
-			def: ddl.Column("name", ddl.VarChar(20)).Collate("NOCASE"),
+			def: ddl.Column("name", ddl.VarChar(20), ddl.Null).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
 		},
 		{
