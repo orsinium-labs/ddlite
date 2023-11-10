@@ -80,6 +80,11 @@ func (def ColumnBuilder) Check(expr Safe) ColumnBuilder {
 	return def
 }
 
+func (def ColumnBuilder) Default(expr Safe) ColumnBuilder {
+	def.constraints = append(def.constraints, "DEFAULT", "(", string(expr), ")")
+	return def
+}
+
 func (def ColumnBuilder) tokens(dialect dialects.Dialect) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType(dialect)
