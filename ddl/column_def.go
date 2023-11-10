@@ -13,6 +13,7 @@ type ColumnBuilder struct {
 	colType     ColumnType
 	constraints []string
 	null        Nullable
+	reference   *Reference
 }
 
 // Nullable is used by [Column] to indicate if the column may be NULL or not.
@@ -61,6 +62,11 @@ func (def ColumnBuilder) PrimaryKey() ColumnBuilder {
 	return def
 }
 
+func (def ColumnBuilder) ForeignKey(ref Reference) ColumnBuilder {
+	def.reference = &ref
+	return def
+}
+
 // Collate specifies the name of a collating sequence to use as the default collation sequence for the column.
 //
 // SQL: COLLATE
@@ -86,6 +92,9 @@ func (def ColumnBuilder) tokens(dialect dialects.Dialect) tokens.Tokens {
 	}
 	if constraints != "" {
 		ts.Add(tokens.Raw(constraints))
+	}
+	if def.reference != nil {
+		ts.Extend(def.reference.tokens(dialect))
 	}
 	return ts
 }
