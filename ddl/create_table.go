@@ -8,19 +8,25 @@ import (
 )
 
 type tCreateTable struct {
-	table Safe
-	cols  []iColumn
+	table       Safe
+	columns     []tColumn
+	constraints []Constraint
 }
 
-func CreateTable(table Safe, cols ...iColumn) Statement {
+func CreateTable(table Safe, columns ...tColumn) Statement {
 	return tCreateTable{
-		table: table,
-		cols:  cols,
+		table:   table,
+		columns: columns,
 	}
 }
 
+func (q tCreateTable) Constraints(constraints ...Constraint) Statement {
+	q.constraints = append(q.constraints, constraints...)
+	return q
+}
+
 func (q tCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
-	if len(q.cols) == 0 {
+	if len(q.columns) == 0 {
 		err := errors.New("new table must have columns defined")
 		return tokens.New(tokens.Err(err))
 	}
@@ -29,11 +35,15 @@ func (q tCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 		tokens.TableName(q.table),
 		tokens.LParen(),
 	)
-	for i, col := range q.cols {
+	for i, col := range q.columns {
 		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
 		ts.Extend(col.tokens(dialect))
+	}
+	for _, con := range q.constraints {
+		ts.Add(tokens.Comma())
+		ts.Extend(con.tokens(dialect))
 	}
 	ts.Add(tokens.RParen())
 	return ts

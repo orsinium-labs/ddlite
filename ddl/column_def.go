@@ -1,20 +1,12 @@
 package ddl
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
-
-// A private type to represent column definitions and table constraints.
-//
-// Can be constructed with [Column] and [Unique].
-type iColumn interface {
-	tokens(dialects.Dialect) tokens.Tokens
-}
 
 type tColumn struct {
 	name        Safe
@@ -74,27 +66,5 @@ func (def tColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	if constraints != "" {
 		ts.Add(tokens.Raw(constraints))
 	}
-	return ts
-}
-
-type tUnique struct {
-	names []Safe
-}
-
-func Unique(names ...Safe) iColumn {
-	return tUnique{names: names}
-}
-
-func (def tUnique) tokens(dialects.Dialect) tokens.Tokens {
-	if len(def.names) == 0 {
-		err := errors.New("unique index must have at least one column specified")
-		return tokens.New(tokens.Err(err))
-	}
-	ts := tokens.New(
-		tokens.Keyword("UNIQUE"),
-		tokens.LParen(),
-		tokens.Raws(def.names...),
-		tokens.RParen(),
-	)
 	return ts
 }
