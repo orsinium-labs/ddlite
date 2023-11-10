@@ -8,7 +8,7 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tColumn struct {
+type ColumnBuilder struct {
 	name        Safe
 	colType     ColumnType
 	constraints []string
@@ -20,13 +20,21 @@ type Nullable bool
 
 const (
 	// Null marks a column that allows NULL values.
+	//
+	// SQL: NULL
 	Null Nullable = true
+
 	// NotNull marks a column that cannot store NULL values.
+	//
+	// SQL: NOT NULL
 	NotNull Nullable = false
 )
 
-func Column(name Safe, ctype ColumnType, null Nullable) tColumn {
-	return tColumn{
+// Column is a column definition.
+//
+// Used in [CreateTable] and [AddColumn].
+func Column(name Safe, ctype ColumnType, null Nullable) ColumnBuilder {
+	return ColumnBuilder{
 		name:        name,
 		colType:     ctype,
 		constraints: make([]string, 0),
@@ -34,22 +42,34 @@ func Column(name Safe, ctype ColumnType, null Nullable) tColumn {
 	}
 }
 
-func (def tColumn) Unique() tColumn {
+// Unique makes sure that each value in the column is unique.
+//
+// SQL: UNIQUE
+func (def ColumnBuilder) Unique() ColumnBuilder {
 	def.constraints = append(def.constraints, "UNIQUE")
 	return def
 }
 
-func (def tColumn) PrimaryKey() tColumn {
+// PrimaryKey makes the column the primary key.
+//
+// Only one column can be marked as primary key that way. If you want the primary key
+// to ocnsist of multiple columns, use the [PrimaryKey] constraint instead.
+//
+// SQL: PRIMARY KEY
+func (def ColumnBuilder) PrimaryKey() ColumnBuilder {
 	def.constraints = append(def.constraints, "PRIMARY KEY")
 	return def
 }
 
-func (def tColumn) Collate(collationName Safe) tColumn {
+// Collate specifies the name of a collating sequence to use as the default collation sequence for the column.
+//
+// SQL: COLLATE
+func (def ColumnBuilder) Collate(collationName Safe) ColumnBuilder {
 	def.constraints = append(def.constraints, "COLLATE", string(collationName))
 	return def
 }
 
-func (def tColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (def ColumnBuilder) tokens(dialect dialects.Dialect) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType(dialect)
 	if colSQL == "" {

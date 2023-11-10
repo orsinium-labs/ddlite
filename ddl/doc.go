@@ -17,12 +17,10 @@
 //
 // Supported column types:
 //
-//   - Text: [Char], [NChar], [NVarChar], [VarChar], [Text], [Enum].
-//   - Binary: [Blob], [UUID].
-//   - Integer: [Int], [UInt].
-//   - Other numeric: [Decimal], [Float32], [Float64], [Float].
+//   - Text: [Text], [Enum], [FixedChar], [VarChar].
+//   - Numeric: [Int], [UInt], [Decimal], [Float32], [Float64], [Float].
 //   - Time: [Date], [DateTime], [Interval], [Time].
-//   - [Bool].
+//   - Misc: [Blob], [Bool].
 //
 // References used to define the data types translation for each dialect:
 //

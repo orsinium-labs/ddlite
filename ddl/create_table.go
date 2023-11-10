@@ -9,11 +9,11 @@ import (
 
 type tCreateTable struct {
 	table       Safe
-	columns     []tColumn
+	columns     []ColumnBuilder
 	constraints []Constraint
 }
 
-func CreateTable(table Safe, columns ...tColumn) Statement {
+func CreateTable(table Safe, columns ...ColumnBuilder) Statement {
 	return tCreateTable{
 		table:   table,
 		columns: columns,

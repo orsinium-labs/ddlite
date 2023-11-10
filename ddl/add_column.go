@@ -7,11 +7,13 @@ import (
 
 type tAddColumn struct {
 	table Safe
-	col   tColumn
+	col   ColumnBuilder
 }
 
 // AddColumn builds query that adds a new column to the table.
-func AddColumn(table Safe, col tColumn) Statement {
+//
+// SQL: ALTER TABLE ADD COLUMN
+func AddColumn(table Safe, col ColumnBuilder) Statement {
 	return tAddColumn{table: table, col: col}
 }
 
