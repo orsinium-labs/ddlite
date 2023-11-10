@@ -17,11 +17,9 @@ func DropTable(table Safe) Statement {
 	}
 }
 
-func DropTableIfExists(table Safe) Statement {
-	return tDropTable{
-		table:    table,
-		ifExists: true,
-	}
+func (q tDropTable) IfExists() Statement {
+	q.ifExists = true
+	return q
 }
 
 func (q tDropTable) tokens(dialects.Dialect) tokens.Tokens {

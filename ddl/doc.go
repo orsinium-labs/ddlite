@@ -8,7 +8,6 @@
 //   - [CreateTable] is "CREATE TABLE t"
 //   - [DropColumn] is "ALTER TABLE t DROP COLUMN c"
 //   - [DropTable] is "DROP TABLE t"
-//   - [DropTableIfExists] is "DROP TABLE IF EXISTS t"
 //   - [RenameColumn] is "ALTER TABLE t RENAME COLUMN c"
 //   - [RenameTable] is "ALTER TABLE t RENAME TO x"
 //   - [TruncateTable] is "TRUNCATE TABLE t" (or "DELETE FROM t")
@@ -30,6 +29,24 @@
 //   - [MySQL]
 //   - [PostgreSQL]
 //   - [Microsoft SQL Server]
+//
+// # Constraints
+//
+// Single column constraints:
+//
+//   - [ColumnBuilder.Check] is "CHECK"
+//   - [ColumnBuilder.Collate] is "COLLATE"
+//   - [ColumnBuilder.ForeignKey] is "FOREIGN KEY"
+//   - [ColumnBuilder.PrimaryKey] is "PRIMARY KEY"
+//   - [ColumnBuilder.Unique] is "UNIQUE"
+//
+// Multi-column (table) constraints:
+//
+//   - [Check] is "CHECK"
+//   - [ForeignKey] is "FOREIGN KEY"
+//   - [PrimaryKey] is "PRIMARY KEY"
+//   - [Unique] is "UNIQUE"
+//   - [Named] is "CONSTRAINT" (sets constraint name)
 //
 // [SQLite]: https://www.sqlite.org/datatype3.html
 // [Oracle Database]: https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html

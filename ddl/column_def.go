@@ -54,7 +54,7 @@ func (def ColumnBuilder) Unique() ColumnBuilder {
 // PrimaryKey makes the column the primary key.
 //
 // Only one column can be marked as primary key that way. If you want the primary key
-// to ocnsist of multiple columns, use the [PrimaryKey] constraint instead.
+// to consist of multiple columns, use the [PrimaryKey] constraint instead.
 //
 // SQL: PRIMARY KEY
 func (def ColumnBuilder) PrimaryKey() ColumnBuilder {
@@ -72,6 +72,11 @@ func (def ColumnBuilder) ForeignKey(ref Reference) ColumnBuilder {
 // SQL: COLLATE
 func (def ColumnBuilder) Collate(collationName Safe) ColumnBuilder {
 	def.constraints = append(def.constraints, "COLLATE", string(collationName))
+	return def
+}
+
+func (def ColumnBuilder) Check(expr Safe) ColumnBuilder {
+	def.constraints = append(def.constraints, "CHECK", "(", string(expr), ")")
 	return def
 }
 

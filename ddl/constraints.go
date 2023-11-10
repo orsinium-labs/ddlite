@@ -10,18 +10,18 @@ type TableConstraint interface {
 	tokens(dialect dialects.Dialect) tokens.Tokens
 }
 
-type tNamedConstraint struct {
+type tNamed struct {
 	name       Safe
 	constraint TableConstraint
 }
 
-func NamedConstraint(name Safe, constraint TableConstraint) TableConstraint {
-	return tNamedConstraint{name, constraint}
+func Named(name Safe, constraint TableConstraint) TableConstraint {
+	return tNamed{name, constraint}
 }
 
-func (def tNamedConstraint) isTableConstraint() {}
+func (def tNamed) isTableConstraint() {}
 
-func (def tNamedConstraint) tokens(d dialects.Dialect) tokens.Tokens {
+func (def tNamed) tokens(d dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("CONSTRAINT"))
 	ts.Extend(def.constraint.tokens(d))
 	return ts
