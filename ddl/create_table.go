@@ -10,7 +10,7 @@ import (
 type tCreateTable struct {
 	table       Safe
 	columns     []ColumnBuilder
-	constraints []Constraint
+	constraints []TableConstraint
 }
 
 func CreateTable(table Safe, columns ...ColumnBuilder) Statement {
@@ -20,7 +20,7 @@ func CreateTable(table Safe, columns ...ColumnBuilder) Statement {
 	}
 }
 
-func (q tCreateTable) Constraints(constraints ...Constraint) Statement {
+func (q tCreateTable) Constraints(constraints ...TableConstraint) Statement {
 	q.constraints = append(q.constraints, constraints...)
 	return q
 }

@@ -5,21 +5,21 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type Constraint interface {
-	isConstraint()
+type TableConstraint interface {
+	isTableConstraint()
 	tokens(dialect dialects.Dialect) tokens.Tokens
 }
 
 type tNamedConstraint struct {
 	name       Safe
-	constraint Constraint
+	constraint TableConstraint
 }
 
-func NamedConstraint(name Safe, constraint Constraint) Constraint {
+func NamedConstraint(name Safe, constraint TableConstraint) TableConstraint {
 	return tNamedConstraint{name, constraint}
 }
 
-func (def tNamedConstraint) isConstraint() {}
+func (def tNamedConstraint) isTableConstraint() {}
 
 func (def tNamedConstraint) tokens(d dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("CONSTRAINT"))
@@ -31,11 +31,11 @@ type tUnique struct {
 	names []Safe
 }
 
-func Unique(name Safe, names ...Safe) Constraint {
+func Unique(name Safe, names ...Safe) TableConstraint {
 	return tUnique{append([]Safe{name}, names...)}
 }
 
-func (def tUnique) isConstraint() {}
+func (def tUnique) isTableConstraint() {}
 
 func (def tUnique) tokens(dialects.Dialect) tokens.Tokens {
 	return tokens.New(
@@ -54,11 +54,11 @@ type tPrimaryKey struct {
 //
 // If you want the table to have a single-column primary key,
 // use [ColumnBuilder.PrimaryKey] instead.
-func PrimaryKey(name1, name2 Safe, names ...Safe) Constraint {
+func PrimaryKey(name1, name2 Safe, names ...Safe) TableConstraint {
 	return tPrimaryKey{append([]Safe{name1, name2}, names...)}
 }
 
-func (def tPrimaryKey) isConstraint() {}
+func (def tPrimaryKey) isTableConstraint() {}
 
 func (def tPrimaryKey) tokens(dialects.Dialect) tokens.Tokens {
 	return tokens.New(
@@ -73,11 +73,11 @@ type tCheck struct {
 	expr Safe
 }
 
-func Check(expr Safe) Constraint {
+func Check(expr Safe) TableConstraint {
 	return tCheck{expr}
 }
 
-func (def tCheck) isConstraint() {}
+func (def tCheck) isTableConstraint() {}
 
 func (def tCheck) tokens(dialects.Dialect) tokens.Tokens {
 	return tokens.New(
