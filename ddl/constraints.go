@@ -10,12 +10,29 @@ type Constraint interface {
 	tokens(dialect dialects.Dialect) tokens.Tokens
 }
 
+type tNamedConstraint struct {
+	name       Safe
+	constraint Constraint
+}
+
+func NamedConstraint(name Safe, constraint Constraint) Constraint {
+	return tNamedConstraint{name, constraint}
+}
+
+func (def tNamedConstraint) isConstraint() {}
+
+func (def tNamedConstraint) tokens(d dialects.Dialect) tokens.Tokens {
+	ts := tokens.New(tokens.Keyword("CONSTRAINT"))
+	ts.Extend(def.constraint.tokens(d))
+	return ts
+}
+
 type tUnique struct {
 	names []Safe
 }
 
 func Unique(name Safe, names ...Safe) Constraint {
-	return tUnique{names: append([]Safe{name}, names...)}
+	return tUnique{append([]Safe{name}, names...)}
 }
 
 func (def tUnique) isConstraint() {}
@@ -38,7 +55,7 @@ type tPrimaryKey struct {
 // If you want the table to have a single-column primary key,
 // use [ColumnBuilder.PrimaryKey] instead.
 func PrimaryKey(name1, name2 Safe, names ...Safe) Constraint {
-	return tPrimaryKey{names: append([]Safe{name1, name2}, names...)}
+	return tPrimaryKey{append([]Safe{name1, name2}, names...)}
 }
 
 func (def tPrimaryKey) isConstraint() {}
