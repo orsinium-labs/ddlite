@@ -68,3 +68,22 @@ func (def tPrimaryKey) tokens(dialects.Dialect) tokens.Tokens {
 		tokens.RParen(),
 	)
 }
+
+type tCheck struct {
+	expr Safe
+}
+
+func Check(expr Safe) Constraint {
+	return tCheck{expr}
+}
+
+func (def tCheck) isConstraint() {}
+
+func (def tCheck) tokens(dialects.Dialect) tokens.Tokens {
+	return tokens.New(
+		tokens.Keyword("CHECK"),
+		tokens.LParen(),
+		tokens.Raw(def.expr),
+		tokens.RParen(),
+	)
+}
