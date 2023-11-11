@@ -7,25 +7,27 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tCreateTable struct {
+type StatementCreateTable struct {
 	table       Safe
-	columns     []ColumnBuilder
-	constraints []TableConstraint
+	columns     []ClauseColumn
+	constraints []ClauseConstraint
 }
 
-func CreateTable(table Safe, columns ...ColumnBuilder) Statement {
-	return tCreateTable{
+var _ Statement = StatementCreateTable{}
+
+func CreateTable(table Safe, columns ...ClauseColumn) StatementCreateTable {
+	return StatementCreateTable{
 		table:   table,
 		columns: columns,
 	}
 }
 
-func (q tCreateTable) Constraints(constraints ...TableConstraint) Statement {
+func (q StatementCreateTable) Constraints(constraints ...ClauseConstraint) StatementCreateTable {
 	q.constraints = append(q.constraints, constraints...)
 	return q
 }
 
-func (q tCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (q StatementCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	if len(q.columns) == 0 {
 		err := errors.New("new table must have columns defined")
 		return tokens.New(tokens.Err(err))

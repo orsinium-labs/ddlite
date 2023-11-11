@@ -5,24 +5,26 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tDropTable struct {
+type StatementDropTable struct {
 	table    Safe
 	ifExists bool
 }
 
-func DropTable(table Safe) Statement {
-	return tDropTable{
+var _ Statement = StatementDropTable{}
+
+func DropTable(table Safe) StatementDropTable {
+	return StatementDropTable{
 		table:    table,
 		ifExists: false,
 	}
 }
 
-func (q tDropTable) IfExists() Statement {
+func (q StatementDropTable) IfExists() StatementDropTable {
 	q.ifExists = true
 	return q
 }
 
-func (q tDropTable) tokens(dialects.Dialect) tokens.Tokens {
+func (q StatementDropTable) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("DROP TABLE"))
 	if q.ifExists {
 		ts.Add(tokens.Keyword("IF EXISTS"))

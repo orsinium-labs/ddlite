@@ -23,7 +23,7 @@ const (
 	Simple  Match = "Simple"
 )
 
-type Reference struct {
+type ClauseReferences struct {
 	table    Safe
 	columns  []Safe
 	onDelete Action
@@ -31,29 +31,29 @@ type Reference struct {
 	match    Match
 }
 
-func References(table, column Safe, columns ...Safe) Reference {
-	return Reference{
+func References(table, column Safe, columns ...Safe) ClauseReferences {
+	return ClauseReferences{
 		table:   table,
 		columns: append([]Safe{column}, columns...),
 	}
 }
 
-func (r Reference) Match(m Match) Reference {
+func (r ClauseReferences) Match(m Match) ClauseReferences {
 	r.match = m
 	return r
 }
 
-func (r Reference) OnDelete(action Action) Reference {
+func (r ClauseReferences) OnDelete(action Action) ClauseReferences {
 	r.onDelete = action
 	return r
 }
 
-func (r Reference) OnUpdate(action Action) Reference {
+func (r ClauseReferences) OnUpdate(action Action) ClauseReferences {
 	r.onUpdate = action
 	return r
 }
 
-func (r Reference) tokens(dialects.Dialect) tokens.Tokens {
+func (r ClauseReferences) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("REFERENCES"),
 		tokens.TableName(r.table),

@@ -5,17 +5,19 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tRenameColumn struct {
+type StatementRenameColumn struct {
 	table Safe
 	old   Safe
 	new   Safe
 }
 
-func RenameColumn(table, old, new Safe) tRenameColumn {
-	return tRenameColumn{table: table, old: old, new: new}
+var _ Statement = StatementRenameColumn{}
+
+func RenameColumn(table, old, new Safe) StatementRenameColumn {
+	return StatementRenameColumn{table: table, old: old, new: new}
 }
 
-func (q tRenameColumn) tokens(dialects.Dialect) tokens.Tokens {
+func (q StatementRenameColumn) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),

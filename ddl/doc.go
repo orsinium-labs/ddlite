@@ -10,7 +10,7 @@
 //   - [DropTable] is "DROP TABLE t"
 //   - [RenameColumn] is "ALTER TABLE t RENAME COLUMN c"
 //   - [RenameTable] is "ALTER TABLE t RENAME TO x"
-//   - [TruncateTable] is "TRUNCATE TABLE t" (or "DELETE FROM t")
+//   - [TruncateTable] is "TRUNCATE TABLE t"
 //
 // # Data types
 //

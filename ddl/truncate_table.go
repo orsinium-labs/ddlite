@@ -5,18 +5,20 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tTruncateTable struct {
+type StatementTruncateTable struct {
 	table Safe
 }
 
+var _ Statement = StatementTruncateTable{}
+
 // TruncateTable builds TRUNCATE TABLE query that removes all data from the table.
-func TruncateTable(table Safe) Statement {
-	return tTruncateTable{
+func TruncateTable(table Safe) StatementTruncateTable {
+	return StatementTruncateTable{
 		table: table,
 	}
 }
 
-func (q tTruncateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (q StatementTruncateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New()
 	if dialect.Features().TruncateTable {
 		ts.Add(tokens.Keyword("TRUNCATE TABLE"))

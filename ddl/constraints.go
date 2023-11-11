@@ -5,17 +5,17 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type TableConstraint interface {
+type ClauseConstraint interface {
 	isTableConstraint()
 	tokens(dialect dialects.Dialect) tokens.Tokens
 }
 
 type tNamed struct {
 	name       Safe
-	constraint TableConstraint
+	constraint ClauseConstraint
 }
 
-func Named(name Safe, constraint TableConstraint) TableConstraint {
+func Named(name Safe, constraint ClauseConstraint) ClauseConstraint {
 	return tNamed{name, constraint}
 }
 
@@ -31,7 +31,7 @@ type tUnique struct {
 	names []Safe
 }
 
-func Unique(name Safe, names ...Safe) TableConstraint {
+func Unique(name Safe, names ...Safe) ClauseConstraint {
 	return tUnique{append([]Safe{name}, names...)}
 }
 
@@ -54,7 +54,7 @@ type tPrimaryKey struct {
 //
 // If you want the table to have a single-column primary key,
 // use [ColumnBuilder.PrimaryKey] instead.
-func PrimaryKey(name Safe, names ...Safe) TableConstraint {
+func PrimaryKey(name Safe, names ...Safe) ClauseConstraint {
 	return tPrimaryKey{append([]Safe{name}, names...)}
 }
 
@@ -73,7 +73,7 @@ type tCheck struct {
 	expr Safe
 }
 
-func Check(expr Safe) TableConstraint {
+func Check(expr Safe) ClauseConstraint {
 	return tCheck{expr}
 }
 
@@ -89,11 +89,11 @@ func (def tCheck) tokens(dialects.Dialect) tokens.Tokens {
 }
 
 type tForeignKey struct {
-	ref     Reference
+	ref     ClauseReferences
 	columns []Safe
 }
 
-func ForeignKey(ref Reference, column Safe, columns ...Safe) TableConstraint {
+func ForeignKey(ref ClauseReferences, column Safe, columns ...Safe) ClauseConstraint {
 	return tForeignKey{ref, append([]Safe{column}, columns...)}
 }
 

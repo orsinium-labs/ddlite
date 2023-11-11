@@ -4,7 +4,7 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/dialects"
 )
 
-type ColumnType func(dialects.Dialect) dialects.DataType
+type ClauseDataType func(dialects.Dialect) dialects.DataType
 type dl = dialects.Dialect
 type dt = dialects.DataType
 
@@ -12,6 +12,6 @@ type dt = dialects.DataType
 //
 // If the database doesn't support boolean data type natively,
 // the smallest integer type is used.
-func Bool() ColumnType {
+func Bool() ClauseDataType {
 	return func(dialect dl) dt { return dialect.Bool() }
 }

@@ -16,7 +16,7 @@ package ddl
 //
 // If the list of possible values is known in advance and doesn't change too often,
 // prefer using [Enum] instead (assuming that your database engine supports it).
-func FixedChar(size uint32) ColumnType {
+func FixedChar(size uint32) ClauseDataType {
 	return func(dialect dl) dt { return dialect.FixedChar(size) }
 }
 
@@ -32,7 +32,7 @@ func FixedChar(size uint32) ColumnType {
 // If all possible values have the same length, prefer using [FixedChar] instead.
 //
 // If the maximum length is not known in advance or too big, use [Text] instead.
-func VarChar(size uint32) ColumnType {
+func VarChar(size uint32) ClauseDataType {
 	return func(dialect dl) dt { return dialect.VarChar(size) }
 }
 
@@ -42,7 +42,7 @@ func VarChar(size uint32) ColumnType {
 // to prevent [write amplification].
 //
 // [write amplification]: https://en.wikipedia.org/wiki/Write_amplification
-func Text() ColumnType {
+func Text() ClauseDataType {
 	return func(dialect dl) dt { return dialect.Text() }
 }
 
@@ -50,11 +50,11 @@ func Text() ColumnType {
 //
 // Only some database engines support it. If compatibility is important,
 // use [FixedChar] or [VarChar] as a fallback.
-func Enum(members ...string) ColumnType {
+func Enum(members ...string) ClauseDataType {
 	return func(dialect dl) dt { return dialect.Enum(members) }
 }
 
 // Blob is a raw binary data type or variable length.
-func Blob() ColumnType {
+func Blob() ClauseDataType {
 	return func(dialect dl) dt { return dialect.Blob() }
 }

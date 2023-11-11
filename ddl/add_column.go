@@ -5,19 +5,21 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tAddColumn struct {
+type StatementAddColumn struct {
 	table Safe
-	col   ColumnBuilder
+	col   ClauseColumn
 }
+
+var _ Statement = StatementAddColumn{}
 
 // AddColumn builds query that adds a new column to the table.
 //
 // SQL: ALTER TABLE ADD COLUMN
-func AddColumn(table Safe, col ColumnBuilder) Statement {
-	return tAddColumn{table: table, col: col}
+func AddColumn(table Safe, col ClauseColumn) StatementAddColumn {
+	return StatementAddColumn{table: table, col: col}
 }
 
-func (q tAddColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (q StatementAddColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),

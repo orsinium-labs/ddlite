@@ -5,16 +5,18 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type tDropColumn struct {
+type StatementDropColumn struct {
 	table Safe
 	col   Safe
 }
 
-func DropColumn(table Safe, col Safe) Statement {
-	return tDropColumn{table: table, col: col}
+var _ Statement = StatementDropColumn{}
+
+func DropColumn(table Safe, col Safe) StatementDropColumn {
+	return StatementDropColumn{table: table, col: col}
 }
 
-func (q tDropColumn) tokens(dialects.Dialect) tokens.Tokens {
+func (q StatementDropColumn) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),

@@ -8,12 +8,12 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
-type ColumnBuilder struct {
+type ClauseColumn struct {
 	name        Safe
-	colType     ColumnType
+	colType     ClauseDataType
 	constraints []string
 	null        Nullable
-	reference   *Reference
+	reference   *ClauseReferences
 }
 
 // Nullable is used by [Column] to indicate if the column may be NULL or not.
@@ -34,8 +34,8 @@ const (
 // Column is a column definition.
 //
 // Used in [CreateTable] and [AddColumn].
-func Column(name Safe, ctype ColumnType, null Nullable) ColumnBuilder {
-	return ColumnBuilder{
+func Column(name Safe, ctype ClauseDataType, null Nullable) ClauseColumn {
+	return ClauseColumn{
 		name:        name,
 		colType:     ctype,
 		constraints: make([]string, 0),
@@ -46,7 +46,7 @@ func Column(name Safe, ctype ColumnType, null Nullable) ColumnBuilder {
 // Unique makes sure that each value in the column is unique.
 //
 // SQL: UNIQUE
-func (def ColumnBuilder) Unique() ColumnBuilder {
+func (def ClauseColumn) Unique() ClauseColumn {
 	def.constraints = append(def.constraints, "UNIQUE")
 	return def
 }
@@ -57,12 +57,12 @@ func (def ColumnBuilder) Unique() ColumnBuilder {
 // to consist of multiple columns, use the [PrimaryKey] constraint instead.
 //
 // SQL: PRIMARY KEY
-func (def ColumnBuilder) PrimaryKey() ColumnBuilder {
+func (def ClauseColumn) PrimaryKey() ClauseColumn {
 	def.constraints = append(def.constraints, "PRIMARY KEY")
 	return def
 }
 
-func (def ColumnBuilder) ForeignKey(ref Reference) ColumnBuilder {
+func (def ClauseColumn) ForeignKey(ref ClauseReferences) ClauseColumn {
 	def.reference = &ref
 	return def
 }
@@ -70,22 +70,22 @@ func (def ColumnBuilder) ForeignKey(ref Reference) ColumnBuilder {
 // Collate specifies the name of a collating sequence to use as the default collation sequence for the column.
 //
 // SQL: COLLATE
-func (def ColumnBuilder) Collate(collationName Safe) ColumnBuilder {
+func (def ClauseColumn) Collate(collationName Safe) ClauseColumn {
 	def.constraints = append(def.constraints, "COLLATE", string(collationName))
 	return def
 }
 
-func (def ColumnBuilder) Check(expr Safe) ColumnBuilder {
+func (def ClauseColumn) Check(expr Safe) ClauseColumn {
 	def.constraints = append(def.constraints, "CHECK", "(", string(expr), ")")
 	return def
 }
 
-func (def ColumnBuilder) Default(expr Safe) ColumnBuilder {
+func (def ClauseColumn) Default(expr Safe) ClauseColumn {
 	def.constraints = append(def.constraints, "DEFAULT", "(", string(expr), ")")
 	return def
 }
 
-func (def ColumnBuilder) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (def ClauseColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	constraints := strings.Join(def.constraints, " ")
 	colSQL := def.colType(dialect)
 	if colSQL == "" {
