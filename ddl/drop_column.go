@@ -16,6 +16,10 @@ func DropColumn(table Safe, col Safe) StatementDropColumn {
 	return StatementDropColumn{table: table, col: col}
 }
 
+func (q StatementDropColumn) statement() dialects.Feature {
+	return "ALTER TABLE / DROP COLUMN"
+}
+
 func (q StatementDropColumn) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),

@@ -15,6 +15,8 @@ type stmtAlterColumn struct {
 	suffix func(dialects.Dialect) tokens.Tokens
 }
 
+var _ Statement = stmtAlterColumn{}
+
 func AlterColumn(table, column Safe) StatementAlterColumn {
 	return StatementAlterColumn{
 		table:  table,
@@ -61,11 +63,15 @@ func (stmt StatementAlterColumn) SetDataType(dtype ClauseDataType) Statement {
 	}
 }
 
+func (q stmtAlterColumn) statement() dialects.Feature {
+	return "ALTER TABLE / ALTER COLUMN"
+}
+
 func (stmt stmtAlterColumn) tokens(d dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(stmt.table),
-		tokens.Keyword("ALTER"),
+		tokens.Keyword("ALTER COLUMN"),
 		tokens.TableName(stmt.column),
 	)
 	ts.Extend(stmt.suffix(d))

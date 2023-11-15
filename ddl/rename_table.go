@@ -16,6 +16,10 @@ func RenameTable(old, new Safe) Statement {
 	return StatementRenameTable{old: old, new: new}
 }
 
+func (q StatementRenameTable) statement() dialects.Feature {
+	return "ALTER TABLE / RENAME TO"
+}
+
 func (q StatementRenameTable) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),

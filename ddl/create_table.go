@@ -27,6 +27,10 @@ func (q StatementCreateTable) Constraints(cs ...ClauseTableConstraint) Statement
 	return q
 }
 
+func (q StatementCreateTable) statement() dialects.Feature {
+	return "CREATE TABLE"
+}
+
 func (q StatementCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	if len(q.columns) == 0 {
 		err := errors.New("new table must have columns defined")

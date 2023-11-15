@@ -86,7 +86,9 @@ func (cocroach) String() string {
 }
 
 var cocroachFeatures = Features{
-	"DELETE FROM": true,
+	"DELETE FROM":  true,
+	"CREATE TABLE": true,
+	"DROP TABLE":   true,
 
 	// https://www.cockroachlabs.com/docs/stable/truncate
 	"TRUNCATE TABLE": true,

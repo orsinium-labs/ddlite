@@ -87,7 +87,9 @@ func (psql) String() string {
 }
 
 var psqlFeatures = Features{
-	"DELETE FROM": true,
+	"DELETE FROM":  true,
+	"CREATE TABLE": true,
+	"DROP TABLE":   true,
 
 	// https://www.postgresql.org/docs/current/sql-truncate.html
 	"TRUNCATE TABLE": true,

@@ -58,9 +58,10 @@ func TestColumn(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.sql, func(t *testing.T) {
 			is := is.New(t)
-			sql, err := ddl.SQL(dialects.PostgreSQL, testCase.def)
+			q := ddl.CreateTable("u", testCase.def)
+			sql, err := ddl.SQL(dialects.PostgreSQL, q)
 			is.NoErr(err)
-			is.Equal(sql, testCase.sql)
+			is.Equal(sql, "CREATE TABLE u ("+testCase.sql+")")
 		})
 	}
 }

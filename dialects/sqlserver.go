@@ -91,7 +91,10 @@ func (sqlserver) String() string {
 }
 
 var sqlserverFeatures = Features{
-	"DELETE FROM": true,
+	"DELETE FROM":  true,
+	"CREATE TABLE": true,
+	"DROP TABLE":   true,
+
 	// https://learn.microsoft.com/en-us/sql/t-sql/statements/truncate-table-transact-sql
 	"TRUNCATE TABLE": true,
 

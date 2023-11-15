@@ -102,7 +102,9 @@ func (mysql) String() string {
 }
 
 var mysqlFeatures = Features{
-	"DELETE FROM": true,
+	"DELETE FROM":  true,
+	"CREATE TABLE": true,
+	"DROP TABLE":   true,
 
 	// https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html
 	"TRUNCATE TABLE": true,

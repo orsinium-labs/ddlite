@@ -10,6 +10,7 @@ import (
 
 type Statement interface {
 	tokens(dialects.Dialect) tokens.Tokens
+	statement() dialects.Feature
 }
 
 type executor interface {
@@ -26,6 +27,10 @@ func Must[T any](val T, err error) T {
 
 // SQL generates SQL string for the given sequel query.
 func SQL(dialect dialects.Dialect, stmt Statement) (string, error) {
+	feature := stmt.statement()
+	if !dialect.Features()[feature] {
+		return "", fmt.Errorf("dialect %s doesn't support %s", dialect, feature)
+	}
 	sql, err := stmt.tokens(dialect).SQL()
 	if err != nil {
 		return "", fmt.Errorf("convert tokens to SQL: %w", err)

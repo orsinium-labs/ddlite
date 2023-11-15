@@ -77,6 +77,8 @@ var sqliteFeatures = Features{
 	// https://www.sqlite.org/lang_delete.html#the_truncate_optimization
 	"DELETE FROM":    true,
 	"TRUNCATE TABLE": false,
+	"CREATE TABLE":   true,
+	"DROP TABLE":     true,
 
 	// https://www.sqlite.org/lang_altertable.html
 	"ALTER TABLE":                 true,

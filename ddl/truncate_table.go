@@ -18,6 +18,10 @@ func TruncateTable(table Safe) StatementTruncateTable {
 	}
 }
 
+func (q StatementTruncateTable) statement() dialects.Feature {
+	return "TRUNCATE TABLE"
+}
+
 func (q StatementTruncateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New()
 	if dialect.Features()["TRUNCATE TABLE"] {

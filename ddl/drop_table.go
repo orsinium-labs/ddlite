@@ -24,6 +24,10 @@ func (q StatementDropTable) IfExists() StatementDropTable {
 	return q
 }
 
+func (q StatementDropTable) statement() dialects.Feature {
+	return "DROP TABLE"
+}
+
 func (q StatementDropTable) tokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("DROP TABLE"))
 	if q.ifExists {

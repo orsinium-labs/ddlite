@@ -34,6 +34,8 @@ type Dialect interface {
 }
 
 type DataType string
+type Feature string
+type Features map[Feature]bool
 
 func call[T uint8 | uint32](prefix string, x T) DataType {
 	s := strconv.FormatUint(uint64(x), 10)

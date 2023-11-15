@@ -19,6 +19,10 @@ func AddColumn(table Safe, col ClauseColumn) StatementAddColumn {
 	return StatementAddColumn{table: table, col: col}
 }
 
+func (q StatementAddColumn) statement() dialects.Feature {
+	return "ALTER TABLE / ADD COLUMN"
+}
+
 func (q StatementAddColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
