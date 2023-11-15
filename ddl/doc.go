@@ -5,6 +5,7 @@
 // # Statements
 //
 //   - [AddColumn] is "ALTER TABLE t ADD COLUMN c"
+//   - [AlterColumn] is "ALTER TABLE t ADD COLUMN c"
 //   - [CreateTable] is "CREATE TABLE t"
 //   - [DropColumn] is "ALTER TABLE t DROP COLUMN c"
 //   - [DropTable] is "DROP TABLE t"
