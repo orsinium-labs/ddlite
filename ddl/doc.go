@@ -32,21 +32,13 @@
 //
 // # Constraints
 //
-// Single column constraints:
-//
-//   - [ColumnBuilder.Check] is "CHECK"
-//   - [ColumnBuilder.Collate] is "COLLATE"
-//   - [ColumnBuilder.ForeignKey] is "FOREIGN KEY"
-//   - [ColumnBuilder.PrimaryKey] is "PRIMARY KEY"
-//   - [ColumnBuilder.Unique] is "UNIQUE"
-//
-// Multi-column (table) constraints:
+// Constraints can be specified for a single column using [Column] constructor
+// or for multiple columns using [StatementCreateTable.Constraint].
 //
 //   - [Check] is "CHECK"
-//   - [ForeignKey] is "FOREIGN KEY"
+//   - [References] is "REFERENCES" ("FOREIGN KEY")
 //   - [PrimaryKey] is "PRIMARY KEY"
 //   - [Unique] is "UNIQUE"
-//   - [Named] is "CONSTRAINT" (sets constraint name)
 //
 // [SQLite]: https://www.sqlite.org/datatype3.html
 // [Oracle Database]: https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Data-Types.html
