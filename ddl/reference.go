@@ -31,6 +31,8 @@ type ClauseReferences struct {
 	match    Match
 }
 
+var _ ClauseConstraint = ClauseReferences{}
+
 func References(table, column Safe, columns ...Safe) ClauseReferences {
 	return ClauseReferences{
 		table:   table,
@@ -53,7 +55,18 @@ func (r ClauseReferences) OnUpdate(action Action) ClauseReferences {
 	return r
 }
 
-func (r ClauseReferences) tokens(dialects.Dialect) tokens.Tokens {
+func (r ClauseReferences) tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens {
+	ts := tokens.New(
+		tokens.Keyword("FOREIGN KEY"),
+		tokens.LParen(),
+		tokens.Raws(cols...),
+		tokens.RParen(),
+	)
+	ts.Extend(r.columnTokens(d))
+	return ts
+}
+
+func (r ClauseReferences) columnTokens(dialects.Dialect) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("REFERENCES"),
 		tokens.TableName(r.table),

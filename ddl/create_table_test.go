@@ -13,15 +13,15 @@ func TestCreateTable(t *testing.T) {
 	q := ddl.CreateTable("user",
 		ddl.Column("name", ddl.Text(), ddl.Null),
 		ddl.Column("age", ddl.Int(8), ddl.Null),
-	)
+	).Constraint("", ddl.Unique(), "name")
 	sql, err := ddl.SQL(dialects.PostgreSQL, q)
 	is.NoErr(err)
-	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT)")
+	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT, UNIQUE (name))")
 }
 
-func TestColumnDef(t *testing.T) {
+func TestColumn(t *testing.T) {
 	testCases := []struct {
-		def ddl.Statement
+		def ddl.ClauseColumn
 		sql string
 	}{
 		{
@@ -33,7 +33,7 @@ func TestColumnDef(t *testing.T) {
 			sql: "age INTEGER",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32), ddl.Null).Unique(),
+			def: ddl.Column("age", ddl.Int(32), ddl.Null, ddl.Unique()),
 			sql: "age INTEGER UNIQUE",
 		},
 		{
@@ -45,20 +45,12 @@ func TestColumnDef(t *testing.T) {
 			sql: "age INTEGER NOT NULL",
 		},
 		{
-			def: ddl.Column("age", ddl.Int(32), ddl.Null).PrimaryKey(),
+			def: ddl.Column("age", ddl.Int(32), ddl.Null, ddl.PrimaryKey()),
 			sql: "age INTEGER PRIMARY KEY",
 		},
 		{
 			def: ddl.Column("name", ddl.VarChar(20), ddl.Null).Collate("NOCASE"),
 			sql: "name VARCHAR(20) COLLATE NOCASE",
-		},
-		{
-			def: ddl.Unique("age"),
-			sql: "UNIQUE (age)",
-		},
-		{
-			def: ddl.Unique("age", "name"),
-			sql: "UNIQUE (age, name)",
 		},
 	}
 	for _, testCase := range testCases {
