@@ -5,10 +5,7 @@ var CocroachDB Dialect = cocroach{}
 type cocroach struct{}
 
 func (cocroach) Features() Features {
-	return Features{
-		// https://www.cockroachlabs.com/docs/stable/truncate
-		TruncateTable: true,
-	}
+	return cocroachFeatures
 }
 
 func (cocroach) Int(bits uint8) DataType {
@@ -88,4 +85,34 @@ func (cocroach) String() string {
 	return "CocroachDB"
 }
 
-// https://github.com/cockroachdb/cockroach/pull/2305/files
+var cocroachFeatures = Features{
+	"DELETE FROM": true,
+
+	// https://www.cockroachlabs.com/docs/stable/truncate
+	"TRUNCATE TABLE": true,
+
+	// https://www.cockroachlabs.com/docs/stable/alter-table
+	"ALTER TABLE":                                 true,
+	"ALTER TABLE / IF EXISTS":                     true,
+	"ALTER TABLE / RENAME TO":                     true,
+	"ALTER TABLE / SET SCHEMA":                    true,
+	"ALTER TABLE / OWNER TO":                      true,
+	"ALTER TABLE / SPLIT AT":                      true,
+	"ALTER TABLE / ADD COLUMN":                    true,
+	"ALTER TABLE / ADD CONSTRAINT":                true,
+	"ALTER TABLE / RENAME COLUMN":                 true,
+	"ALTER TABLE / RENAME CONSTRAINT":             true,
+	"ALTER TABLE / ALTER COLUMN":                  true,
+	"ALTER TABLE / ALTER COLUMN / SET DEFAULT":    true,
+	"ALTER TABLE / ALTER COLUMN / SET ON UPDATE":  true,
+	"ALTER TABLE / ALTER COLUMN / SET VISIBLE":    true,
+	"ALTER TABLE / ALTER COLUMN / SET NOT NULL":   true,
+	"ALTER TABLE / ALTER COLUMN / DROP DEFAULT":   true,
+	"ALTER TABLE / ALTER COLUMN / DROP ON UPDATE": true,
+	"ALTER TABLE / ALTER COLUMN / DROP NOT NULL":  true,
+	"ALTER TABLE / ALTER COLUMN / DROP STORED":    true,
+	"ALTER TABLE / ALTER COLUMN / TYPE":           true,
+	"ALTER TABLE / DROP COLUMN":                   true,
+	"ALTER TABLE / DROP CONSTRAINT":               true,
+	"ALTER TABLE / VALIDATE CONSTRAINT":           true,
+}

@@ -5,10 +5,7 @@ var SQLServer Dialect = sqlserver{}
 type sqlserver struct{}
 
 func (sqlserver) Features() Features {
-	return Features{
-		// https://learn.microsoft.com/en-us/sql/t-sql/statements/truncate-table-transact-sql
-		TruncateTable: true,
-	}
+	return sqlserverFeatures
 }
 
 func (sqlserver) Int(bits uint8) DataType {
@@ -91,4 +88,17 @@ func (sqlserver) Bool() DataType {
 
 func (sqlserver) String() string {
 	return "SQLServer"
+}
+
+var sqlserverFeatures = Features{
+	"DELETE FROM": true,
+	// https://learn.microsoft.com/en-us/sql/t-sql/statements/truncate-table-transact-sql
+	"TRUNCATE TABLE": true,
+
+	// https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-table-transact-sql
+	"ALTER TABLE":                   true,
+	"ALTER TABLE / ALTER COLUMN":    true,
+	"ALTER TABLE / ADD":             true, // add column
+	"ALTER TABLE / DROP CONSTRAINT": true,
+	"ALTER TABLE / DROP COLUMN":     true,
 }

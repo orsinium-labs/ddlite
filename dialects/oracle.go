@@ -5,10 +5,7 @@ var Oracle Dialect = oracle{}
 type oracle struct{}
 
 func (oracle) Features() Features {
-	return Features{
-		// https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/TRUNCATE-TABLE.html
-		TruncateTable: true,
-	}
+	return oracleFeatures
 }
 
 func (oracle) Int(bits uint8) DataType {
@@ -79,4 +76,28 @@ func (oracle) Bool() DataType {
 
 func (oracle) String() string {
 	return "Oracle"
+}
+
+var oracleFeatures = Features{
+	"DELETE FROM": true,
+
+	// https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/TRUNCATE-TABLE.html
+	"TRUNCATE TABLE": true,
+
+	// https://docs.oracle.com/database/121/SQLRF/statements_3001.htm
+	"ALTER TABLE":                       true,
+	"ALTER TABLE / RENAME TO":           true,
+	"ALTER TABLE / ADD":                 true, // ADD COLUMN or ADD CONSTRAINT
+	"ALTER TABLE / MODIFY":              true,
+	"ALTER TABLE / MODIFY / DEFAULT":    true,
+	"ALTER TABLE / MODIFY / CONSTRAINT": true,
+	"ALTER TABLE / DROP COLUMN":         true,
+	"ALTER TABLE / RENAME COLUMN":       true,
+	"ALTER TABLE / MODIFY CONSTRAINT":   true,
+	"ALTER TABLE / MODIFY PRIMARY KEY":  true,
+	"ALTER TABLE / MODIFY UNIQUE":       true,
+	"ALTER TABLE / RENAME CONSTRAINT":   true,
+	"ALTER TABLE / DROP CONSTRAINT":     true,
+	"ALTER TABLE / DROP PRIMARY KEY":    true,
+	"ALTER TABLE / DROP UNIQUE":         true,
 }

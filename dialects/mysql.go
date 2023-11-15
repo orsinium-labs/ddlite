@@ -5,10 +5,7 @@ var MySQL Dialect = mysql{}
 type mysql struct{}
 
 func (mysql) Features() Features {
-	return Features{
-		// https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html
-		TruncateTable: true,
-	}
+	return mysqlFeatures
 }
 
 func (mysql) Int(bits uint8) DataType {
@@ -102,4 +99,36 @@ func (mysql) Bool() DataType {
 
 func (mysql) String() string {
 	return "MySQL"
+}
+
+var mysqlFeatures = Features{
+	"DELETE FROM": true,
+
+	// https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html
+	"TRUNCATE TABLE": true,
+
+	// https://dev.mysql.com/doc/refman/8.0/en/alter-table.html
+	"ALTER TABLE":                               true,
+	"ALTER TABLE / ADD COLUMN":                  true,
+	"ALTER TABLE / ADD INDEX":                   true,
+	"ALTER TABLE / ADD KEY":                     true,
+	"ALTER TABLE / ADD CONSTRAINT":              true,
+	"ALTER TABLE / DROP CHECK":                  true,
+	"ALTER TABLE / DROP CONSTRAINT":             true,
+	"ALTER TABLE / ALTER CHECK":                 true,
+	"ALTER TABLE / ALTER CONSTRAINT":            true,
+	"ALTER TABLE / ALTER COLUMN":                true,
+	"ALTER TABLE / ALTER COLUMN / SET DEFAULT":  true,
+	"ALTER TABLE / ALTER COLUMN / DROP DEFAULT": true,
+	"ALTER TABLE / CHANGE COLUMN":               true,
+	"ALTER TABLE / DROP COLUMN":                 true,
+	"ALTER TABLE / DROP INDEX":                  true,
+	"ALTER TABLE / DROP KEY":                    true,
+	"ALTER TABLE / DROP PRIMARY KEY":            true,
+	"ALTER TABLE / DROP FOREIGN KEY":            true,
+	"ALTER TABLE / MODIFY":                      true,
+	"ALTER TABLE / RENAME COLUMN":               true,
+	"ALTER TABLE / RENAME INDEX":                true,
+	"ALTER TABLE / RENAME KEY":                  true,
+	"ALTER TABLE / RENAME TO":                   true,
 }

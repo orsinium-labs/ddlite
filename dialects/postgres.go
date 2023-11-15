@@ -5,10 +5,7 @@ var PostgreSQL Dialect = psql{}
 type psql struct{}
 
 func (psql) Features() Features {
-	return Features{
-		// https://www.postgresql.org/docs/current/sql-truncate.html
-		TruncateTable: true,
-	}
+	return psqlFeatures
 }
 
 func (psql) Int(bits uint8) DataType {
@@ -87,4 +84,39 @@ func (psql) Bool() DataType {
 
 func (psql) String() string {
 	return "PostgreSQL"
+}
+
+var psqlFeatures = Features{
+	"DELETE FROM": true,
+
+	// https://www.postgresql.org/docs/current/sql-truncate.html
+	"TRUNCATE TABLE": true,
+
+	// https://www.postgresql.org/docs/current/sql-altertable.html
+	"ALTER TABLE":                                  true,
+	"ALTER TABLE / RENAME COLUMN":                  true,
+	"ALTER TABLE / RENAME CONSTRAINT":              true,
+	"ALTER TABLE / RENAME TO":                      true,
+	"ALTER TABLE / SET SCHEMA":                     true,
+	"ALTER TABLE / SET TABLESPACE":                 true,
+	"ALTER TABLE / ATTACH PARTITION":               true,
+	"ALTER TABLE / DETACH PARTITION":               true,
+	"ALTER TABLE / ADD COLUMN":                     true,
+	"ALTER TABLE / DROP COLUMN":                    true,
+	"ALTER TABLE / ALTER COLUMN":                   true,
+	"ALTER TABLE / ALTER COLUMN / TYPE":            true,
+	"ALTER TABLE / ALTER COLUMN / SET DEFAULT":     true,
+	"ALTER TABLE / ALTER COLUMN / DROP DEFAULT":    true,
+	"ALTER TABLE / ALTER COLUMN / SET NOT NULL":    true,
+	"ALTER TABLE / ALTER COLUMN / DROP NOT NULL":   true,
+	"ALTER TABLE / ALTER COLUMN / DROP EXPRESSION": true,
+	"ALTER TABLE / ALTER COLUMN / ADD GENERATED":   true,
+	"ALTER TABLE / ALTER COLUMN / DROP IDENTITY":   true,
+	"ALTER TABLE / ALTER COLUMN / SET STATISTICS":  true,
+	"ALTER TABLE / ALTER COLUMN / RESET":           true,
+	"ALTER TABLE / ALTER COLUMN / SET":             true,
+	"ALTER TABLE / ADD":                            true,
+	"ALTER TABLE / ALTER CONSTRAINT":               true,
+	"ALTER TABLE / VALIDATE CONSTRAINT":            true,
+	"ALTER TABLE / DROP CONSTRAINT":                true,
 }

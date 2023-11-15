@@ -5,10 +5,7 @@ var SQLite Dialect = sqlite{}
 type sqlite struct{}
 
 func (sqlite) Features() Features {
-	return Features{
-		// https://www.sqlite.org/lang_delete.html#the_truncate_optimization
-		TruncateTable: false,
-	}
+	return sqliteFeatures
 }
 
 func (sqlite) Int(bits uint8) DataType {
@@ -74,4 +71,17 @@ func (sqlite) Bool() DataType {
 
 func (sqlite) String() string {
 	return "SQLite"
+}
+
+var sqliteFeatures = Features{
+	// https://www.sqlite.org/lang_delete.html#the_truncate_optimization
+	"DELETE FROM":    true,
+	"TRUNCATE TABLE": false,
+
+	// https://www.sqlite.org/lang_altertable.html
+	"ALTER TABLE":                 true,
+	"ALTER TABLE / RENAME TO":     true,
+	"ALTER TABLE / RENAME COLUMN": true,
+	"ALTER TABLE / ADD COLUMN":    true,
+	"ALTER TABLE / DROP COLUMN":   true,
 }

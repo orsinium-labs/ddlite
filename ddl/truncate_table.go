@@ -20,7 +20,7 @@ func TruncateTable(table Safe) StatementTruncateTable {
 
 func (q StatementTruncateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	ts := tokens.New()
-	if dialect.Features().TruncateTable {
+	if dialect.Features()["TRUNCATE TABLE"] {
 		ts.Add(tokens.Keyword("TRUNCATE TABLE"))
 	} else {
 		ts.Add(tokens.Keyword("DELETE FROM"))
