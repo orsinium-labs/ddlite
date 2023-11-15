@@ -13,7 +13,9 @@ func TestCreateTable(t *testing.T) {
 	q := ddl.CreateTable("user",
 		ddl.Column("name", ddl.Text(), ddl.Null),
 		ddl.Column("age", ddl.Int(8), ddl.Null),
-	).Constraint("", ddl.Unique(), "name")
+	).Constraints(
+		ddl.Constraint("", ddl.Unique(), "name"),
+	)
 	sql, err := ddl.SQL(dialects.PostgreSQL, q)
 	is.NoErr(err)
 	is.Equal(sql, "CREATE TABLE user (name TEXT, age SMALLINT, UNIQUE (name))")

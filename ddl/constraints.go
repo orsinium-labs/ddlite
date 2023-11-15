@@ -5,6 +5,35 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
+type ClauseTableConstraint struct {
+	name       string
+	constraint ClauseConstraint
+	columns    []Safe
+}
+
+func Constraint(
+	name string,
+	constraint ClauseConstraint,
+	column Safe,
+	columns ...Safe,
+) ClauseTableConstraint {
+	return ClauseTableConstraint{
+		name:       name,
+		constraint: constraint,
+		columns:    append([]Safe{column}, columns...),
+	}
+}
+
+func (con ClauseTableConstraint) tokens(dialect dialects.Dialect) tokens.Tokens {
+	ts := tokens.New()
+	if con.name != "" {
+		ts.Add(tokens.Keyword("CHECK"))
+		ts.Add(tokens.Raw(con.name))
+	}
+	ts.Extend(con.constraint.tableTokens(dialect, con.columns))
+	return ts
+}
+
 type ClauseConstraint interface {
 	columnTokens(dialects.Dialect) tokens.Tokens
 	tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens

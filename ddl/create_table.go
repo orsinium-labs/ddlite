@@ -10,7 +10,7 @@ import (
 type StatementCreateTable struct {
 	table       Safe
 	columns     []ClauseColumn
-	constraints []tableConstraint
+	constraints []ClauseTableConstraint
 }
 
 var _ Statement = StatementCreateTable{}
@@ -22,25 +22,9 @@ func CreateTable(table Safe, columns ...ClauseColumn) StatementCreateTable {
 	}
 }
 
-func (q StatementCreateTable) Constraint(
-	name string,
-	constraint ClauseConstraint,
-	column Safe,
-	columns ...Safe,
-) StatementCreateTable {
-	tc := tableConstraint{
-		name:       name,
-		constraint: constraint,
-		columns:    append([]Safe{column}, columns...),
-	}
-	q.constraints = append(q.constraints, tc)
+func (q StatementCreateTable) Constraints(cs ...ClauseTableConstraint) StatementCreateTable {
+	q.constraints = append(q.constraints, cs...)
 	return q
-}
-
-type tableConstraint struct {
-	name       string
-	constraint ClauseConstraint
-	columns    []Safe
 }
 
 func (q StatementCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
@@ -61,11 +45,7 @@ func (q StatementCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 	}
 	for _, con := range q.constraints {
 		ts.Add(tokens.Comma())
-		if con.name != "" {
-			ts.Add(tokens.Keyword("CHECK"))
-			ts.Add(tokens.Raw(con.name))
-		}
-		ts.Extend(con.constraint.tableTokens(dialect, con.columns))
+		ts.Extend(con.tokens(dialect))
 	}
 	ts.Add(tokens.RParen())
 	return ts
