@@ -54,7 +54,7 @@ func (stmt StatementAlterColumn) Set(null Nullable) Statement {
 	}
 }
 
-func (stmt StatementAlterColumn) SetDataType(dtype ClauseDataType) Statement {
+func (stmt StatementAlterColumn) SetDataType(dtype DataType) Statement {
 	return stmtAlterColumn{
 		stmt,
 		func(d dialects.Dialect) tokens.Tokens {

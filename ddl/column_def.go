@@ -9,7 +9,7 @@ import (
 
 type ClauseColumn struct {
 	name        Safe
-	colType     ClauseDataType
+	colType     DataType
 	constraints []ClauseConstraint
 	suffix      tokens.Tokens
 	null        Nullable
@@ -35,7 +35,7 @@ const (
 // Used in [CreateTable] and [AddColumn].
 func Column(
 	name Safe,
-	ctype ClauseDataType,
+	ctype DataType,
 	null Nullable,
 	constraints ...ClauseConstraint,
 ) ClauseColumn {
@@ -66,7 +66,7 @@ func (def ClauseColumn) Default(expr Safe) ClauseColumn {
 }
 
 func (def ClauseColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
-	colSQL := def.colType(dialect)
+	colSQL := def.colType
 	if colSQL == "" {
 		const msg = "the data type used for the column '%s' is not supported by the dialect"
 		err := fmt.Errorf(msg, def.name)
