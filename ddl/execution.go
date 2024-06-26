@@ -11,6 +11,7 @@ type Statement interface {
 	tokens() tokens.Tokens
 }
 
+// executor is an interface describing a DB or Tx from sql or sqlx package.
 type executor interface {
 	Exec(query string, args ...any) (sql.Result, error)
 }
@@ -23,7 +24,7 @@ func Must[T any](val T, err error) T {
 	return val
 }
 
-// SQL generates SQL string for the given sequel query.
+// SQL generates SQL string for the given [Statement].
 func SQL(stmt Statement) (string, error) {
 	sql, err := stmt.tokens().SQL()
 	if err != nil {
@@ -32,6 +33,7 @@ func SQL(stmt Statement) (string, error) {
 	return sql, nil
 }
 
+// Exec generates SQL for the given [Statement] and executes it.
 func Exec(db executor, stmt Statement) (sql.Result, error) {
 	sqlQ, err := SQL(stmt)
 	if err != nil {

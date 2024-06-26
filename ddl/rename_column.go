@@ -12,6 +12,11 @@ type StatementRenameColumn struct {
 
 var _ Statement = StatementRenameColumn{}
 
+// RenameColumn changes the column name.
+//
+// SQL: ALTER TABLE RENAME COLUMN
+//
+// https://www.sqlite.org/lang_altertable.html#alter_table_rename_column
 func RenameColumn(table, old, new Safe) StatementRenameColumn {
 	return StatementRenameColumn{table: table, old: old, new: new}
 }
