@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -55,18 +54,18 @@ func (r ClauseReferences) OnUpdate(action Action) ClauseReferences {
 	return r
 }
 
-func (r ClauseReferences) tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens {
+func (r ClauseReferences) tableTokens(cols []Safe) tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("FOREIGN KEY"),
 		tokens.LParen(),
 		tokens.Raws(cols...),
 		tokens.RParen(),
 	)
-	ts.Extend(r.columnTokens(d))
+	ts.Extend(r.columnTokens())
 	return ts
 }
 
-func (r ClauseReferences) columnTokens(dialects.Dialect) tokens.Tokens {
+func (r ClauseReferences) columnTokens() tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("REFERENCES"),
 		tokens.TableName(r.table),
