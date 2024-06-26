@@ -2,26 +2,16 @@ package ddl
 
 type DataType string
 
-func Integer() DataType {
-	return "INTEGER"
-}
+const (
+	Integer DataType = "INTEGER"
 
-func Real() DataType {
-	return "REAL"
-}
+	Real DataType = "REAL"
 
-func Numeric() DataType {
-	return "NUMERIC"
-}
+	Numeric DataType = "NUMERIC"
 
-func Text() DataType {
-	return "TEXT"
-}
+	Text DataType = "TEXT"
 
-func Blob() DataType {
-	return "BLOB"
-}
+	Blob DataType = "BLOB"
 
-func Time() DataType {
-	return "TIME"
-}
+	Time DataType = "TIME"
+)
