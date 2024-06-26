@@ -65,3 +65,35 @@ func ExampleTruncateTable() {
 	fmt.Println(sql)
 	//Output: TRUNCATE TABLE users
 }
+
+func ExampleText() {
+	col := ddl.Column("bio", ddl.Text(), ddl.Null)
+	stmt := ddl.AddColumn("users", col)
+	sql := ddl.Must(ddl.SQL(dialects.PostgreSQL, stmt))
+	fmt.Println(sql)
+	//Output: ALTER TABLE users ADD COLUMN bio TEXT
+}
+
+func ExampleEnum() {
+	col := ddl.Column("pet", ddl.Enum("cat", "dog", "other", "none"), ddl.Null)
+	stmt := ddl.AddColumn("users", col)
+	sql := ddl.Must(ddl.SQL(dialects.PostgreSQL, stmt))
+	fmt.Println(sql)
+	//Output: ALTER TABLE users ADD COLUMN pet ENUM(cat, dog, other, none)
+}
+
+func ExampleFixedChar() {
+	col := ddl.Column("iso_code", ddl.FixedChar(2), ddl.Null)
+	stmt := ddl.AddColumn("countries", col)
+	sql := ddl.Must(ddl.SQL(dialects.PostgreSQL, stmt))
+	fmt.Println(sql)
+	//Output: ALTER TABLE countries ADD COLUMN iso_code CHAR(2)
+}
+
+func ExampleVarChar() {
+	col := ddl.Column("status", ddl.VarChar(240), ddl.Null)
+	stmt := ddl.AddColumn("users", col)
+	sql := ddl.Must(ddl.SQL(dialects.PostgreSQL, stmt))
+	fmt.Println(sql)
+	//Output: ALTER TABLE users ADD COLUMN status VARCHAR(240)
+}
