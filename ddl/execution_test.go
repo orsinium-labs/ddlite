@@ -21,9 +21,9 @@ func TestFetchOne(t *testing.T) {
 		ddl.Column("city", ddl.Text, ddl.Null),
 		ddl.Column("tel_code", ddl.Integer, ddl.NotNull),
 	)
+	tx := db.MustBegin()
 	_, err = ddl.Exec(db, schema)
 	is.NoErr(err)
-	tx := db.MustBegin()
 	defer func() {
 		is.NoErr(tx.Rollback())
 	}()

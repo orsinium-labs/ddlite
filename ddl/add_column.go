@@ -11,9 +11,11 @@ type StatementAddColumn struct {
 
 var _ Statement = StatementAddColumn{}
 
-// AddColumn builds query that adds a new column to the table.
+// AddColumn adds a new column at the end of an existing table.
 //
 // SQL: ALTER TABLE ADD COLUMN
+//
+// https://www.sqlite.org/lang_altertable.html#alter_table_add_column
 func AddColumn(table Safe, col ClauseColumn) StatementAddColumn {
 	return StatementAddColumn{table: table, col: col}
 }

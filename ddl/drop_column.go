@@ -11,6 +11,11 @@ type StatementDropColumn struct {
 
 var _ Statement = StatementDropColumn{}
 
+// DropColumn removes a column from a table.
+//
+// SQL: ALTER TABLE DROP COLUMN
+//
+// https://www.sqlite.org/lang_altertable.html#alter_table_drop_column
 func DropColumn(table Safe, col Safe) StatementDropColumn {
 	return StatementDropColumn{table: table, col: col}
 }

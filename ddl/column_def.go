@@ -4,6 +4,7 @@ import (
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
+// ClauseColumn is a column definition. Constructed by [Column].
 type ClauseColumn struct {
 	name        Safe
 	colType     DataType
@@ -48,12 +49,19 @@ func Column(
 // Collate specifies the name of a collating sequence to use as the default collation sequence for the column.
 //
 // SQL: COLLATE
+//
+// https://www.sqlite.org/datatype3.html#collation
 func (def ClauseColumn) Collate(collationName Safe) ClauseColumn {
 	def.suffix.Add(tokens.Keyword("COLLATE"))
 	def.suffix.Add(tokens.Raw(collationName))
 	return def
 }
 
+// Default specifies the default value for the column.
+//
+// SQL: DEFAULT
+//
+// https://www.sqlite.org/lang_createtable.html#the_default_clause
 func (def ClauseColumn) Default(expr Safe) ClauseColumn {
 	def.suffix.Add(tokens.Keyword("DEFAULT"))
 	def.suffix.Add(tokens.LParen())

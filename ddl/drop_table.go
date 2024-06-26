@@ -11,6 +11,11 @@ type StatementDropTable struct {
 
 var _ Statement = StatementDropTable{}
 
+// DropTable remove a table from the database.
+//
+// SQL: DROP TABLE
+//
+// https://www.sqlite.org/lang_droptable.html
 func DropTable(table Safe) StatementDropTable {
 	return StatementDropTable{
 		table:    table,
@@ -18,6 +23,9 @@ func DropTable(table Safe) StatementDropTable {
 	}
 }
 
+// IfExists makes the statment to not fail if the table does not exist.
+//
+// SQL: IF EXISTS
 func (q StatementDropTable) IfExists() StatementDropTable {
 	q.ifExists = true
 	return q

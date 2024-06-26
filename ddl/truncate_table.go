@@ -10,7 +10,11 @@ type StatementTruncateTable struct {
 
 var _ Statement = StatementTruncateTable{}
 
-// TruncateTable builds TRUNCATE TABLE query that removes all data from the table.
+// TruncateTable deletes all records from the given table.
+//
+// SQL: DELETE FROM
+//
+// https://www.sqlite.org/lang_delete.html
 func TruncateTable(table Safe) StatementTruncateTable {
 	return StatementTruncateTable{
 		table: table,
