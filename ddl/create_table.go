@@ -1,8 +1,6 @@
 package ddl
 
 import (
-	"errors"
-
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -11,6 +9,7 @@ type StatementCreateTable struct {
 	columns     []ClauseColumn
 	constraints []ClauseTableConstraint
 	ifNotExists bool
+	temp        bool
 }
 
 var _ Statement = StatementCreateTable{}
@@ -20,10 +19,10 @@ var _ Statement = StatementCreateTable{}
 // SQL: CREATE TABLE
 //
 // https://www.sqlite.org/lang_createtable.html
-func CreateTable(table Safe, columns ...ClauseColumn) StatementCreateTable {
+func CreateTable(table Safe, column ClauseColumn, columns ...ClauseColumn) StatementCreateTable {
 	return StatementCreateTable{
 		table:   table,
-		columns: columns,
+		columns: append([]ClauseColumn{column}, columns...),
 	}
 }
 
@@ -38,21 +37,31 @@ func (q StatementCreateTable) Constraints(cs ...ClauseTableConstraint) Statement
 // IfNotExists makes the statement to not fail if the table already exists.
 //
 // SQL: IF NOT EXISTS
-func (q StatementCreateTable) IfNotExists(cs ...ClauseTableConstraint) StatementCreateTable {
+func (q StatementCreateTable) IfNotExists() StatementCreateTable {
 	q.ifNotExists = true
 	return q
 }
 
+// Create the table in a temporary database.
+//
+// SQL: TEMP
+func (q StatementCreateTable) Temp() StatementCreateTable {
+	q.temp = true
+	return q
+}
+
 func (q StatementCreateTable) tokens() tokens.Tokens {
-	if len(q.columns) == 0 {
-		err := errors.New("new table must have columns defined")
-		return tokens.New(tokens.Err(err))
+	ts := tokens.New(tokens.Keyword("CREATE"))
+	if q.temp {
+		ts.Add(tokens.Keyword("TEMP"))
 	}
-	ts := tokens.New(
-		tokens.Keyword("CREATE TABLE"),
-		tokens.TableName(q.table),
-		tokens.LParen(),
-	)
+	ts.Add(tokens.Keyword("TABLE"))
+	if q.ifNotExists {
+		ts.Add(tokens.Keyword("IF NOT EXISTS"))
+	}
+	ts.Add(tokens.TableName(q.table))
+
+	ts.Add(tokens.LParen())
 	for i, col := range q.columns {
 		if i > 0 {
 			ts.Add(tokens.Comma())
