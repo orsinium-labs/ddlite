@@ -65,3 +65,30 @@ func ExampleText() {
 	fmt.Println(sql)
 	//Output: ALTER TABLE users ADD COLUMN bio TEXT
 }
+
+func ExampleClauseColumn_Default() {
+	stmt := ddl.CreateTable("user",
+		ddl.Column("name", ddl.Text, ddl.Null).Default(`"greg"`),
+	)
+	sql := ddl.Must(ddl.SQL(stmt))
+	fmt.Println(sql)
+	//Output: CREATE TABLE user (name TEXT DEFAULT "greg")
+}
+
+func ExamplePrimaryKey() {
+	stmt := ddl.CreateTable("user",
+		ddl.Column("id", ddl.Integer, ddl.NotNull, ddl.PrimaryKey()),
+	)
+	sql := ddl.Must(ddl.SQL(stmt))
+	fmt.Println(sql)
+	//Output: CREATE TABLE user (id INTEGER NOT NULL PRIMARY KEY)
+}
+
+func ExampleCheck() {
+	stmt := ddl.CreateTable("user",
+		ddl.Column("age", ddl.Integer, ddl.NotNull, ddl.Check("age >= 0")),
+	)
+	sql := ddl.Must(ddl.SQL(stmt))
+	fmt.Println(sql)
+	//Output: CREATE TABLE user (age INTEGER NOT NULL CHECK (age >= 0))
+}

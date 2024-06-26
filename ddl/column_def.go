@@ -57,16 +57,17 @@ func (def ClauseColumn) Collate(collationName Safe) ClauseColumn {
 	return def
 }
 
-// Default specifies the default value for the column.
+// Default specifies the default expression for the column.
+//
+// Note that this is the raw SQL. If you want to set a default string literal
+// for a [Text] field, make sure it is properly escaped and includes quotes.
 //
 // SQL: DEFAULT
 //
 // https://www.sqlite.org/lang_createtable.html#the_default_clause
 func (def ClauseColumn) Default(expr Safe) ClauseColumn {
 	def.suffix.Add(tokens.Keyword("DEFAULT"))
-	def.suffix.Add(tokens.LParen())
 	def.suffix.Add(tokens.Raw(expr))
-	def.suffix.Add(tokens.RParen())
 	return def
 }
 
