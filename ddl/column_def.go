@@ -1,9 +1,6 @@
 package ddl
 
 import (
-	"fmt"
-
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -65,13 +62,8 @@ func (def ClauseColumn) Default(expr Safe) ClauseColumn {
 	return def
 }
 
-func (def ClauseColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (def ClauseColumn) tokens() tokens.Tokens {
 	colSQL := def.colType
-	if colSQL == "" {
-		const msg = "the data type used for the column '%s' is not supported by the dialect"
-		err := fmt.Errorf(msg, def.name)
-		return tokens.New(tokens.Err(err))
-	}
 	ts := tokens.New(
 		tokens.ColumnName(def.name),
 		tokens.Raw(colSQL),
@@ -81,7 +73,7 @@ func (def ClauseColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
 	}
 	ts.Extend(def.suffix)
 	for _, con := range def.constraints {
-		ts.Extend(con.columnTokens(dialect))
+		ts.Extend(con.columnTokens())
 	}
 	return ts
 }

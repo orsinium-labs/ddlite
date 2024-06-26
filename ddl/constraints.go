@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -24,19 +23,19 @@ func Constraint(
 	}
 }
 
-func (con ClauseTableConstraint) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (con ClauseTableConstraint) tokens() tokens.Tokens {
 	ts := tokens.New()
 	if con.name != "" {
 		ts.Add(tokens.Keyword("CHECK"))
 		ts.Add(tokens.Raw(con.name))
 	}
-	ts.Extend(con.constraint.tableTokens(dialect, con.columns))
+	ts.Extend(con.constraint.tableTokens(con.columns))
 	return ts
 }
 
 type ClauseConstraint interface {
-	columnTokens(dialects.Dialect) tokens.Tokens
-	tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens
+	columnTokens() tokens.Tokens
+	tableTokens(cols []Safe) tokens.Tokens
 }
 
 type tUnique struct{}
@@ -45,12 +44,12 @@ func Unique() ClauseConstraint {
 	return tUnique{}
 }
 
-func (def tUnique) columnTokens(dialects.Dialect) tokens.Tokens {
+func (def tUnique) columnTokens() tokens.Tokens {
 	return tokens.New(
 		tokens.Keyword("UNIQUE"),
 	)
 }
-func (def tUnique) tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens {
+func (def tUnique) tableTokens(cols []Safe) tokens.Tokens {
 	return tokens.New(
 		tokens.Keyword("UNIQUE"),
 		tokens.LParen(),
@@ -69,13 +68,13 @@ func PrimaryKey() ClauseConstraint {
 	return tPrimaryKey{}
 }
 
-func (def tPrimaryKey) columnTokens(dialects.Dialect) tokens.Tokens {
+func (def tPrimaryKey) columnTokens() tokens.Tokens {
 	return tokens.New(
 		tokens.Keyword("PRIMARY KEY"),
 	)
 }
 
-func (def tPrimaryKey) tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens {
+func (def tPrimaryKey) tableTokens(cols []Safe) tokens.Tokens {
 	return tokens.New(
 		tokens.Keyword("PRIMARY KEY"),
 		tokens.LParen(),
@@ -92,7 +91,7 @@ func Check(expr Safe) ClauseConstraint {
 	return tCheck{expr}
 }
 
-func (def tCheck) columnTokens(dialects.Dialect) tokens.Tokens {
+func (def tCheck) columnTokens() tokens.Tokens {
 	return tokens.New(
 		tokens.Keyword("CHECK"),
 		tokens.LParen(),
@@ -101,6 +100,6 @@ func (def tCheck) columnTokens(dialects.Dialect) tokens.Tokens {
 	)
 }
 
-func (def tCheck) tableTokens(d dialects.Dialect, cols []Safe) tokens.Tokens {
-	return def.columnTokens(d)
+func (def tCheck) tableTokens(cols []Safe) tokens.Tokens {
+	return def.columnTokens()
 }

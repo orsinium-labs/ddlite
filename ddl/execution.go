@@ -29,9 +29,6 @@ func SQL(stmt Statement) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("convert tokens to SQL: %w", err)
 	}
-	if err != nil {
-		return "", fmt.Errorf("convert placeholders: %w", err)
-	}
 	return sql, nil
 }
 

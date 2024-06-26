@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -19,16 +18,12 @@ func AddColumn(table Safe, col ClauseColumn) StatementAddColumn {
 	return StatementAddColumn{table: table, col: col}
 }
 
-func (q StatementAddColumn) statement() dialects.Feature {
-	return "ALTER TABLE / ADD COLUMN"
-}
-
-func (q StatementAddColumn) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (q StatementAddColumn) tokens() tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),
 		tokens.Keyword("ADD COLUMN"),
 	)
-	ts.Extend(q.col.tokens(dialect))
+	ts.Extend(q.col.tokens())
 	return ts
 }
