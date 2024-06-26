@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -24,11 +23,7 @@ func (q StatementDropTable) IfExists() StatementDropTable {
 	return q
 }
 
-func (q StatementDropTable) statement() dialects.Feature {
-	return "DROP TABLE"
-}
-
-func (q StatementDropTable) tokens(dialects.Dialect) tokens.Tokens {
+func (q StatementDropTable) tokens() tokens.Tokens {
 	ts := tokens.New(tokens.Keyword("DROP TABLE"))
 	if q.ifExists {
 		ts.Add(tokens.Keyword("IF EXISTS"))

@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -16,11 +15,7 @@ func RenameTable(old, new Safe) Statement {
 	return StatementRenameTable{old: old, new: new}
 }
 
-func (q StatementRenameTable) statement() dialects.Feature {
-	return "ALTER TABLE / RENAME TO"
-}
-
-func (q StatementRenameTable) tokens(dialects.Dialect) tokens.Tokens {
+func (q StatementRenameTable) tokens() tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.old),

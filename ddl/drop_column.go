@@ -1,7 +1,6 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -16,11 +15,7 @@ func DropColumn(table Safe, col Safe) StatementDropColumn {
 	return StatementDropColumn{table: table, col: col}
 }
 
-func (q StatementDropColumn) statement() dialects.Feature {
-	return "ALTER TABLE / DROP COLUMN"
-}
-
-func (q StatementDropColumn) tokens(dialects.Dialect) tokens.Tokens {
+func (q StatementDropColumn) tokens() tokens.Tokens {
 	ts := tokens.New(
 		tokens.Keyword("ALTER TABLE"),
 		tokens.TableName(q.table),

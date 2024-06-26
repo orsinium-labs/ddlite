@@ -3,7 +3,6 @@ package ddl
 import (
 	"errors"
 
-	"github.com/orsinium-labs/sequel-ddl/dialects"
 	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
 )
 
@@ -27,11 +26,7 @@ func (q StatementCreateTable) Constraints(cs ...ClauseTableConstraint) Statement
 	return q
 }
 
-func (q StatementCreateTable) statement() dialects.Feature {
-	return "CREATE TABLE"
-}
-
-func (q StatementCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
+func (q StatementCreateTable) tokens() tokens.Tokens {
 	if len(q.columns) == 0 {
 		err := errors.New("new table must have columns defined")
 		return tokens.New(tokens.Err(err))
@@ -45,11 +40,11 @@ func (q StatementCreateTable) tokens(dialect dialects.Dialect) tokens.Tokens {
 		if i > 0 {
 			ts.Add(tokens.Comma())
 		}
-		ts.Extend(col.tokens(dialect))
+		ts.Extend(col.tokens())
 	}
 	for _, con := range q.constraints {
 		ts.Add(tokens.Comma())
-		ts.Extend(con.tokens(dialect))
+		ts.Extend(con.tokens())
 	}
 	ts.Add(tokens.RParen())
 	return ts
