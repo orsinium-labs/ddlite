@@ -1,6 +1,6 @@
-module github.com/orsinium-labs/sequel-ddl
+module github.com/orsinium-labs/ddlite
 
-go 1.18
+go 1.22.1
 
 require (
 	github.com/jmoiron/sqlx v1.3.5

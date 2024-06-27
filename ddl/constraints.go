@@ -1,7 +1,7 @@
 package ddl
 
 import (
-	"github.com/orsinium-labs/sequel-ddl/internal/tokens"
+	"github.com/orsinium-labs/ddlite/internal/tokens"
 )
 
 // ClauseTableConstraint is a contraint applied to the table (a set of columns).
