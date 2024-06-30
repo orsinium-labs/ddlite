@@ -5,3 +5,13 @@ tasks:
   test:
     cmds:
       - go test -count=1 -timeout 2s -cover ./...
+
+  release:
+    desc: Tag and upload release
+    cmds:
+      - which gh
+      - test v{{.CLI_ARGS}}
+      - git tag v{{.CLI_ARGS}}
+      - git push
+      - git push --tags
+      - gh release create --generate-notes v{{.CLI_ARGS}}
