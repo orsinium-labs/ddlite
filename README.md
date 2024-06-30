@@ -1,4 +1,6 @@
-# ddlite
+# 🪶 ddlite
+
+[ [🐙 github](https://github.com/orsinium-labs/ddlite) ] [ [📚 docs](https://pkg.go.dev/github.com/orsinium-labs/ddlite/ddl) ]
 
 A golang library for building SQLite DDL queries (CREATE TABLE, ALTER TABLE, etc). It focuses only on queries modifying tables and columns but not data and supports only SQLite, which makes it very safe, reliable, small, and easy to use.
 
@@ -13,13 +15,13 @@ Features:
 * **Human-readable output**. An internal tokenizer ensures that there are all needed spaces and parenthesis (or lack thereof) to make the generated SQL as pretty as possible.
 * **Well-documented**. Every function and type has a short documentation, link to the SQLite spec, and a code example. Our goal is to make it possible to write queries without leaving IDE even if you don't know SQLite or sloppy with SQL.
 
-## Installation
+## 📥 Installation
 
 ```bash
 go get github.com/orsinium-labs/ddlite
 ```
 
-## Usage
+## 🔧 Usage
 
 ```go
 import "github.com/orsinium-labs/ddlite/ddl"
@@ -33,7 +35,7 @@ fmt.Println(sql)
 //Output: CREATE TABLE users (name TEXT NOT NULL PRIMARY KEY, age INTEGER)
 ```
 
-## QnA
+## 🤔 QnA
 
 * **Why not raw SQL?** There is no THE language called SQL. There are only a bunch of dialects. Each database supports lots of dialects and aliases and usually very different subset of those. SQLite is especially quirky: some early day mistakes are now part of the SQLite spec because it's too late to change them now without breaking old apps. If you want to write correct SQL for SQLite you need to read the whole documentation or get some assistance. And we're here to save you time and provide that assistance.
 * **Why only one RDBMS?** Each RDBMS (relational database management system) is very different. Focusing on one is the only way to have an API that isn't "the lowest common denominator".

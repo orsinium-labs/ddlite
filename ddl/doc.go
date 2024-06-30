@@ -2,7 +2,7 @@
 //
 // DDL includes queries like CREATE TABLE, ALTER TABLE, and DROP TABLE.
 //
-// # Statements
+// Statements:
 //
 //   - [AddColumn] is "ALTER TABLE t ADD COLUMN c"
 //   - [CreateTable] is "CREATE TABLE t"
